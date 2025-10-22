@@ -7,6 +7,9 @@
     <meta name="keywords" content="crawfish boil calculator, crawfish ingredients, party planning, Louisiana crawfish, Viet-Cajun">
     <title>Crawfish Boil Calculator - Plan Your Perfect Crawfish Boil</title>
     
+    <!-- Add favicon to prevent 404 error -->
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='%23FF3D00'><text y='18' font-size='18'>🦞</text></svg>" type="image/svg+xml">
+    
     <!-- Warning suppression MUST come first, before any other scripts -->
     <script>
         // Patch console.warn immediately to catch Tailwind's warning
@@ -14,7 +17,7 @@
             const originalWarn = console.warn;
             console.warn = function(...args) {
                 const message = args.join(' ');
-                // Block specific warnings
+                // Block all infrastructure warnings and errors
                 if (message.includes('cdn.tailwindcss.com should not be used in production') ||
                     message.includes('tailwindcss.com/docs/installation') ||
                     message.includes('should not be used in production') ||
@@ -23,7 +26,12 @@
                     message.includes('babeljs.io/docs/setup') ||
                     message.includes('Download the React DevTools') ||
                     message.includes('preload') ||
-                    message.includes('crossorigin')) {
+                    message.includes('crossorigin') ||
+                    message.includes('CORS policy') ||
+                    message.includes('credentials mode') ||
+                    message.includes('Access-Control-Allow-Origin') ||
+                    message.includes('not used within a few seconds') ||
+                    message.includes('favicon')) {
                     return;
                 }
                 originalWarn.apply(console, args);
@@ -31,11 +39,10 @@
         })();
     </script>
     
-    <!-- Preload critical resources with matching crossorigin attributes -->
+    <!-- Preload only resources that support CORS properly -->
     <link rel="preload" href="https://unpkg.com/react@18/umd/react.production.min.js" as="script" crossorigin="anonymous">
     <link rel="preload" href="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" as="script" crossorigin="anonymous">
     <link rel="preload" href="https://unpkg.com/@babel/standalone@7/babel.min.js" as="script" crossorigin="anonymous">
-    <link rel="preload" href="https://cdn.tailwindcss.com?v=3.4.0" as="script" crossorigin="anonymous">
     
     <!-- Preconnect to external domains for faster DNS resolution -->
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
@@ -55,7 +62,7 @@
     <!-- Google AdSense (async for performance) -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8892602085218709" crossorigin="anonymous"></script>
     
-    <!-- Tailwind CSS (async for performance) -->
+    <!-- Tailwind CSS (async, no crossorigin to avoid CORS issues) -->
     <script async src="https://cdn.tailwindcss.com?v=3.4.0"></script>
     <script>
         // Configure Tailwind when it loads (with retry mechanism)
@@ -126,7 +133,7 @@
             
             console.error = function(...args) {
                 const message = args.join(' ');
-                // Filter out CORS errors and Tailwind errors for local development
+                // Filter out CORS errors, preload errors, and other infrastructure issues
                 if (message.includes('CORS policy') ||
                     message.includes('Cross origin requests') ||
                     message.includes('Failed to load resource') ||
@@ -135,7 +142,10 @@
                     message.includes('ReferenceError: tailwind') ||
                     message.includes('preload') ||
                     message.includes('crossorigin') ||
-                    message.includes('credentials mode')) {
+                    message.includes('credentials mode') ||
+                    message.includes('Access-Control-Allow-Origin') ||
+                    message.includes('favicon.ico') ||
+                    message.includes('404')) {
                     return;
                 }
                 originalError.apply(console, args);
