@@ -29,15 +29,27 @@
         })();
     </script>
     
-    <!-- Use production React builds to eliminate development warnings -->
+    <!-- Preload critical resources for faster loading -->
+    <link rel="preload" href="https://unpkg.com/react@18/umd/react.production.min.js" as="script">
+    <link rel="preload" href="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" as="script">
+    <link rel="preload" href="https://unpkg.com/@babel/standalone@7/babel.min.js" as="script">
+    <link rel="preload" href="https://cdn.tailwindcss.com?v=3.4.0" as="script">
+    
+    <!-- Preconnect to external domains for faster DNS resolution -->
+    <link rel="preconnect" href="https://unpkg.com" crossorigin>
+    <link rel="preconnect" href="https://cdn.tailwindcss.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.googleapis.com" crossorigin>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    
+    <!-- Use production React builds (synchronous for dependency order) -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
-    <!-- Use minified Babel for production -->
+    <!-- Use minified Babel (synchronous for dependency order) -->
     <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
     
-    <!-- Tailwind CSS - warning now suppressed above -->
-    <script src="https://cdn.tailwindcss.com?v=3.4.0"></script>
+    <!-- Tailwind CSS (can be async as it's not critical for initial render) -->
+    <script async src="https://cdn.tailwindcss.com?v=3.4.0"></script>
     <script>
         // Configure Tailwind
         tailwind.config = {
@@ -107,9 +119,67 @@
             };
         }
     </script>
+    
+    <!-- Optimized Google Fonts with critical font preloading -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'">
+    <noscript><link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet"></noscript>
+    
+    <!-- Critical CSS inline for instant rendering -->
+    <style>
+        body { 
+            margin: 0; 
+            padding: 0; 
+            background: #0b0b0b;
+            font-family: 'Inter', system-ui, sans-serif;
+            font-display: swap;
+        }
+        
+        /* Prevent layout shift with font fallbacks */
+        .font-display { 
+            font-family: 'Bungee', 'Arial Black', sans-serif; 
+            font-display: swap;
+        }
+        .font-body { 
+            font-family: 'Inter', system-ui, sans-serif; 
+            font-display: swap;
+        }
+        
+        /* Loading spinner for perceived performance */
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 2px solid #ff4444;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        /* Critical path styles to prevent layout shift */
+        #root {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .app-loaded #loading { display: none; }
+    </style>
 </head>
 <body style="margin: 0; padding: 0; background: #0b0b0b;">
-    <div id="root"></div>
+    <div id="root">
+        <!-- Loading indicator for better perceived performance -->
+        <div id="loading" class="flex items-center justify-center min-h-screen bg-gray-900 text-white">
+            <div class="text-center">
+                <div class="loading-spinner mx-auto mb-4"></div>
+                <p class="text-gray-400 text-sm">Loading Crawfish Calculator...</p>
+            </div>
+        </div>
+    </div>
     
     <!-- Component is already defined inline below -->
     
@@ -2944,9 +3014,54 @@
           );
         }
 
-        // Render the app using React 18 createRoot API
-        const root = ReactDOM.createRoot(document.getElementById('root'));
-        root.render(React.createElement(CrawfishBoilCalculator));
+        // Optimized app initialization with loading management
+        function initializeApp() {
+            try {
+                // Hide loading indicator
+                document.body.classList.add('app-loaded');
+                
+                // Render the app using React 18 createRoot API
+                const root = ReactDOM.createRoot(document.getElementById('root'));
+                root.render(React.createElement(CrawfishBoilCalculator));
+                
+                // Performance mark for timing
+                if (performance && performance.mark) {
+                    performance.mark('app-rendered');
+                }
+            } catch (error) {
+                console.error('Failed to initialize app:', error);
+                document.getElementById('root').innerHTML = `
+                    <div class="flex items-center justify-center min-h-screen bg-gray-900 text-white p-4">
+                        <div class="text-center">
+                            <h1 class="text-xl font-bold mb-4 text-red-400">Error Loading Calculator</h1>
+                            <p class="text-gray-400 mb-4">Please refresh the page to try again.</p>
+                            <button class="bg-red-600 hover:bg-red-700 px-4 py-2 rounded" onclick="location.reload()">
+                                Refresh Page
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }
+        }
+        
+        // Wait for all dependencies to load before initializing
+        function checkDependencies() {
+            if (typeof React !== 'undefined' && 
+                typeof ReactDOM !== 'undefined' && 
+                typeof Babel !== 'undefined') {
+                initializeApp();
+            } else {
+                // Retry in 50ms if dependencies aren't ready
+                setTimeout(checkDependencies, 50);
+            }
+        }
+        
+        // Start dependency check when DOM is ready
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', checkDependencies);
+        } else {
+            checkDependencies();
+        }
 
         // Run tests
         (function runTests() {
