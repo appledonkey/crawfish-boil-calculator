@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from 'react';
-import { Card, CardContent } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
+// React and components available globally
+const { useState, useEffect } = React;
+const { Card, CardContent } = window;
+const { Button } = window;
 
 /**
  * Crawfish Boil Calculator (React)
@@ -12,7 +13,7 @@ import { Button } from "@/components/ui/button";
  * Fix: Removed any duplicate state declarations to resolve "Identifier has already been declared".
  */
 
-export const CONFIG = {
+const CONFIG = {
   boilStyles: {
     cajun: { name: 'Cajun Style' },
     vietcajun: { name: 'Viet-Cajun Style' }
@@ -76,7 +77,7 @@ export const CONFIG = {
 };
 
 // Dynamic color map for spice level (1..4)
-export const SPICE_COLORS = {
+const SPICE_COLORS = {
   1: '#FFD54F', // mild: amber 300
   2: '#FFB300', // medium: vivid amber
   3: '#FF7043', // hot: deep orange
@@ -380,7 +381,7 @@ const getEquipmentSize = (crawfishLbs) => {
 };
 
 // Advanced mode comprehensive party checklist with pricing
-export const ADVANCED_ITEMS = {
+const ADVANCED_ITEMS = {
   cajun: {
     'crawfish-main': {
       title: 'Crawfish & Main Ingredients',
@@ -663,7 +664,7 @@ export const ADVANCED_ITEMS = {
   }
 };
 
-export function buildAdvancedItems({ peopleCount, lbsPerPerson, location, style = 'cajun' }) {
+function buildAdvancedItems({ peopleCount, lbsPerPerson, location, style = 'cajun' }) {
   const people = Number(peopleCount);
   const lpp = Number(lbsPerPerson);
   const prices = CONFIG.regionalPricing[location] ?? CONFIG.regionalPricing.louisiana;
@@ -726,7 +727,7 @@ export function buildAdvancedItems({ peopleCount, lbsPerPerson, location, style 
   return { items: allItems, total, categories: Object.keys(styleItems).map(key => styleItems[key]) };
 }
 
-export function buildToupsBoilItems({ peopleCount, lbsPerPerson, location }) {
+function buildToupsBoilItems({ peopleCount, lbsPerPerson, location }) {
   const people = Number(peopleCount);
   const lpp = Number(lbsPerPerson);
   const prices = CONFIG.regionalPricing[location] ?? CONFIG.regionalPricing.louisiana;
@@ -1138,7 +1139,7 @@ const ShopSection = ({ peopleCount, crawfishLbs, onAddToShoppingList, mode }) =>
   );
 };
 
-export default function CrawfishBoilCalculator() {
+function CrawfishBoilCalculator() {
   // State declarations — declared ONCE
   const [mode, setMode] = useState('basic');
   const [style, setStyle] = useState('cajun');
@@ -2269,3 +2270,6 @@ if (typeof process !== 'undefined' && process.env.NODE_ENV !== 'production') {
     if (typeof console !== 'undefined') console.log('[CrawfishBoilCalculator] tests passed');
   })();
 }
+
+// Make the component available globally
+window.CrawfishBoilCalculator = CrawfishBoilCalculator;
