@@ -116,6 +116,26 @@
     <script type="text/babel">
         const { useState, useEffect } = React;
         
+        // Add CSS.supports check for color-mix and provide fallbacks
+        const supportsColorMix = CSS && CSS.supports && CSS.supports('background-color', 'color-mix(in srgb, red, blue)');
+        
+        // Helper function to replace color-mix with fallback
+        const colorMixFallback = (colorMixString) => {
+          if (supportsColorMix) return colorMixString;
+          
+          // Simple fallbacks for common color-mix patterns
+          if (colorMixString.includes('var(--spice) 85%, white')) return 'rgba(255, 68, 0, 0.85)';
+          if (colorMixString.includes('var(--spice) 40%, transparent')) return 'rgba(255, 68, 0, 0.4)';
+          if (colorMixString.includes('var(--spice) 60%, transparent')) return 'rgba(255, 68, 0, 0.6)';
+          if (colorMixString.includes('var(--spice) 35%, transparent')) return 'rgba(255, 68, 0, 0.35)';
+          if (colorMixString.includes('var(--spice) 20%, transparent')) return 'rgba(255, 68, 0, 0.2)';
+          if (colorMixString.includes('var(--spice) 18%, transparent')) return 'rgba(255, 68, 0, 0.18)';
+          if (colorMixString.includes('var(--spice) 15%, transparent')) return 'rgba(255, 68, 0, 0.15)';
+          
+          // Default fallback
+          return 'rgba(255, 68, 0, 0.3)';
+        };
+        
         // Mock UI components
         const Card = ({ children, className = "", ...props }) => 
             React.createElement('div', { className, ...props }, children);
@@ -1486,13 +1506,13 @@
             const toast = document.createElement('div');
             toast.className = 'fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full';
             toast.style.background = type === 'success' 
-              ? `linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice))`
+              ? `linear-gradient(135deg, rgba(255, 255, 255, 0.85), var(--spice))`
               : 'linear-gradient(135deg, #dc3545, #b02a37)';
             toast.style.color = '#0b0b0b';
             toast.style.fontWeight = '600';
-            toast.style.boxShadow = `0 0 15px color-mix(in srgb, var(--spice) 40%, transparent), 0 8px 32px rgba(0,0,0,0.2)`;
+            toast.style.boxShadow = `0 0 15px rgba(255, 68, 0, 0.4), 0 8px 32px rgba(0,0,0,0.2)`;
             toast.style.border = type === 'success' 
-              ? `1px solid color-mix(in srgb, var(--spice) 60%, transparent)`
+              ? `1px solid rgba(255, 68, 0, 0.6)`
               : '1px solid #dc3545';
             toast.textContent = message;
             document.body.appendChild(toast);
@@ -1654,10 +1674,10 @@
                 className: buttonClasses,
                 style: {
                   background: isEnabled 
-                    ? 'linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice))'
+                    ? 'linear-gradient(135deg, rgba(255, 255, 255, 0.85), var(--spice))'
                     : 'rgba(255,255,255,0.1)',
                   boxShadow: isEnabled 
-                    ? '0 0 8px color-mix(in srgb, var(--spice) 40%, transparent)'
+                    ? '0 0 8px rgba(255, 68, 0, 0.4)'
                     : 'none',
                   position: 'relative',
                   width: '44px',
@@ -1865,30 +1885,30 @@
               .font-display{ font-family: 'Bungee', system-ui, sans-serif; }
               .font-body{ font-family: 'Inter', system-ui, sans-serif; }
               /* Header gradient, total text, etc. bind to current --spice for uniform coloring */
-              .mg-gradient-text{ background: linear-gradient(90deg, color-mix(in srgb, var(--spice) 80%, white), var(--spice)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px color-mix(in srgb, var(--spice) 45%, transparent); }
+              .mg-gradient-text{ background: linear-gradient(90deg, rgba(255, 255, 255, 0.8), var(--spice)); -webkit-background-clip: text; background-clip: text; color: transparent; text-shadow: 0 0 10px rgba(255, 68, 0, 0.45); }
               .mg-card {
                 background:
-                  radial-gradient(1000px 600px at 20% -10%, color-mix(in srgb, var(--spice) 20%, transparent), transparent 60%),
-                  radial-gradient(900px 700px at 80% 120%, color-mix(in srgb, var(--spice) 15%, transparent), transparent 60%),
+                  radial-gradient(1000px 600px at 20% -10%, rgba(255, 68, 0, 0.2), transparent 60%),
+                  radial-gradient(900px 700px at 80% 120%, rgba(255, 68, 0, 0.15), transparent 60%),
                   #0f0f0f;
               }
-              .mg-border { box-shadow: 0 0 10px color-mix(in srgb, var(--spice) 60%, transparent), 0 0 40px color-mix(in srgb, var(--spice) 25%, transparent); }
+              .mg-border { box-shadow: 0 0 10px rgba(255, 68, 0, 0.6), 0 0 40px rgba(255, 68, 0, 0.25); }
               .mg-toggle > button { border-radius: 0.75rem; flex:1; padding: 0.75rem 1rem; font-weight: 700; min-height: 44px; }
-              .mg-toggle .active { background: linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice)); color: #0b0b0b; box-shadow: 0 0 12px color-mix(in srgb, var(--spice) 40%, transparent); }
+              .mg-toggle .active { background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), var(--spice)); color: #0b0b0b; box-shadow: 0 0 12px rgba(255, 68, 0, 0.4); }
               .mg-toggle .inactive { background: rgba(255,255,255,0.05); color: #eee; }
               .mg-label { color: #f5f5f5; font-weight: 700; }
-              .mg-slider { accent-color: var(--spice); box-shadow: 0 0 10px color-mix(in srgb, var(--spice) 35%, transparent); border-radius: 999px; }
-              .mg-chip { background: color-mix(in srgb, var(--spice) 18%, transparent); color: var(--spice); border: 1px solid color-mix(in srgb, var(--spice) 60%, transparent); }
+              .mg-slider { accent-color: var(--spice); box-shadow: 0 0 10px rgba(255, 68, 0, 0.35); border-radius: 999px; }
+              .mg-chip { background: rgba(255, 68, 0, 0.18); color: var(--spice); border: 1px solid rgba(255, 68, 0, 0.6); }
               /* Inferno pulsing animation */
               @keyframes inferno-pulse {
                 0%, 100% { 
-                  box-shadow: 0 0 10px color-mix(in srgb, var(--spice) 35%, transparent), 
-                             0 0 20px color-mix(in srgb, var(--spice) 15%, transparent);
+                  box-shadow: 0 0 10px rgba(255, 68, 0, 0.35), 
+                             0 0 20px rgba(255, 68, 0, 0.15);
                 }
                 50% { 
-                  box-shadow: 0 0 15px color-mix(in srgb, var(--spice) 50%, transparent), 
-                             0 0 30px color-mix(in srgb, var(--spice) 25%, transparent),
-                             0 0 40px color-mix(in srgb, #8B0040 20%, transparent);
+                  box-shadow: 0 0 15px rgba(255, 68, 0, 0.5), 
+                             0 0 30px rgba(255, 68, 0, 0.25),
+                             0 0 40px rgba(139, 0, 64, 0.2);
                 }
               }
               .mg-slider.inferno-pulse { 
@@ -1927,8 +1947,8 @@
                 box-shadow: none !important;
               }
               button.mg-toggle-btn.enabled { 
-                background: linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice)) !important; 
-                box-shadow: 0 0 8px color-mix(in srgb, var(--spice) 40%, transparent) !important;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), var(--spice)) !important; 
+                box-shadow: 0 0 8px rgba(255, 68, 0, 0.4) !important;
               }
               button.mg-toggle-btn::after,
               button.mg-toggle-btn.disabled::after {
@@ -2025,7 +2045,7 @@
               .section-divider {
                 margin: 2rem 0 1.5rem 0;
                 padding: 0.5rem 0;
-                border-bottom: 2px solid color-mix(in srgb, var(--spice) 30%, transparent);
+                border-bottom: 2px solid rgba(255, 68, 0, 0.3);
                 position: relative;
               }
               
@@ -2037,7 +2057,7 @@
                 width: 60px;
                 height: 2px;
                 background: var(--spice);
-                box-shadow: 0 0 8px color-mix(in srgb, var(--spice) 50%, transparent);
+                box-shadow: 0 0 8px rgba(255, 68, 0, 0.5);
               }
               
 
@@ -2116,9 +2136,9 @@
               }
               
               .mg-chip {
-                background: color-mix(in srgb, var(--spice) 18%, transparent) !important;
+                background: rgba(255, 68, 0, 0.18) !important;
                 color: var(--spice) !important;
-                border: 1px solid color-mix(in srgb, var(--spice) 60%, transparent) !important;
+                border: 1px solid rgba(255, 68, 0, 0.6) !important;
               }
               
               .mg-toggle .inactive {
@@ -2127,7 +2147,7 @@
               }
               
               .mg-toggle .active {
-                background: linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice)) !important;
+                background: linear-gradient(135deg, rgba(255, 255, 255, 0.85), var(--spice)) !important;
                 color: var(--theme-bg, #0b0b0b) !important;
               }
               
@@ -2395,10 +2415,10 @@
                           onClick: handleCyclingAction,
                           className: "mg-btn-enhanced px-3 py-2 sm:py-1 rounded-xl transition-all text-sm min-h-[44px] sm:min-h-auto font-semibold",
                           style: {
-                            background: `linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice))`,
+                            background: `linear-gradient(135deg, rgba(255, 255, 255, 0.85), var(--spice))`,
                             color: 'var(--theme-bg)',
                             border: '1px solid var(--spice)',
-                            boxShadow: '0 0 8px color-mix(in srgb, var(--spice) 40%, transparent)'
+                            boxShadow: '0 0 8px rgba(255, 68, 0, 0.4)'
                           },
                           title: "Click to cycle: Expand All → Collapse All"
                         }, getActionButtonText()),
@@ -2409,7 +2429,7 @@
                             background: 'var(--theme-accent)',
                             color: 'var(--theme-text)',
                             border: '1px solid var(--theme-border)',
-                            boxShadow: '0 0 4px color-mix(in srgb, var(--theme-text) 20%, transparent)'
+                            boxShadow: '0 0 4px rgba(255, 255, 255, 0.2)'
                           },
                           title: "Click to cycle: Enable All → Disable All"
                         }, getItemButtonText()),
@@ -2420,7 +2440,7 @@
                             background: '#DC2626',
                             color: 'white',
                             border: '1px solid #DC2626',
-                            boxShadow: '0 0 4px color-mix(in srgb, #DC2626 30%, transparent)'
+                            boxShadow: '0 0 4px rgba(220, 38, 38, 0.3)'
                           },
                           title: "Reset to default (only Boil Essentials enabled)"
                         }, "Reset")
@@ -2739,10 +2759,10 @@
                         onClick: () => setShowExportMenu(!showExportMenu),
                         className: "mg-btn-enhanced w-full px-4 py-3 rounded-xl transition-all text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2",
                         style: {
-                          background: `linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice))`,
+                          background: `linear-gradient(135deg, rgba(255, 255, 255, 0.85), var(--spice))`,
                           color: 'var(--theme-bg, #0b0b0b)',
-                          border: `1px solid color-mix(in srgb, var(--spice) 60%, transparent)`,
-                          boxShadow: `0 0 8px color-mix(in srgb, var(--spice) 40%, transparent)`
+                          border: `1px solid rgba(255, 68, 0, 0.6)`,
+                          boxShadow: `0 0 8px rgba(255, 68, 0, 0.4)`
                         }
                       }, 
                         "📤 Export & Share",
@@ -2755,7 +2775,7 @@
                         style: { 
                           background: 'var(--theme-accent, rgba(255,255,255,0.05))',
                           border: '1px solid var(--theme-border, rgba(255,255,255,0.1))',
-                          boxShadow: '0 0 10px color-mix(in srgb, var(--spice) 35%, transparent), 0 8px 32px rgba(0,0,0,0.3)',
+                          boxShadow: '0 0 10px rgba(255, 68, 0, 0.35), 0 8px 32px rgba(0,0,0,0.3)',
                           backdropFilter: 'blur(10px)'
                         }
                       },
@@ -2773,8 +2793,8 @@
                             cursor: 'pointer'
                           },
                           onMouseEnter: (e) => {
-                            e.target.style.background = 'color-mix(in srgb, var(--spice) 20%, transparent)';
-                            e.target.style.boxShadow = '0 0 8px color-mix(in srgb, var(--spice) 25%, transparent)';
+                            e.target.style.background = 'rgba(255, 68, 0, 0.2)';
+                            e.target.style.boxShadow = '0 0 8px rgba(255, 68, 0, 0.25)';
                           },
                           onMouseLeave: (e) => {
                             e.target.style.background = 'transparent';
@@ -2803,8 +2823,8 @@
                             cursor: 'pointer'
                           },
                           onMouseEnter: (e) => {
-                            e.target.style.background = 'color-mix(in srgb, var(--spice) 20%, transparent)';
-                            e.target.style.boxShadow = '0 0 8px color-mix(in srgb, var(--spice) 25%, transparent)';
+                            e.target.style.background = 'rgba(255, 68, 0, 0.2)';
+                            e.target.style.boxShadow = '0 0 8px rgba(255, 68, 0, 0.25)';
                           },
                           onMouseLeave: (e) => {
                             e.target.style.background = 'transparent';
@@ -2833,8 +2853,8 @@
                             cursor: 'pointer'
                           },
                           onMouseEnter: (e) => {
-                            e.target.style.background = 'color-mix(in srgb, var(--spice) 20%, transparent)';
-                            e.target.style.boxShadow = '0 0 8px color-mix(in srgb, var(--spice) 25%, transparent)';
+                            e.target.style.background = 'rgba(255, 68, 0, 0.2)';
+                            e.target.style.boxShadow = '0 0 8px rgba(255, 68, 0, 0.25)';
                           },
                           onMouseLeave: (e) => {
                             e.target.style.background = 'transparent';
@@ -2863,11 +2883,108 @@
                             cursor: 'pointer'
                           },
                           onMouseEnter: (e) => {
-                            e.target.style.background = 'color-mix(in srgb, var(--spice) 20%, transparent)';
-                            e.target.style.boxShadow = '0 0 8px color-mix(in srgb, var(--spice) 25%, transparent)';
+                            e.target.style.background = 'rgba(255, 68, 0, 0.2)';
+                            e.target.style.boxShadow = '0 0 8px rgba(255, 68, 0, 0.25)';
                           },
                           onMouseLeave: (e) => {
                             e.target.style.background = 'transparent';
                             e.target.style.boxShadow = 'none';
                           }
-       
+                        },
+                          React.createElement('span', { className: "text-lg" }, "📱"),
+                          React.createElement('div', {},
+                            React.createElement('div', { className: "font-medium mg-label" }, "Share"),
+                            React.createElement('div', { className: "text-xs", style: { color: 'var(--theme-text-secondary, #bbb)' } }, "Send to others")
+                          )
+                        ),
+                        
+                        // Print
+                        React.createElement('button', {
+                          onClick: () => {
+                            printShoppingList();
+                            setShowExportMenu(false);
+                          },
+                          className: "w-full px-4 py-3 text-left transition-colors flex items-center gap-3 text-sm",
+                          style: {
+                            background: 'transparent',
+                            color: 'var(--theme-text, #f5f5f5)',
+                            border: 'none',
+                            borderTop: '1px solid var(--theme-border, rgba(255,255,255,0.1))',
+                            cursor: 'pointer'
+                          },
+                          onMouseEnter: (e) => {
+                            e.target.style.background = 'rgba(255, 68, 0, 0.2)';
+                            e.target.style.boxShadow = '0 0 8px rgba(255, 68, 0, 0.25)';
+                          },
+                          onMouseLeave: (e) => {
+                            e.target.style.background = 'transparent';
+                            e.target.style.boxShadow = 'none';
+                          }
+                        },
+                          React.createElement('span', { className: "text-lg" }, "🖨️"),
+                          React.createElement('div', {},
+                            React.createElement('div', { className: "font-medium mg-label" }, "Print"),
+                            React.createElement('div', { className: "text-xs", style: { color: 'var(--theme-text-secondary, #bbb)' } }, "Professional layout")
+                          )
+                        )
+                      )
+                    ),
+                    
+                    // Season Disclaimer
+                    React.createElement('div', { 
+                      className: "text-center mt-4 text-xs text-gray-400 italic" 
+                    }, "* Prices vary by season and location")
+                  ),
+
+
+                  )
+                )
+              )
+            )
+          );
+        }
+
+        // Render the app using React 18 createRoot API
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(React.createElement(CrawfishBoilCalculator));
+
+        // Run tests
+        (function runTests() {
+          const approx = (a, b, eps = 1e-6) => Math.abs(a - b) < eps;
+
+          // Test 1: baseline values scale correctly
+          const { items: t1, total: tot1 } = buildToupsBoilItems({ peopleCount: 10, lbsPerPerson: 3, location: 'louisiana' });
+          const c1 = t1.find(x => x.name === 'Crawfish');
+          const corn1 = t1.find(x => x.name === 'Corn');
+          console.assert(approx(c1.qty, 30), 'T1 Crawfish should be 30 lbs');
+          console.assert(approx(corn1.qty, 30 * 0.267 * 0.5), 'T1 Corn should follow weight-based ratio');
+          console.assert(tot1 > 0, 'T1 total should be positive');
+
+          // Test 2: string inputs are coerced to numbers
+          const { items: t2 } = buildToupsBoilItems({ peopleCount: '8', lbsPerPerson: '2.5', location: 'texas' });
+          const c2 = t2.find(x => x.name === 'Crawfish');
+          console.assert(approx(c2.qty, 30), 'T2 Crawfish should be 30 lbs (minimum) with string inputs');
+
+          // Test 3: fallback location (unknown -> louisiana)
+          const { items: t3 } = buildToupsBoilItems({ peopleCount: 4, lbsPerPerson: 3, location: 'unknown' });
+          const c3 = t3.find(x => x.name === 'Crawfish');
+          console.assert(approx(c3.qty, 30), 'T3 fallback to louisiana quantities (30 lb minimum)');
+
+          // Test 4: minimums applied (onions>=0.5 lbs, salt>=1 lb, bottles>=0.5)
+          const { items: t4 } = buildToupsBoilItems({ peopleCount: 1, lbsPerPerson: 1, location: 'louisiana' });
+          const onions = t4.find(x => x.name === 'Yellow Onions');
+          const salt = t4.find(x => x.name === 'Salt');
+          const lemonJuice = t4.find(x => x.name === 'Lemon Juice');
+          console.assert(onions.qty >= 0.5, 'T4 onions minimum applied (0.5 lbs)');
+          console.assert(salt.qty >= 1, 'T4 salt minimum applied');
+          console.assert(lemonJuice.qty >= 0.5, 'T4 lemon juice minimum bottle applied');
+
+          // Test 5: spice color mapping — ensure known keys resolve
+          const colors = [SPICE_COLORS[1], SPICE_COLORS[2], SPICE_COLORS[3], SPICE_COLORS[4], SPICE_COLORS[5]];
+          console.assert(colors.every(Boolean), 'T5 spice color map should have all 5 levels for dark theme');
+
+          console.log('[CrawfishBoilCalculator] tests passed');
+        })();
+    </script>
+</body>
+</html>
