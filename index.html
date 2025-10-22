@@ -2056,7 +2056,7 @@
               .mg-toggle .active { background: linear-gradient(135deg, var(--spice-light), var(--spice)); color: #0b0b0b; box-shadow: 0 0 12px var(--spice-40, rgba(255, 68, 0, 0.4)); }
               .mg-toggle .inactive { background: rgba(255,255,255,0.05); color: #eee; }
               .mg-label { color: #f5f5f5; font-weight: 700; }
-              .mg-slider { accent-color: var(--spice); box-shadow: 0 0 10px var(--spice-35, rgba(255, 68, 0, 0.35)); border-radius: 999px; }
+              .mg-slider { accent-color: var(--spice); box-shadow: 0 0 6px var(--spice-25, rgba(255, 68, 0, 0.25)); border-radius: 999px; }
               .mg-chip { background: var(--spice-18, rgba(255, 68, 0, 0.18)); color: var(--spice); border: 1px solid var(--spice-60, rgba(255, 68, 0, 0.6)); }
               /* Inferno pulsing animation */
               @keyframes inferno-pulse {
@@ -2143,7 +2143,7 @@
                 .mg-gradient-text { line-height: 1.1; font-size: 1.5rem; }
                 .mg-toggle { gap: 0.25rem; }
                 .mg-toggle > button { padding: 0.6rem 0.8rem; font-size: 14px; min-height: 44px; }
-                input[type="range"] { height: 36px; }
+                input[type="range"] { height: 28px; }
                 .mobile-button-group { 
                   display: flex;
                   flex-direction: row; 
@@ -2162,9 +2162,9 @@
                 .mobile-button-group button:nth-child(1) { flex: 0 0 28%; }
                 .mobile-button-group button:nth-child(2) { flex: 0 0 42%; }
                 .mobile-button-group button:nth-child(3) { flex: 0 0 25%; }
-                .mobile-category-header { padding: 0.5rem 0.25rem; }
+                .mobile-category-header { padding: 0.375rem 0.25rem; }
                 .mobile-category-title { font-size: 1rem; min-height: 44px; }
-                .mobile-item-row { padding: 0.5rem; gap: 0.5rem; }
+                .mobile-item-row { padding: 0.375rem; gap: 0.375rem; }
                 
                 /* Tighter spacing for inputs */
                 .mg-input-enhanced { padding: 10px 12px; font-size: 16px; }
@@ -2360,16 +2360,16 @@
               }
               
               .mg-slider {
-                height: 8px; -webkit-appearance: none; appearance: none; outline: none; border-radius: 4px;
+                height: 6px; -webkit-appearance: none; appearance: none; outline: none; border-radius: 3px;
               }
               
               .mg-slider::-webkit-slider-thumb {
-                -webkit-appearance: none; appearance: none; width: 24px; height: 24px; border-radius: 50%;
+                -webkit-appearance: none; appearance: none; width: 20px; height: 20px; border-radius: 50%;
                 background: var(--spice); cursor: pointer; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
               }
               
               .mg-slider::-moz-range-thumb {
-                width: 24px; height: 24px; border-radius: 50%; background: var(--spice);
+                width: 20px; height: 20px; border-radius: 50%; background: var(--spice);
                 cursor: pointer; border: none; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
               }
               .mg-item-disabled { opacity: 0.4; }
@@ -2406,13 +2406,13 @@
               }
             },
               React.createElement(Card, {
-                className: `mg-card mg-border max-w-2xl w-full rounded-xl p-2 sm:p-3 md:p-4${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}`,
+                className: `mg-card mg-border max-w-2xl w-full rounded-xl p-2 sm:p-3${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}`,
                 role: "main",
                 "aria-label": "Crawfish Boil Calculator"
               },
                 React.createElement(CardContent, {},
                   // Header
-                  React.createElement('div', { className: "text-center mb-4" },
+                  React.createElement('div', { className: "text-center mb-3" },
                     React.createElement('h1', {
                       className: "font-display text-lg sm:text-xl md:text-2xl lg:text-3xl mg-gradient-text drop-shadow flex items-center justify-center gap-1 sm:gap-2 md:gap-3"
                     }, 
@@ -2423,8 +2423,8 @@
                   ),
 
                   // Style selector
-                  React.createElement('div', { className: "mb-4" },
-                    React.createElement('label', { className: "mg-label block mb-2" }, "Boil Style"),
+                  React.createElement('div', { className: "mb-3" },
+                    React.createElement('label', { className: "mg-label block mb-1.5" }, "Boil Style"),
                     React.createElement('div', { 
                       className: "mg-toggle flex gap-1 sm:gap-2 p-1 rounded-xl",
                       style: { background: 'rgba(255,255,255,0.05)' }
@@ -2446,7 +2446,7 @@
 
                   // Location Status Indicator - More compact
                   locationStatus !== 'detecting' && React.createElement('div', { 
-                    className: "mb-3 p-2 rounded text-center text-xs",
+                    className: "mb-2 p-1.5 rounded text-center text-xs",
                     style: { 
                       background: 'rgba(255,255,255,0.05)',
                       color: '#eee'
@@ -2459,7 +2459,7 @@
 
                   // Error Display
                   error && React.createElement('div', { 
-                    className: "mb-4 p-3 rounded-lg border",
+                    className: "mb-3 p-2.5 rounded-lg border",
                     style: {
                       background: themeMode === 'light' || themeMode === 'bw' ? 'rgba(220, 53, 69, 0.1)' : 'rgba(220, 53, 69, 0.2)',
                       borderColor: themeMode === 'light' || themeMode === 'bw' ? 'rgba(220, 53, 69, 0.4)' : 'rgba(220, 53, 69, 0.3)'
@@ -2478,7 +2478,7 @@
                   ),
 
 
-                  React.createElement('div', { className: "space-y-2 sm:space-y-3" },
+                  React.createElement('div', { className: "space-y-1.5" },
 
                     React.createElement('div', {},
                       React.createElement('div', { className: "flex items-center justify-between mb-1" },
@@ -2509,7 +2509,7 @@
                         max: "100",
                         value: peopleCountToSlider(peopleCount),
                         onChange: (e) => setValidatedPeopleCount(sliderToPeopleCount(Number(e.target.value))),
-                        className: `mg-slider w-full mb-2 sm:mb-3${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}`,
+                        className: `mg-slider w-full mb-1.5${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}`,
                         "aria-label": `Number of people: ${peopleCount}`,
                         "aria-valuemin": "0",
                         "aria-valuemax": "5000",
@@ -2519,7 +2519,7 @@
                     ),
 
                     React.createElement('div', {},
-                      React.createElement('div', { className: "flex items-center justify-between mb-1" },
+                      React.createElement('div', { className: "flex items-center justify-between mb-0.5" },
                         React.createElement('label', { className: "mg-label" }, "Pounds per Person"),
                         React.createElement('div', { className: "mg-chip px-2 py-0.5 rounded text-sm font-semibold flex items-center gap-1" },
                           React.createElement('input', { 
@@ -2550,7 +2550,7 @@
                         step: "0.5",
                         value: Number(lbsPerPerson),
                         onChange: (e) => setValidatedLbsPerPerson(Number(e.target.value)),
-                        className: `mg-slider w-full mb-2 sm:mb-3${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}`,
+                        className: `mg-slider w-full mb-1.5${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}`,
                         "aria-label": `Pounds per person: ${lbsPerPerson}`,
                         "aria-valuemin": "0",
                         "aria-valuemax": "5.5",
@@ -2560,7 +2560,7 @@
                     ),
 
                     React.createElement('div', {},
-                      React.createElement('div', { className: "flex items-center justify-between mb-1" },
+                      React.createElement('div', { className: "flex items-center justify-between mb-0.5" },
                         React.createElement('label', { className: "mg-label" }, "Spice Level"),
                         React.createElement('span', { className: `mg-chip px-2 py-0.5 rounded text-sm font-semibold${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}` }, CONFIG.spiceLevels[Number(spiceLevel)].name)
                       ),
@@ -2582,8 +2582,8 @@
                   React.createElement('div', { className: "section-divider" },
                     React.createElement('h2', { className: "font-display text-lg sm:text-xl md:text-2xl mg-gradient-text" }, "Shopping List")
                   ),
-                  React.createElement('div', { className: "mt-4" },
-                    React.createElement('div', { className: "flex items-center justify-between mb-2 sm:mb-3 flex-col sm:flex-row gap-2 sm:gap-0" },
+                  React.createElement('div', { className: "mt-3" },
+                    React.createElement('div', { className: "flex items-center justify-between mb-1.5 flex-col sm:flex-row gap-1.5 sm:gap-0" },
                       React.createElement('div', {}), // Empty div to maintain layout
                       React.createElement('div', { className: "flex gap-2 flex-row mobile-button-group" },
                         React.createElement('button', {
@@ -2654,10 +2654,10 @@
                         
                         return React.createElement('div', {
                           key: categoryKey,
-                          className: "mb-2 sm:mb-4"
+                          className: "mb-1.5 sm:mb-3"
                         },
                           React.createElement('div', { 
-                            className: "flex items-center justify-between mb-2 sm:mb-3 mobile-category-header"
+                            className: "flex items-center justify-between mb-1.5 mobile-category-header"
                           },
                             React.createElement('div', { className: "flex items-center gap-2" },
                               React.createElement('button', {
@@ -2674,14 +2674,14 @@
                               }, category.title)
                             )
                           ),
-                          categoryExpanded[categoryKey] && React.createElement('ul', { className: "space-y-0.5 sm:space-y-1" },
+                          categoryExpanded[categoryKey] && React.createElement('ul', { className: "space-y-0.5" },
                             categoryItems.map((item, i) => renderShoppingItem(item, i, `${categoryKey}-`))
                           )
                         );
                       });
                     })(),
                     React.createElement('div', { 
-                      className: "sticky bottom-0 bg-black/90 backdrop-blur-sm border-t border-white/10 p-3 mt-4 rounded-t-xl text-center font-display text-xl md:text-2xl z-10" 
+                      className: "sticky bottom-0 bg-black/90 backdrop-blur-sm border-t border-white/10 p-2.5 mt-3 rounded-t-xl text-center font-display text-xl md:text-2xl z-10" 
                     },
                       React.createElement('span', { className: "mg-gradient-text" }, `Total: $${Number(totalCost).toFixed(2)}`)
                     ),
@@ -2887,7 +2887,7 @@
                         })(),
                       
                       // Amazon affiliate disclosure
-                      React.createElement('div', { className: "mt-4 p-3 text-xs bg-gray-800/50 rounded-lg border border-gray-700" },
+                      React.createElement('div', { className: "mt-3 p-2.5 text-xs bg-gray-800/50 rounded-lg border border-gray-700" },
                         React.createElement('p', { className: "text-gray-400" },
                           "As an Amazon Associate, we earn from qualifying purchases. This helps support the calculator at no extra cost to you. Prices are estimates - always check Amazon for current pricing."
                         )
@@ -2904,7 +2904,7 @@
                         React.createElement('h2', { className: "font-display text-lg sm:text-xl md:text-2xl mg-gradient-text" }, "🎵 Set the Mood"),
                         React.createElement('span', { className: "text-lg" }, musicSectionExpanded ? '▼' : '▶')
                       ),
-                      musicSectionExpanded && React.createElement('div', { className: "mt-4" },
+                      musicSectionExpanded && React.createElement('div', { className: "mt-3" },
                         React.createElement('p', { className: "text-gray-300 text-sm mb-4" },
                           "Get your crawfish boil party started with authentic Louisiana zydeco and Cajun music!"
                         ),
@@ -2929,7 +2929,7 @@
                     ),
                     
                     // Modern Export Dropdown
-                    React.createElement('div', { className: "relative mt-4" },
+                    React.createElement('div', { className: "relative mt-3" },
                       React.createElement('button', {
                         onClick: () => setShowExportMenu(!showExportMenu),
                         className: "mg-btn-enhanced w-full px-4 py-3 rounded-xl transition-all text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2",
