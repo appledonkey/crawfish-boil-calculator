@@ -1358,9 +1358,9 @@
           const getActionButtonText = () => {
             const isMobile = windowWidth <= 640;
             switch (actionMode) {
-              case 'expand': return isMobile ? 'Expand' : 'Expand All';
-              case 'collapse': return isMobile ? 'Collapse' : 'Collapse All';
-              default: return isMobile ? 'Expand' : 'Expand All';
+              case 'expand': return isMobile ? '▼ All' : 'Expand All';
+              case 'collapse': return isMobile ? '▲ All' : 'Collapse All';
+              default: return isMobile ? '▼ All' : 'Expand All';
             }
           };
 
@@ -1390,9 +1390,9 @@
           const getItemButtonText = () => {
             const isMobile = windowWidth <= 640;
             switch (itemMode) {
-              case 'enable': return isMobile ? 'Enable' : 'Enable All';
-              case 'disable': return isMobile ? 'Disable' : 'Disable All';
-              default: return isMobile ? 'Enable' : 'Enable All';
+              case 'enable': return isMobile ? '✓ All' : 'Enable All';
+              case 'disable': return isMobile ? '✗ All' : 'Disable All';
+              default: return isMobile ? '✓ All' : 'Enable All';
             }
           };
 
@@ -2148,17 +2148,20 @@
                 input[type="range"] { height: 36px; }
                 .mobile-button-group { 
                   flex-direction: row; 
-                  gap: 0.25rem; 
+                  gap: 0.125rem; 
                   flex-wrap: nowrap;
                   justify-content: space-between;
                 }
                 .mobile-button-group button { 
                   flex: 1; 
                   min-width: 0; 
+                  max-width: none;
                   min-height: 44px; 
-                  font-size: 12px; 
-                  padding: 0.5rem 0.25rem; 
+                  font-size: 13px; 
+                  padding: 0.5rem 0.125rem; 
                   white-space: nowrap;
+                  overflow: visible;
+                  text-overflow: unset;
                 }
                 .mobile-category-header { padding: 0.5rem 0.25rem; }
                 .mobile-category-title { font-size: 1rem; min-height: 44px; }
