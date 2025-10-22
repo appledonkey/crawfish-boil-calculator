@@ -1819,7 +1819,7 @@
             
             return React.createElement('li', {
               key: `${keyPrefix}${index}`,
-              className: `bg-white/5 p-2 sm:p-3 rounded-lg flex items-center gap-2 sm:gap-3 mobile-item-row ${!isEnabled ? 'mg-item-disabled' : ''}`
+              className: `bg-white/5 p-2 rounded-lg flex items-center gap-2 mobile-item-row ${!isEnabled ? 'mg-item-disabled' : ''}`
             },
               React.createElement('button', {
                 className: buttonClasses,
@@ -1861,7 +1861,7 @@
                   }
                 })
               ),
-              React.createElement('div', { className: "flex-1 flex flex-col gap-1 sm:gap-2" },
+              React.createElement('div', { className: "flex-1 flex flex-col gap-1" },
                 React.createElement('span', { className: "mg-item-text" },
                   `${formatQuantity(item.qty, item.unit)} ${item.unit} ${item.name}`
                 )
@@ -2395,7 +2395,7 @@
             `),
 
             React.createElement('div', {
-              className: `font-body flex justify-center items-start p-1 sm:p-3`,
+              className: `font-body flex justify-center items-start p-1 sm:p-2`,
               style: { 
                 minHeight: '100vh', 
                 margin: 0, 
@@ -2414,7 +2414,7 @@
                   // Header
                   React.createElement('div', { className: "text-center mb-3" },
                     React.createElement('h1', {
-                      className: "font-display text-lg sm:text-xl md:text-2xl lg:text-3xl mg-gradient-text drop-shadow flex items-center justify-center gap-1 sm:gap-2 md:gap-3"
+                      className: "font-display text-lg sm:text-xl md:text-2xl lg:text-3xl mg-gradient-text drop-shadow flex items-center justify-center gap-1 sm:gap-1.5 md:gap-2"
                     }, 
                     React.createElement('span', { className: "text-xl sm:text-2xl md:text-3xl" }, "🦞"),
                     "CRAWFISH BOIL CALCULATOR",
@@ -2426,7 +2426,7 @@
                   React.createElement('div', { className: "mb-3" },
                     React.createElement('label', { className: "mg-label block mb-1.5" }, "Boil Style"),
                     React.createElement('div', { 
-                      className: "mg-toggle flex gap-1 sm:gap-2 p-1 rounded-xl",
+                      className: "mg-toggle flex gap-1 sm:gap-1.5 p-1 rounded-xl",
                       style: { background: 'rgba(255,255,255,0.05)' }
                     },
                       React.createElement('button', {
@@ -2583,12 +2583,12 @@
                     React.createElement('h2', { className: "font-display text-lg sm:text-xl md:text-2xl mg-gradient-text" }, "Shopping List")
                   ),
                   React.createElement('div', { className: "mt-3" },
-                    React.createElement('div', { className: "flex items-center justify-between mb-1.5 flex-col sm:flex-row gap-1.5 sm:gap-0" },
+                    React.createElement('div', { className: "flex items-center justify-between mb-1.5 flex-col sm:flex-row gap-1 sm:gap-0" },
                       React.createElement('div', {}), // Empty div to maintain layout
                       React.createElement('div', { className: "flex gap-2 flex-row mobile-button-group" },
                         React.createElement('button', {
                           onClick: handleCyclingAction,
-                          className: "mg-btn-enhanced px-3 py-2 sm:py-1 rounded-xl transition-all text-sm min-h-[44px] sm:min-h-auto font-semibold",
+                          className: "mg-btn-enhanced px-3 py-1.5 sm:py-1 rounded-xl transition-all text-sm min-h-[44px] sm:min-h-auto font-semibold",
                           style: {
                             background: `linear-gradient(135deg, var(--spice-light), var(--spice))`,
                             color: 'var(--theme-bg)',
@@ -2599,7 +2599,7 @@
                         }, getActionButtonText()),
                         React.createElement('button', {
                           onClick: handleItemCycling,
-                          className: "mg-btn-enhanced px-3 py-2 sm:py-1 rounded-xl transition-all text-sm min-h-[44px] sm:min-h-auto font-semibold",
+                          className: "mg-btn-enhanced px-3 py-1.5 sm:py-1 rounded-xl transition-all text-sm min-h-[44px] sm:min-h-auto font-semibold",
                           style: {
                             background: 'var(--theme-accent)',
                             color: 'var(--theme-text)',
@@ -2610,7 +2610,7 @@
                         }, getItemButtonText()),
                         React.createElement('button', {
                           onClick: handleResetItems,
-                          className: "mg-btn-enhanced px-3 py-2 sm:py-1 rounded-xl transition-all text-sm min-h-[44px] sm:min-h-auto font-semibold",
+                          className: "mg-btn-enhanced px-3 py-1.5 sm:py-1 rounded-xl transition-all text-sm min-h-[44px] sm:min-h-auto font-semibold",
                           style: {
                             background: '#DC2626',
                             color: 'white',
