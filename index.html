@@ -2170,7 +2170,25 @@
                 .mg-input-enhanced { padding: 10px 12px; font-size: 16px; }
                 
                 /* Compact sliders */
-                input[type="range"] { margin: 0.25rem 0; }
+                input[type="range"] { 
+                  margin: 0.25rem 0; 
+                  height: 24px !important;
+                }
+                
+                .mg-slider { 
+                  height: 4px !important; 
+                  box-shadow: 0 0 4px var(--spice-20) !important;
+                }
+                
+                .mg-slider::-webkit-slider-thumb {
+                  width: 16px !important; 
+                  height: 16px !important;
+                }
+                
+                .mg-slider::-moz-range-thumb {
+                  width: 16px !important; 
+                  height: 16px !important;
+                }
                 
                 /* Smaller text on mobile for better density */
                 .mg-label { font-size: 14px; }
