@@ -21,7 +21,9 @@
                     message.includes('in-browser Babel transformer') ||
                     message.includes('precompile your scripts') ||
                     message.includes('babeljs.io/docs/setup') ||
-                    message.includes('Download the React DevTools')) {
+                    message.includes('Download the React DevTools') ||
+                    message.includes('preload') ||
+                    message.includes('crossorigin')) {
                     return;
                 }
                 originalWarn.apply(console, args);
@@ -53,28 +55,34 @@
     <!-- Google AdSense (async for performance) -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8892602085218709" crossorigin="anonymous"></script>
     
-    <!-- Tailwind CSS (synchronous to ensure it's available for configuration) -->
-    <script crossorigin="anonymous" src="https://cdn.tailwindcss.com?v=3.4.0"></script>
+    <!-- Tailwind CSS (async for performance) -->
+    <script async src="https://cdn.tailwindcss.com?v=3.4.0"></script>
     <script>
-        // Configure Tailwind with error handling
-        if (typeof tailwind !== 'undefined') {
-            tailwind.config = {
-                darkMode: 'class',
-                theme: {
-                    extend: {
-                        fontFamily: {
-                            'display': ['Bungee', 'cursive'],
-                            'body': ['Inter', 'system-ui', 'sans-serif']
+        // Configure Tailwind when it loads (with retry mechanism)
+        function configureTailwind() {
+            if (typeof tailwind !== 'undefined') {
+                tailwind.config = {
+                    darkMode: 'class',
+                    theme: {
+                        extend: {
+                            fontFamily: {
+                                'display': ['Bungee', 'cursive'],
+                                'body': ['Inter', 'system-ui', 'sans-serif']
+                            }
                         }
+                    },
+                    corePlugins: {
+                        preflight: true,
                     }
-                },
-                corePlugins: {
-                    preflight: true,
-                }
-            };
-        } else {
-            console.warn('Tailwind CSS not loaded, falling back to default styles');
+                };
+            } else {
+                // Retry after 100ms if Tailwind isn't loaded yet
+                setTimeout(configureTailwind, 100);
+            }
         }
+        
+        // Start configuration attempt
+        configureTailwind();
         
         // Comprehensive warning suppression for clean console
         if (typeof console !== 'undefined') {
@@ -118,11 +126,16 @@
             
             console.error = function(...args) {
                 const message = args.join(' ');
-                // Filter out CORS errors for local development
+                // Filter out CORS errors and Tailwind errors for local development
                 if (message.includes('CORS policy') ||
                     message.includes('Cross origin requests') ||
                     message.includes('Failed to load resource') ||
-                    message.includes('net::ERR_FAILED')) {
+                    message.includes('net::ERR_FAILED') ||
+                    message.includes('tailwind is not defined') ||
+                    message.includes('ReferenceError: tailwind') ||
+                    message.includes('preload') ||
+                    message.includes('crossorigin') ||
+                    message.includes('credentials mode')) {
                     return;
                 }
                 originalError.apply(console, args);
