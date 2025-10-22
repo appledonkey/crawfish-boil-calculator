@@ -1280,6 +1280,7 @@
           const [musicSectionExpanded, setMusicSectionExpanded] = useState(false);
           const [isInitialized, setIsInitialized] = useState(false);
           const [actionMode, setActionMode] = useState('expand'); // 'expand', 'collapse', 'reset'
+          const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1024);
           const [categoryExpanded, setCategoryExpanded] = useState({
             'must-have': true,  // Core essentials - only category expanded by default
             'seasonings': false,
@@ -1353,12 +1354,13 @@
             }
           };
 
-          // Get button text based on current mode
+          // Get button text based on current mode with mobile-friendly versions
           const getActionButtonText = () => {
+            const isMobile = windowWidth <= 640;
             switch (actionMode) {
-              case 'expand': return 'Expand All';
-              case 'collapse': return 'Collapse All';
-              default: return 'Expand All';
+              case 'expand': return isMobile ? 'Expand' : 'Expand All';
+              case 'collapse': return isMobile ? 'Collapse' : 'Collapse All';
+              default: return isMobile ? 'Expand' : 'Expand All';
             }
           };
 
@@ -1386,10 +1388,11 @@
           };
 
           const getItemButtonText = () => {
+            const isMobile = windowWidth <= 640;
             switch (itemMode) {
-              case 'enable': return 'Enable All';
-              case 'disable': return 'Disable All';
-              default: return 'Enable All';
+              case 'enable': return isMobile ? 'Enable' : 'Enable All';
+              case 'disable': return isMobile ? 'Disable' : 'Disable All';
+              default: return isMobile ? 'Enable' : 'Enable All';
             }
           };
 
@@ -1454,6 +1457,16 @@
             ['--spice-18']: hexToRgba(spiceColor, 0.18),
             ['--spice-15']: hexToRgba(spiceColor, 0.15)
           };
+
+          // Handle window resize for responsive button text
+          useEffect(() => {
+            const handleResize = () => {
+              setWindowWidth(window.innerWidth);
+            };
+            
+            window.addEventListener('resize', handleResize);
+            return () => window.removeEventListener('resize', handleResize);
+          }, []);
 
           // Geolocation detection with localStorage persistence
           useEffect(() => {
@@ -2143,11 +2156,9 @@
                   flex: 1; 
                   min-width: 0; 
                   min-height: 44px; 
-                  font-size: 11px; 
-                  padding: 0.5rem 0.125rem; 
+                  font-size: 12px; 
+                  padding: 0.5rem 0.25rem; 
                   white-space: nowrap;
-                  overflow: hidden;
-                  text-overflow: ellipsis;
                 }
                 .mobile-category-header { padding: 0.5rem 0.25rem; }
                 .mobile-category-title { font-size: 1rem; min-height: 44px; }
