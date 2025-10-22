@@ -29,11 +29,11 @@
         })();
     </script>
     
-    <!-- Preload critical resources for faster loading -->
-    <link rel="preload" href="https://unpkg.com/react@18/umd/react.production.min.js" as="script">
-    <link rel="preload" href="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" as="script">
-    <link rel="preload" href="https://unpkg.com/@babel/standalone@7/babel.min.js" as="script">
-    <link rel="preload" href="https://cdn.tailwindcss.com?v=3.4.0" as="script">
+    <!-- Preload critical resources with matching crossorigin attributes -->
+    <link rel="preload" href="https://unpkg.com/react@18/umd/react.production.min.js" as="script" crossorigin="anonymous">
+    <link rel="preload" href="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js" as="script" crossorigin="anonymous">
+    <link rel="preload" href="https://unpkg.com/@babel/standalone@7/babel.min.js" as="script" crossorigin="anonymous">
+    <link rel="preload" href="https://cdn.tailwindcss.com?v=3.4.0" as="script" crossorigin="anonymous">
     
     <!-- Preconnect to external domains for faster DNS resolution -->
     <link rel="preconnect" href="https://unpkg.com" crossorigin>
@@ -44,32 +44,36 @@
     <link rel="preconnect" href="https://googleads.g.doubleclick.net" crossorigin>
     
     <!-- Use production React builds (synchronous for dependency order) -->
-    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
-    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
     
     <!-- Use minified Babel (synchronous for dependency order) -->
-    <script src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
+    <script crossorigin="anonymous" src="https://unpkg.com/@babel/standalone@7/babel.min.js"></script>
     
     <!-- Google AdSense (async for performance) -->
     <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8892602085218709" crossorigin="anonymous"></script>
     
-    <!-- Tailwind CSS (can be async as it's not critical for initial render) -->
-    <script async src="https://cdn.tailwindcss.com?v=3.4.0"></script>
+    <!-- Tailwind CSS (synchronous to ensure it's available for configuration) -->
+    <script crossorigin="anonymous" src="https://cdn.tailwindcss.com?v=3.4.0"></script>
     <script>
-        // Configure Tailwind
-        tailwind.config = {
-            darkMode: 'class',
-            theme: {
-                extend: {
-                    fontFamily: {
-                        'display': ['Bungee', 'cursive'],
-                        'body': ['Inter', 'system-ui', 'sans-serif']
+        // Configure Tailwind with error handling
+        if (typeof tailwind !== 'undefined') {
+            tailwind.config = {
+                darkMode: 'class',
+                theme: {
+                    extend: {
+                        fontFamily: {
+                            'display': ['Bungee', 'cursive'],
+                            'body': ['Inter', 'system-ui', 'sans-serif']
+                        }
                     }
+                },
+                corePlugins: {
+                    preflight: true,
                 }
-            },
-            corePlugins: {
-                preflight: true,
-            }
+            };
+        } else {
+            console.warn('Tailwind CSS not loaded, falling back to default styles');
         }
         
         // Comprehensive warning suppression for clean console
@@ -105,6 +109,7 @@
                 if (message.includes('Babel') ||
                     message.includes('Transform') ||
                     message.includes('[CrawfishBoilCalculator] tests passed') ||
+                    message.includes('Tailwind CSS not loaded') ||
                     message.includes('Tailwind CSS')) {
                     return;
                 }
