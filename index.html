@@ -100,24 +100,27 @@
         const getEquipmentSize = (crawfishLbs) => {
           if (crawfishLbs <= 30) {
             return {
-              burnerSize: 'Crawfish Boiler Kit (30-40qt)',
+              burnerSize: 'Small Crawfish Boiler Kit (30-40qt pot)',
               burnerPrice: 85.00,
               propaneTanks: 1,
-              capacity: '4-8 people'
+              capacity: '4-8 people',
+              searchTerm: 'crawfish boil burner pot kit 30 quart'
             };
           } else if (crawfishLbs <= 60) {
             return {
-              burnerSize: 'Crawfish Boiler Kit (60-80qt)',  
+              burnerSize: 'Medium Crawfish Boiler Kit (60-80qt pot)',  
               burnerPrice: 150.00,
               propaneTanks: 2,
-              capacity: '8-20 people'
+              capacity: '8-20 people',
+              searchTerm: 'crawfish boil burner pot kit 60 quart'
             };
           } else {
             return {
-              burnerSize: 'Commercial Crawfish Boiler Kit (100qt+)',
+              burnerSize: 'Large Commercial Crawfish Boiler Kit (100qt+ pot)',
               burnerPrice: 250.00,
               propaneTanks: 3,
-              capacity: '20+ people'
+              capacity: '20+ people',
+              searchTerm: 'commercial crawfish boil burner pot kit 100 quart'
             };
           }
         };
@@ -145,8 +148,8 @@
                 { name: 'Andouille Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'sausage' },
                 { name: 'Crawfish Boil Dry Seasoning', unit: 'oz', ratio: 'crawfishLbs * 1.6', min: 8, priceKey: 'cajunSeasoning' },
                 { name: 'Salt', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'salt' },
-                { name: 'Lemon Juice', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 3.50 },
-                { name: 'White Vinegar', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 2.50 },
+                { name: 'Lemon Juice', unit: 'oz', ratio: 'Math.ceil(peopleCount * 2)', min: 16, price: 0.20 },
+                { name: 'White Vinegar', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1.5)', min: 16, price: 0.15 },
                 { name: 'Corn on the Cob', unit: 'ears', ratio: 'peopleCount * 3', min: 12, priceKey: 'corn' },
                 { name: 'Red Potatoes', unit: 'lbs', ratio: 'crawfishLbs * 0.4', min: 2, priceKey: 'redPotatoes' },
                 { name: 'Yellow Onions', unit: 'lbs', ratio: 'crawfishLbs * 0.15', min: 1, priceKey: 'onions' },
@@ -154,32 +157,32 @@
                 { name: 'Lemons', unit: 'count', ratio: 'Math.ceil(peopleCount / 2)', min: 3, priceKey: 'lemons' }
               ]
             },
-            'seasonings-aromatics': {
+            'seasonings': {
               title: 'Seasonings & Aromatics',
               items: [
-                { name: 'Liquid Boil Concentrate', unit: 'bottles', ratio: 'Math.ceil(crawfishLbs / 30)', min: 1, price: 6.50, amazonSearch: 'crawfish boil liquid concentrate' },
-                { name: 'Cajun Seasoning (Table)', unit: 'oz', ratio: 'peopleCount * 0.5', min: 4, priceKey: 'cajunSeasoning', amazonSearch: 'crawfish boil seasoning' },
                 { name: 'Bay Leaves', unit: 'oz', ratio: 'Math.ceil(crawfishLbs / 20)', min: 1, price: 2.50, amazonSearch: 'crawfish boil bay leaves' },
-                { name: 'Butter (for serving)', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 6.00 }
+                { name: 'Butter (for serving)', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 6.00 },
+                { name: 'Cajun Seasoning (Table)', unit: 'oz', ratio: 'peopleCount * 0.5', min: 4, priceKey: 'cajunSeasoning', amazonSearch: 'crawfish boil seasoning' },
+                { name: 'Liquid Boil Concentrate', unit: 'oz', ratio: 'Math.ceil(crawfishLbs * 4)', min: 32, price: 0.20, amazonSearch: 'crawfish boil liquid concentrate' },
+                { name: 'Oranges', unit: 'count', ratio: 'Math.ceil(peopleCount / 2)', min: 2, price: 0.75 }
               ]
             },
-            'extra-proteins': {
-              title: 'Extra Proteins & Seafood',
+            'proteins-seafood': {
+              title: 'Proteins & Seafood',
               items: [
-                { name: 'Boudin Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
-                { name: 'Shrimp (Medium-Large)', unit: 'lbs', ratio: 'peopleCount * 0.4', min: 2, price: 12.00 },
                 { name: 'Blue Crab or Snow Crab', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 18.00 },
-                { name: 'Mussels', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.50 }
+                { name: 'Boudin Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
+                { name: 'Mussels', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.50 },
+                { name: 'Shrimp (Medium-Large)', unit: 'lbs', ratio: 'peopleCount * 0.4', min: 2, price: 12.00 }
               ]
             },
-            'vegetables-sides': {
-              title: 'Extra Vegetables & Sides',
+            'vegetables': {
+              title: 'Vegetables',
               items: [
+                { name: 'Artichoke Hearts', unit: 'count', ratio: 'Math.ceil(peopleCount / 4)', min: 2, price: 1.25 },
                 { name: 'Button Mushrooms', unit: 'lbs', ratio: 'peopleCount * 0.2', min: 1, price: 4.50 },
                 { name: 'Celery', unit: 'bunches', ratio: 'Math.ceil(peopleCount / 8)', min: 1, price: 2.50 },
-                { name: 'Orange Halves', unit: 'count', ratio: 'Math.ceil(peopleCount / 3)', min: 2, price: 0.75 },
-                { name: 'Green Beans', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 3.50 },
-                { name: 'Artichoke Hearts', unit: 'count', ratio: 'Math.ceil(peopleCount / 4)', min: 2, price: 1.25 }
+                { name: 'Green Beans', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 3.50 }
               ]
             },
             
@@ -187,65 +190,59 @@
             'equipment-tools': {
               title: 'Cooking Equipment & Tools',
               items: [
-                { name: 'DYNAMIC_BURNER_COMBO', unit: 'set', ratio: '1', min: 1, price: 'DYNAMIC_PRICE', isDynamic: true, amazonSearch: 'crawfish boil kit burner pot' },
-                { name: 'Propane Tanks (20lb)', unit: 'tanks', ratio: 'DYNAMIC_PROPANE_TANKS', min: 1, price: 55.00, isDynamic: true, amazonSearch: 'propane tank 20lb outdoor cooking' },
-                { name: 'Long-handled Paddle', unit: 'count', ratio: 'Math.ceil(crawfishLbs / 40)', min: 1, price: 30.00, amazonSearch: 'crawfish boil paddle stirring' },
-                { name: 'Heat-resistant Gloves', unit: 'pairs', ratio: 'Math.ceil(crawfishLbs / 30)', min: 2, price: 15.00, amazonSearch: 'heat resistant gloves crawfish boil' },
                 { name: 'Crawfish Tongs', unit: 'pairs', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 12.00, amazonSearch: 'crawfish tongs seafood' },
-                { name: 'Long Mesh Skimmer', unit: 'count', ratio: 'Math.ceil(crawfishLbs / 35)', min: 1, price: 18.00, amazonSearch: 'long handle mesh skimmer strainer crawfish boil' },
                 { name: 'Crawfish Washer/Basket', unit: 'count', ratio: 'Math.ceil(crawfishLbs / 40)', min: 1, price: 55.00, amazonSearch: 'crawfish washing machine basket seafood cleaner' },
+                { name: 'Crawfish Boiler Kit (Size Auto-Selected)', unit: 'set', ratio: '1', min: 1, price: 150.00, isDynamic: true, amazonSearch: 'crawfish boil kit burner pot' },
+                { name: 'Fire Extinguisher', unit: 'count', ratio: '1', min: 1, price: 35.00, amazonSearch: 'fire extinguisher kitchen' },
+                { name: 'Heat-resistant Gloves', unit: 'pairs', ratio: 'Math.ceil(crawfishLbs / 30)', min: 2, price: 15.00, amazonSearch: 'heat resistant gloves crawfish boil' },
                 { name: 'Hose with Spray Nozzle', unit: 'count', ratio: '1', min: 1, price: 45.00, amazonSearch: 'hose spray nozzle' },
-                { name: 'Fire Extinguisher', unit: 'count', ratio: '1', min: 1, price: 35.00, amazonSearch: 'fire extinguisher kitchen' }
+                { name: 'Long Mesh Skimmer', unit: 'count', ratio: 'Math.ceil(crawfishLbs / 35)', min: 1, price: 18.00, amazonSearch: 'long handle mesh skimmer strainer crawfish boil' },
+                { name: 'Long-handled Paddle', unit: 'count', ratio: 'Math.ceil(crawfishLbs / 40)', min: 1, price: 30.00, amazonSearch: 'crawfish boil paddle stirring' },
+                { name: 'Propane Tank (20lb)', unit: '', ratio: 'DYNAMIC_PROPANE_TANKS', min: 1, price: 55.00, isDynamic: true, amazonSearch: 'propane tank 20lb outdoor cooking' }
               ]
             },
-            'table-setup': {
+            'serving-party-setup': {
               title: 'Serving & Party Setup',
               items: [
-                { name: 'Folding Tables', unit: 'count', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 95.00, amazonSearch: 'folding table outdoor' },
-                { name: 'Folding Chairs', unit: 'count', ratio: 'peopleCount * 1.1', min: 8, price: 35.00, amazonSearch: 'folding chairs outdoor' },
-                { name: 'Table Covers/Butcher Paper', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 12)', min: 2, price: 12.00, amazonSearch: 'butcher paper roll' },
-                { name: 'Shade Tents/Canopies', unit: 'count', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 120.00, amazonSearch: 'pop up canopy tent' },
-                { name: 'Extension Cords', unit: 'count', ratio: 'Math.ceil(peopleCount / 30)', min: 2, price: 35.00, amazonSearch: 'heavy duty extension cord outdoor' },
-                { name: 'Coolers (Food Storage)', unit: 'count', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 85.00 }
-              ]
-            },
-            'eating-supplies': {
-              title: 'Eating Supplies',
-              items: [
-                { name: 'Paper or Plastic Plates', unit: '', ratio: 'peopleCount * 3', min: 10, price: 0.15, amazonSearch: 'disposable paper plates party' },
-                { name: 'Plastic Utensils', unit: '', ratio: 'peopleCount * 1.5', min: 10, price: 0.25, amazonSearch: 'disposable plastic utensils party' },
-                { name: 'Napkins', unit: 'packs', ratio: 'Math.ceil(peopleCount / 15)', min: 3, price: 4.00, amazonSearch: 'party napkins disposable' },
-                { name: 'Wet Wipes or Baby Wipes', unit: 'packs', ratio: 'Math.ceil(peopleCount / 6)', min: 3, price: 3.00, amazonSearch: 'wet wipes baby wipes party' },
-                { name: 'Paper Towels', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 2.50, amazonSearch: 'paper towels rolls party' },
                 { name: 'Butter Cups or Dipping Cups', unit: '', ratio: 'peopleCount * 2', min: 10, price: 0.10, amazonSearch: 'dipping cups sauce containers disposable' },
+                { name: 'Coolers (Food & Beverage Storage)', unit: 'count', ratio: 'Math.ceil(peopleCount / 12)', min: 3, price: 75.00, amazonSearch: 'cooler ice chest outdoor party' },
                 { name: 'Disposable Cups', unit: '', ratio: 'peopleCount * 4', min: 20, price: 0.08, amazonSearch: 'disposable cups party plastic' },
-                { name: 'To-go Containers or Zip-top Bags', unit: '', ratio: 'Math.ceil(peopleCount / 3)', min: 10, price: 0.75, amazonSearch: 'takeout containers disposable food storage' }
+                { name: 'Extension Cords', unit: 'count', ratio: 'Math.ceil(peopleCount / 30)', min: 2, price: 35.00, amazonSearch: 'heavy duty extension cord outdoor' },
+                { name: 'Folding Chairs', unit: 'count', ratio: 'peopleCount * 1.1', min: 8, price: 35.00, amazonSearch: 'folding chairs outdoor' },
+                { name: 'Folding Tables', unit: 'count', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 95.00, amazonSearch: 'folding table outdoor' },
+                { name: 'Napkins', unit: 'packs', ratio: 'Math.ceil(peopleCount / 15)', min: 3, price: 4.00, amazonSearch: 'party napkins disposable' },
+                { name: 'Paper or Plastic Plates', unit: '', ratio: 'peopleCount * 3', min: 10, price: 0.15, amazonSearch: 'disposable paper plates party' },
+                { name: 'Paper Towels', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 2.50, amazonSearch: 'paper towels rolls party' },
+                { name: 'Plastic Utensils', unit: '', ratio: 'peopleCount * 1.5', min: 10, price: 0.25, amazonSearch: 'disposable plastic utensils party' },
+                { name: 'Shade Tents/Canopies', unit: 'count', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 120.00, amazonSearch: 'pop up canopy tent' },
+                { name: 'Table Covers/Butcher Paper', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 12)', min: 2, price: 12.00, amazonSearch: 'butcher paper roll' },
+                { name: 'To-go Containers or Zip-top Bags', unit: '', ratio: 'Math.ceil(peopleCount / 3)', min: 10, price: 0.75, amazonSearch: 'takeout containers disposable food storage' },
+                { name: 'Wet Wipes or Baby Wipes', unit: 'packs', ratio: 'Math.ceil(peopleCount / 6)', min: 3, price: 3.00, amazonSearch: 'wet wipes baby wipes party' }
               ]
             },
-            'sides-condiments': {
+            'side-dishes-condiments': {
               title: 'Side Dishes & Condiments',
               items: [
-                { name: 'French Bread/Garlic Bread', unit: 'loaves', ratio: 'Math.ceil(peopleCount / 5)', min: 2, price: 4.50 },
+                { name: 'Cocktail Sauce', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1.5)', min: 12, price: 0.45, amazonSearch: 'crawfish boil cocktail sauce' },
                 { name: 'Coleslaw', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 4.50 },
+                { name: 'Extra Garlic Butter', unit: 'lbs', ratio: 'peopleCount * 0.08', min: 1, price: 7.00, amazonSearch: 'crawfish boil garlic butter' },
+                { name: 'French Bread/Garlic Bread', unit: 'loaves', ratio: 'Math.ceil(peopleCount / 5)', min: 2, price: 4.50 },
+                { name: 'Hot Sauce (Variety)', unit: 'oz', ratio: 'Math.ceil(peopleCount * 2)', min: 10, price: 0.45, amazonSearch: 'crawfish boil hot sauce' },
                 { name: 'Potato Salad', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 5.50 },
-                { name: 'Hot Sauce (Variety)', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 6)', min: 2, price: 4.50, amazonSearch: 'crawfish boil hot sauce' },
-                { name: 'Cocktail Sauce', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 12)', min: 1, price: 5.50, amazonSearch: 'crawfish boil cocktail sauce' },
-                { name: 'Remoulade', unit: 'jars', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 6.50, amazonSearch: 'crawfish boil remoulade sauce' },
-                { name: 'Extra Garlic Butter', unit: 'lbs', ratio: 'peopleCount * 0.08', min: 0.5, price: 7.00, amazonSearch: 'crawfish boil garlic butter' }
+                { name: 'Remoulade', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1)', min: 8, price: 0.80, amazonSearch: 'crawfish boil remoulade sauce' }
               ]
             },
             'beverages': {
               title: 'Beverages',
               items: [
                 { name: 'Beer', unit: 'bottles', ratio: 'peopleCount * 3', min: 12, price: 2.50 },
-                { name: 'Soft Drinks or Soda', unit: 'cans', ratio: 'peopleCount * 2', min: 12, price: 0.75 },
+                { name: 'Bottle Openers', unit: 'count', ratio: 'Math.ceil(peopleCount / 25)', min: 2, price: 8.00 },
                 { name: 'Bottled Water', unit: 'bottles', ratio: 'peopleCount * 1.5', min: 12, price: 1.25 },
-                { name: 'Sweet Tea or Lemonade', unit: 'gallons', ratio: 'Math.ceil(peopleCount / 6)', min: 1, price: 5.00 },
-                { name: 'Ice', unit: 'bags', ratio: 'Math.ceil(peopleCount / 4)', min: 3, price: 4.50 },
                 { name: 'Hard Seltzer or Cider', unit: 'cans', ratio: 'peopleCount * 1.5', min: 6, price: 3.00 },
+                { name: 'Ice', unit: 'bags', ratio: 'Math.ceil(peopleCount / 4)', min: 3, price: 4.50 },
+                { name: 'Soft Drinks or Soda', unit: 'cans', ratio: 'peopleCount * 2', min: 12, price: 0.75 },
                 { name: 'Spirits or Mixers', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 12)', min: 1, price: 35.00 },
-                { name: 'Drink Coolers', unit: 'count', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 65.00 },
-                { name: 'Bottle Openers', unit: 'count', ratio: 'Math.ceil(peopleCount / 25)', min: 2, price: 8.00 }
+                { name: 'Sweet Tea or Lemonade', unit: 'gallons', ratio: 'Math.ceil(peopleCount / 6)', min: 1, price: 5.00 }
               ]
             },
             'desserts': {
@@ -253,48 +250,46 @@
               items: [
                 { name: 'Bread Pudding', unit: 'servings', ratio: 'peopleCount * 0.8', min: 6, price: 3.00 },
                 { name: 'Brownies or Cookies', unit: 'dozen', ratio: 'Math.ceil(peopleCount / 4)', min: 2, price: 8.00 },
-                { name: 'King Cake', unit: 'cakes', ratio: 'Math.ceil(peopleCount / 12)', min: 0, price: 25.00 },
-                { name: 'Fruit Tray or Fresh Berries', unit: 'trays', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 20.00 }
+                { name: 'Fruit Tray or Fresh Berries', unit: 'trays', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 20.00 },
+                { name: 'King Cake', unit: '', ratio: 'Math.ceil(peopleCount / 12)', min: 0, price: 25.00 }
               ]
             },
             'cleanup-waste': {
               title: 'Cleanup & Waste',
               items: [
-                { name: 'Trash Cans', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 25.00, amazonSearch: 'outdoor trash can with lid' },
+                { name: 'Cleaning Rags or Towels', unit: 'packs', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 3.00, amazonSearch: 'cleaning rags pack outdoor' },
+                { name: 'Cleaning Solution', unit: 'oz', ratio: 'peopleCount * 4', min: 32, price: 0.12, amazonSearch: 'bleach cleaning solution outdoor' },
                 { name: 'Heavy-duty Trash Bags', unit: 'boxes', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 12.00, amazonSearch: 'heavy duty trash bags outdoor' },
                 { name: 'Recycling Bins', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 20.00, amazonSearch: 'outdoor recycling bin' },
                 { name: 'Shell Waste Buckets', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 12.00, amazonSearch: 'waste bucket seafood shells' },
-                { name: 'Cleaning Rags or Towels', unit: 'packs', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 3.00, amazonSearch: 'cleaning rags pack outdoor' },
-                { name: 'Bleach or Cleaning Solution', unit: 'bottles', ratio: '2', min: 2, price: 4.00, amazonSearch: 'bleach cleaning solution outdoor' },
                 { name: 'Table Scrub Brushes', unit: '', ratio: '2', min: 2, price: 8.00, amazonSearch: 'scrub brush cleaning outdoor table' },
-                { name: 'Hose or Rinse Station', unit: '', ratio: '1', min: 1, price: 50.00, amazonSearch: 'outdoor rinse station hose setup' }
+                { name: 'Trash Cans', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 25.00, amazonSearch: 'outdoor trash can with lid' }
               ]
             },
             'comfort-safety': {
               title: 'Comfort & Safety',
               items: [
-                { name: 'Bug Spray', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 6.00, amazonSearch: 'bug spray insect repellent outdoor' },
+                { name: 'Bug Spray', unit: 'oz', ratio: 'Math.ceil(peopleCount * 2)', min: 12, price: 0.50, amazonSearch: 'bug spray insect repellent outdoor' },
                 { name: 'Citronella Candles or Torches', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00, amazonSearch: 'citronella candles outdoor torches' },
-                { name: 'Sunscreen', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00, amazonSearch: 'sunscreen spf outdoor sports' },
-                { name: 'Hand Sanitizer', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 4.00, amazonSearch: 'hand sanitizer bottles travel size' },
-                { name: 'First Aid Kit', unit: 'kits', ratio: '1', min: 1, price: 25.00, amazonSearch: 'first aid kit outdoor camping' }
+                { name: 'First Aid Kit', unit: 'kits', ratio: '1', min: 1, price: 25.00, amazonSearch: 'first aid kit outdoor camping' },
+                { name: 'Hand Sanitizer', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1)', min: 8, price: 0.50, amazonSearch: 'hand sanitizer bottles travel size' },
+                { name: 'Sunscreen', unit: 'oz', ratio: 'Math.ceil(peopleCount * 2)', min: 8, price: 1.00, amazonSearch: 'sunscreen spf outdoor sports' }
               ]
             },
             'entertainment-lighting': {
               title: 'Entertainment & Lighting',
               items: [
+                { name: 'Beer Pong or Flip Cup Table', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 60.00, amazonSearch: 'beer pong table folding outdoor' },
                 { name: 'Bluetooth Speaker or PA System', unit: '', ratio: 'Math.ceil(peopleCount / 30)', min: 1, price: 120.00, amazonSearch: 'bluetooth speaker outdoor waterproof' },
                 { name: 'Cornhole Set', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 45.00, amazonSearch: 'cornhole bean bag toss game set' },
-                { name: 'Ladder Toss', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 35.00, amazonSearch: 'ladder toss ball game outdoor' },
+                { name: 'Football', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 8.00, amazonSearch: 'football outdoor recreation' },
+                { name: 'Frisbee', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 5.00, amazonSearch: 'frisbee disc outdoor ultimate' },
                 { name: 'Giant Jenga', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 40.00, amazonSearch: 'giant jenga outdoor yard game' },
                 { name: 'Horseshoe Set', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 30.00, amazonSearch: 'horseshoe game set outdoor' },
-                { name: 'Frisbee', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 5.00, amazonSearch: 'frisbee disc outdoor ultimate' },
-                { name: 'Football', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 8.00, amazonSearch: 'football outdoor recreation' },
                 { name: 'Kubb', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 50.00, amazonSearch: 'kubb viking chess outdoor game' },
-                { name: 'Beer Pong or Flip Cup Table', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 60.00, amazonSearch: 'beer pong table folding outdoor' },
+                { name: 'Ladder Toss', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 35.00, amazonSearch: 'ladder toss ball game outdoor' },
                 { name: 'String Lights or Lanterns', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 15.00, amazonSearch: 'string lights outdoor patio' },
-                { name: 'Tarp or Ground Cover', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 25.00, amazonSearch: 'tarp ground cover outdoor camping' },
-                { name: 'Leftover Storage Coolers', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 50.00, amazonSearch: 'cooler ice chest food storage' }
+                { name: 'Tarp or Ground Cover', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 25.00, amazonSearch: 'tarp ground cover outdoor camping' }
               ]
             }
           },
@@ -308,8 +303,8 @@
                 { name: 'Andouille Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
                 { name: 'Crawfish Boil Dry Seasoning', unit: 'oz', ratio: 'crawfishLbs * 1.2', min: 6, priceKey: 'cajunSeasoning' },
                 { name: 'Salt', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'salt' },
-                { name: 'Lemon Juice', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 3.50 },
-                { name: 'Rice Vinegar', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 3.00 },
+                { name: 'Lemon Juice', unit: 'oz', ratio: 'Math.ceil(peopleCount * 2)', min: 16, price: 0.20 },
+                { name: 'Rice Vinegar', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1.5)', min: 12, price: 0.25 },
                 { name: 'Corn on the Cob', unit: 'ears', ratio: 'peopleCount * 3', min: 12, priceKey: 'corn' },
                 { name: 'Red Potatoes', unit: 'lbs', ratio: 'crawfishLbs * 0.4', min: 2, priceKey: 'redPotatoes' },
                 { name: 'Yellow Onions', unit: 'lbs', ratio: 'crawfishLbs * 0.15', min: 1, priceKey: 'onions' },
@@ -319,20 +314,21 @@
                 { name: 'Lemongrass', unit: 'stalks', ratio: 'Math.ceil(crawfishLbs / 15)', min: 3, priceKey: 'lemongrass' }
               ]
             },
-            'seasonings-aromatics': {
+            'seasonings': {
               title: 'Seasonings & Aromatics',
               items: [
-                { name: 'Liquid Boil Concentrate', unit: 'bottles', ratio: 'Math.ceil(crawfishLbs / 30)', min: 1, price: 6.50 },
-                { name: 'Vietnamese Seasoning Mix', unit: 'oz', ratio: 'peopleCount * 0.4', min: 4, priceKey: 'cajunSeasoning' },
-                { name: 'Green Onions/Scallions', unit: 'bunches', ratio: 'peopleCount * 0.3', min: 2, price: 2.00 },
-                { name: 'Thai Chilies', unit: 'oz', ratio: 'peopleCount * 0.15', min: 1, price: 3.50 },
-                { name: 'Cilantro', unit: 'bunches', ratio: 'peopleCount * 0.2', min: 2, price: 2.50 },
                 { name: 'Bay Leaves', unit: 'oz', ratio: 'Math.ceil(crawfishLbs / 20)', min: 1, price: 2.50 },
+                { name: 'Cilantro', unit: 'bunches', ratio: 'peopleCount * 0.2', min: 2, price: 2.50 },
+                { name: 'Green Onions/Scallions', unit: 'bunches', ratio: 'peopleCount * 0.3', min: 2, price: 2.00 },
+                { name: 'Liquid Boil Concentrate', unit: 'oz', ratio: 'Math.ceil(crawfishLbs * 4)', min: 32, price: 0.20 },
+                { name: 'Oranges', unit: 'count', ratio: 'Math.ceil(peopleCount / 2)', min: 2, price: 0.75 },
+                { name: 'Thai Chilies', unit: 'oz', ratio: 'peopleCount * 0.15', min: 1, price: 3.50 },
+                { name: 'Vietnamese Seasoning Mix', unit: 'oz', ratio: 'peopleCount * 0.4', min: 4, priceKey: 'cajunSeasoning' },
                 { name: 'Butter (for serving)', unit: 'lbs', ratio: 'peopleCount * 0.12', min: 1, price: 6.00 }
               ]
             },
-            'extra-proteins': {
-              title: 'Extra Proteins & Seafood',
+            'proteins-seafood': {
+              title: 'Proteins & Seafood',
               items: [
                 { name: 'Boudin Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
                 { name: 'Shrimp (Large)', unit: 'lbs', ratio: 'peopleCount * 0.45', min: 2, price: 12.00 },
@@ -340,30 +336,29 @@
                 { name: 'Mussels', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.50 }
               ]
             },
-            'vegetables-sides': {
-              title: 'Extra Vegetables & Sides',
+            'vegetables': {
+              title: 'Vegetables',
               items: [
+                { name: 'Artichoke Hearts', unit: 'count', ratio: 'Math.ceil(peopleCount / 4)', min: 2, price: 1.25 },
                 { name: 'Asian Mushrooms', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 1, price: 5.50 },
-                { name: 'Chinese Broccoli', unit: 'bunches', ratio: 'Math.ceil(peopleCount / 6)', min: 1, price: 3.00 },
                 { name: 'Baby Bok Choy', unit: 'heads', ratio: 'peopleCount * 0.5', min: 4, price: 1.25 },
-                { name: 'Artichoke Hearts', unit: 'count', ratio: 'Math.ceil(peopleCount / 4)', min: 2, price: 1.25 }
+                { name: 'Chinese Broccoli', unit: 'bunches', ratio: 'Math.ceil(peopleCount / 6)', min: 1, price: 3.00 }
               ]
             },
             'beverages': {
               title: 'Beverages',
               items: [
-                { name: 'Beer', unit: 'bottles', ratio: 'peopleCount * 6', min: 12, price: 1.50 },
-                { name: 'Hard Seltzer or Cider', unit: 'bottles', ratio: 'peopleCount * 3', min: 6, price: 2.00 },
-                { name: 'Asian Plum Wine/Sake', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 12)', min: 0, price: 15.00 },
                 { name: 'Alcohol (Spirits or Mixers)', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 10)', min: 1, price: 20.00 },
-                { name: 'Soft Drinks or Soda', unit: 'bottles', ratio: 'peopleCount * 4', min: 12, price: 1.25 },
-                { name: 'Sweet Tea or Lemonade', unit: 'gallons', ratio: 'Math.ceil(peopleCount / 8)', min: 2, price: 4.00 },
-                { name: 'Vietnamese Iced Coffee Mix', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 10)', min: 1, price: 6.00 },
+                { name: 'Asian Plum Wine/Sake', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 12)', min: 0, price: 15.00 },
+                { name: 'Beer', unit: 'bottles', ratio: 'peopleCount * 6', min: 12, price: 1.50 },
+                { name: 'Bottle Openers or Corkscrews', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 3, price: 5.00 },
                 { name: 'Bottled Water', unit: 'bottles', ratio: 'peopleCount * 3', min: 12, price: 0.75 },
-                { name: 'Sparkling Water', unit: 'bottles', ratio: 'peopleCount * 2', min: 6, price: 1.00 },
+                { name: 'Hard Seltzer or Cider', unit: 'bottles', ratio: 'peopleCount * 3', min: 6, price: 2.00 },
                 { name: 'Ice', unit: 'bags', ratio: 'Math.ceil(peopleCount / 3)', min: 4, price: 3.50 },
-                { name: 'Drink Coolers', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 3, price: 45.00 },
-                { name: 'Bottle Openers or Corkscrews', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 3, price: 5.00 }
+                { name: 'Soft Drinks or Soda', unit: 'bottles', ratio: 'peopleCount * 4', min: 12, price: 1.25 },
+                { name: 'Sparkling Water', unit: 'bottles', ratio: 'peopleCount * 2', min: 6, price: 1.00 },
+                { name: 'Sweet Tea or Lemonade', unit: 'gallons', ratio: 'Math.ceil(peopleCount / 8)', min: 2, price: 4.00 },
+                { name: 'Vietnamese Iced Coffee Mix', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 10)', min: 1, price: 6.00 }
               ]
             },
             'desserts': {
@@ -380,48 +375,46 @@
             'cleanup-waste': {
               title: 'Cleanup & Waste',
               items: [
-                { name: 'Trash Cans', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 25.00, amazonSearch: 'outdoor trash can with lid' },
+                { name: 'Cleaning Rags or Towels', unit: 'packs', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 3.00, amazonSearch: 'cleaning rags pack outdoor' },
+                { name: 'Cleaning Solution', unit: 'oz', ratio: 'peopleCount * 4', min: 32, price: 0.12, amazonSearch: 'bleach cleaning solution outdoor' },
                 { name: 'Heavy-duty Trash Bags', unit: 'boxes', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 12.00, amazonSearch: 'heavy duty trash bags outdoor' },
                 { name: 'Recycling Bins', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 20.00, amazonSearch: 'outdoor recycling bin' },
                 { name: 'Shell Waste Buckets', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 12.00, amazonSearch: 'waste bucket seafood shells' },
-                { name: 'Cleaning Rags or Towels', unit: 'packs', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 3.00, amazonSearch: 'cleaning rags pack outdoor' },
-                { name: 'Bleach or Cleaning Solution', unit: 'bottles', ratio: '2', min: 2, price: 4.00, amazonSearch: 'bleach cleaning solution outdoor' },
                 { name: 'Table Scrub Brushes', unit: '', ratio: '2', min: 2, price: 8.00, amazonSearch: 'scrub brush cleaning outdoor table' },
-                { name: 'Hose or Rinse Station', unit: '', ratio: '1', min: 1, price: 50.00, amazonSearch: 'outdoor rinse station hose setup' }
+                { name: 'Trash Cans', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 25.00, amazonSearch: 'outdoor trash can with lid' }
               ]
             },
             'comfort-safety': {
               title: 'Comfort & Safety',
               items: [
-                { name: 'Bug Spray', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 6.00, amazonSearch: 'bug spray insect repellent outdoor' },
+                { name: 'Bug Spray', unit: 'oz', ratio: 'Math.ceil(peopleCount * 2)', min: 12, price: 0.50, amazonSearch: 'bug spray insect repellent outdoor' },
                 { name: 'Citronella Candles or Torches', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00, amazonSearch: 'citronella candles outdoor torches' },
-                { name: 'Sunscreen', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00, amazonSearch: 'sunscreen spf outdoor sports' },
-                { name: 'Hand Sanitizer', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 4.00, amazonSearch: 'hand sanitizer bottles travel size' },
-                { name: 'First Aid Kit', unit: 'kits', ratio: '1', min: 1, price: 25.00, amazonSearch: 'first aid kit outdoor camping' }
+                { name: 'First Aid Kit', unit: 'kits', ratio: '1', min: 1, price: 25.00, amazonSearch: 'first aid kit outdoor camping' },
+                { name: 'Hand Sanitizer', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1)', min: 8, price: 0.50, amazonSearch: 'hand sanitizer bottles travel size' },
+                { name: 'Sunscreen', unit: 'oz', ratio: 'Math.ceil(peopleCount * 2)', min: 8, price: 1.00, amazonSearch: 'sunscreen spf outdoor sports' }
               ]
             },
             'entertainment-lighting': {
               title: 'Entertainment & Lighting',
               items: [
+                { name: 'Beer Pong or Flip Cup Table', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 60.00, amazonSearch: 'beer pong table folding outdoor' },
                 { name: 'Bluetooth Speaker or PA System', unit: '', ratio: 'Math.ceil(peopleCount / 30)', min: 1, price: 120.00, amazonSearch: 'bluetooth speaker outdoor waterproof' },
                 { name: 'Cornhole Set', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 45.00, amazonSearch: 'cornhole bean bag toss game set' },
-                { name: 'Ladder Toss', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 35.00, amazonSearch: 'ladder toss ball game outdoor' },
+                { name: 'Football', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 8.00, amazonSearch: 'football outdoor recreation' },
+                { name: 'Frisbee', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 5.00, amazonSearch: 'frisbee disc outdoor ultimate' },
                 { name: 'Giant Jenga', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 40.00, amazonSearch: 'giant jenga outdoor yard game' },
                 { name: 'Horseshoe Set', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 30.00, amazonSearch: 'horseshoe game set outdoor' },
-                { name: 'Frisbee', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 5.00, amazonSearch: 'frisbee disc outdoor ultimate' },
-                { name: 'Football', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 8.00, amazonSearch: 'football outdoor recreation' },
                 { name: 'Kubb', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 50.00, amazonSearch: 'kubb viking chess outdoor game' },
-                { name: 'Beer Pong or Flip Cup Table', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 60.00, amazonSearch: 'beer pong table folding outdoor' },
+                { name: 'Ladder Toss', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 35.00, amazonSearch: 'ladder toss ball game outdoor' },
                 { name: 'String Lights or Lanterns', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 15.00, amazonSearch: 'string lights outdoor patio' },
-                { name: 'Tarp or Ground Cover', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 25.00, amazonSearch: 'tarp ground cover outdoor camping' },
-                { name: 'Leftover Storage Coolers', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 50.00, amazonSearch: 'cooler ice chest food storage' }
+                { name: 'Tarp or Ground Cover', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 25.00, amazonSearch: 'tarp ground cover outdoor camping' }
               ]
             },
             'boil-equipment': {
               title: 'Boil Equipment',
               items: [
-                { name: 'DYNAMIC_BURNER_COMBO', unit: '', ratio: '1', min: 1, isDynamic: true, price: 200.00, amazonSearch: 'crawfish boil burner pot kit' },
-                { name: 'Propane Tanks (20lb)', unit: '', ratio: 'DYNAMIC_PROPANE_TANKS', min: 2, isDynamic: true, price: 45.00, amazonSearch: 'propane tank 20lb outdoor cooking' },
+                { name: 'Crawfish Boiler Kit (Size Auto-Selected)', unit: 'set', ratio: '1', min: 1, price: 150.00, isDynamic: true, amazonSearch: 'crawfish boil burner pot kit' },
+                { name: 'Propane Tank (20lb)', unit: '', ratio: 'DYNAMIC_PROPANE_TANKS', min: 2, isDynamic: true, price: 45.00, amazonSearch: 'propane tank 20lb outdoor cooking' },
                 { name: 'Long-handled Paddle or Stirring Spoon', unit: '', ratio: '2', min: 2, price: 15.00, amazonSearch: 'crawfish boil paddle stirring spoon' },
                 { name: 'Heat-resistant Gloves', unit: 'pairs', ratio: '2', min: 2, price: 12.00, amazonSearch: 'heat resistant gloves crawfish boil' },
                 { name: 'Crawfish Tongs', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 8.00, amazonSearch: 'crawfish tongs seafood' },
@@ -431,32 +424,26 @@
                 { name: 'Fire Extinguisher', unit: '', ratio: '1', min: 1, price: 30.00, amazonSearch: 'fire extinguisher kitchen' }
               ]
             },
-            'serving-setup': {
-              title: 'Serving Setup',
+            'serving-party-setup': {
+              title: 'Serving & Party Setup',
               items: [
-                { name: 'Folding Tables', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 2, price: 60.00, amazonSearch: 'folding table outdoor party' },
-                { name: 'Seafood Serving Tables', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 80.00, amazonSearch: 'seafood serving table outdoor' },
-                { name: 'Folding Chairs', unit: '', ratio: 'peopleCount * 1.1', min: 4, price: 25.00, amazonSearch: 'folding chairs outdoor party' },
-                { name: 'Table Coverings or Butcher Paper Rolls', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 8.00, amazonSearch: 'butcher paper roll table covering' },
-                { name: 'Crawfish Serving Trays or Baskets', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 15.00, amazonSearch: 'crawfish serving tray basket seafood' },
-                { name: 'Serving Scoops or Strainers', unit: '', ratio: 'Math.ceil(peopleCount / 12)', min: 2, price: 10.00, amazonSearch: 'serving scoop strainer seafood' },
-                { name: 'Coolers', unit: '', ratio: 'Math.ceil(peopleCount / 12)', min: 3, price: 50.00, amazonSearch: 'cooler ice chest outdoor party' },
-                { name: 'Extension Cords', unit: '', ratio: '3', min: 3, price: 15.00, amazonSearch: 'extension cord outdoor heavy duty' },
-                { name: 'Fans or Heaters', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 45.00, amazonSearch: 'portable fan outdoor party' },
-                { name: 'Shade Tents or Canopies', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 80.00, amazonSearch: 'pop up canopy tent shade' }
-              ]
-            },
-            'eating-supplies': {
-              title: 'Eating Supplies',
-              items: [
-                { name: 'Paper or Plastic Plates', unit: '', ratio: 'peopleCount * 3', min: 10, price: 0.15, amazonSearch: 'disposable paper plates party' },
-                { name: 'Plastic Utensils', unit: '', ratio: 'peopleCount * 1.5', min: 10, price: 0.25, amazonSearch: 'disposable plastic utensils party' },
-                { name: 'Napkins', unit: 'packs', ratio: 'Math.ceil(peopleCount / 15)', min: 3, price: 4.00, amazonSearch: 'party napkins disposable' },
-                { name: 'Wet Wipes or Baby Wipes', unit: 'packs', ratio: 'Math.ceil(peopleCount / 6)', min: 3, price: 3.00, amazonSearch: 'wet wipes baby wipes party' },
-                { name: 'Paper Towels', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 2.50, amazonSearch: 'paper towels rolls party' },
                 { name: 'Butter Cups or Dipping Cups', unit: '', ratio: 'peopleCount * 2', min: 10, price: 0.10, amazonSearch: 'dipping cups sauce containers disposable' },
+                { name: 'Coolers (Food & Beverage Storage)', unit: 'count', ratio: 'Math.ceil(peopleCount / 12)', min: 3, price: 75.00, amazonSearch: 'cooler ice chest outdoor party' },
+                { name: 'Crawfish Serving Trays or Baskets', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 15.00, amazonSearch: 'crawfish serving tray basket seafood' },
                 { name: 'Disposable Cups', unit: '', ratio: 'peopleCount * 4', min: 20, price: 0.08, amazonSearch: 'disposable cups party plastic' },
-                { name: 'To-go Containers or Zip-top Bags', unit: '', ratio: 'Math.ceil(peopleCount / 3)', min: 10, price: 0.75, amazonSearch: 'takeout containers disposable food storage' }
+                { name: 'Extension Cords', unit: 'count', ratio: 'Math.ceil(peopleCount / 30)', min: 2, price: 35.00, amazonSearch: 'heavy duty extension cord outdoor' },
+                { name: 'Fans or Heaters', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 45.00, amazonSearch: 'portable fan outdoor party' },
+                { name: 'Folding Chairs', unit: 'count', ratio: 'peopleCount * 1.1', min: 8, price: 35.00, amazonSearch: 'folding chairs outdoor' },
+                { name: 'Folding Tables', unit: 'count', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 95.00, amazonSearch: 'folding table outdoor' },
+                { name: 'Napkins', unit: 'packs', ratio: 'Math.ceil(peopleCount / 15)', min: 3, price: 4.00, amazonSearch: 'party napkins disposable' },
+                { name: 'Paper or Plastic Plates', unit: '', ratio: 'peopleCount * 3', min: 10, price: 0.15, amazonSearch: 'disposable paper plates party' },
+                { name: 'Paper Towels', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 2.50, amazonSearch: 'paper towels rolls party' },
+                { name: 'Plastic Utensils', unit: '', ratio: 'peopleCount * 1.5', min: 10, price: 0.25, amazonSearch: 'disposable plastic utensils party' },
+                { name: 'Serving Scoops or Strainers', unit: '', ratio: 'Math.ceil(peopleCount / 12)', min: 2, price: 10.00, amazonSearch: 'serving scoop strainer seafood' },
+                { name: 'Shade Tents/Canopies', unit: 'count', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 120.00, amazonSearch: 'pop up canopy tent' },
+                { name: 'Table Covers/Butcher Paper', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 12)', min: 2, price: 12.00, amazonSearch: 'butcher paper roll' },
+                { name: 'To-go Containers or Zip-top Bags', unit: '', ratio: 'Math.ceil(peopleCount / 3)', min: 10, price: 0.75, amazonSearch: 'takeout containers disposable food storage' },
+                { name: 'Wet Wipes or Baby Wipes', unit: 'packs', ratio: 'Math.ceil(peopleCount / 6)', min: 3, price: 3.00, amazonSearch: 'wet wipes baby wipes party' }
               ]
             },
             'side-dishes': {
@@ -471,11 +458,11 @@
             'condiments-sauces': {
               title: 'Condiments & Sauces',
               items: [
-                { name: 'Hot Sauce', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 3.00 },
-                { name: 'Cocktail Sauce', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 3.50 },
-                { name: 'Remoulade', unit: 'jars', ratio: 'Math.ceil(peopleCount / 12)', min: 2, price: 4.00 },
-                { name: 'Creamy Horseradish', unit: 'jars', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 3.50 },
-                { name: 'Extra Garlic Butter', unit: 'lbs', ratio: 'peopleCount * 0.05', min: 0.5, price: 5.00 }
+                { name: 'Hot Sauce', unit: 'oz', ratio: 'Math.ceil(peopleCount * 2)', min: 10, price: 0.30 },
+                { name: 'Cocktail Sauce', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1.5)', min: 12, price: 0.35 },
+                { name: 'Remoulade', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1)', min: 8, price: 0.50 },
+                { name: 'Creamy Horseradish', unit: 'oz', ratio: 'Math.ceil(peopleCount * 0.8)', min: 6, price: 0.58 },
+                { name: 'Extra Garlic Butter', unit: 'lbs', ratio: 'peopleCount * 0.05', min: 1, price: 5.00 }
               ]
             }
           },
@@ -491,8 +478,8 @@
                 { name: 'Andouille Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'sausage' },
                 { name: 'Crawfish Boil Dry Seasoning', unit: 'oz', ratio: 'crawfishLbs * 1.4', min: 8, priceKey: 'cajunSeasoning' },
                 { name: 'Salt', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'salt' },
-                { name: 'Lemon Juice', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 3.50 },
-                { name: 'White Vinegar', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 2.50 },
+                { name: 'Lemon Juice', unit: 'oz', ratio: 'Math.ceil(peopleCount * 2)', min: 16, price: 0.20 },
+                { name: 'White Vinegar', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1.5)', min: 16, price: 0.15 },
                 { name: 'Corn on the Cob', unit: 'ears', ratio: 'peopleCount * 3', min: 12, priceKey: 'corn' },
                 { name: 'Red Potatoes', unit: 'lbs', ratio: 'crawfishLbs * 0.45', min: 2, priceKey: 'redPotatoes' },
                 { name: 'Yellow Onions', unit: 'lbs', ratio: 'crawfishLbs * 0.18', min: 1, priceKey: 'onions' },
@@ -501,48 +488,48 @@
                 { name: 'Whole Mushrooms', unit: 'lbs', ratio: 'crawfishLbs * 0.2', min: 1, price: 4.50 }
               ]
             },
-            'seasonings-aromatics': {
+            'seasonings': {
               title: 'Seasonings & Aromatics',
               items: [
-                { name: 'Liquid Boil Concentrate', unit: 'bottles', ratio: 'Math.ceil(crawfishLbs / 30)', min: 1, price: 6.50, amazonSearch: 'crawfish boil liquid concentrate' },
-                { name: 'Tex-Orleans Seasoning Blend', unit: 'oz', ratio: 'peopleCount * 0.6', min: 4, priceKey: 'cajunSeasoning', amazonSearch: 'crawfish boil seasoning' },
-                { name: 'Cayenne Pepper', unit: 'oz', ratio: 'peopleCount * 0.2', min: 2, price: 3.00 },
                 { name: 'Bay Leaves', unit: 'oz', ratio: 'Math.ceil(crawfishLbs / 20)', min: 1, price: 2.50, amazonSearch: 'crawfish boil bay leaves' },
-                { name: 'Paprika', unit: 'oz', ratio: 'peopleCount * 0.3', min: 3, price: 4.00 },
-                { name: 'Celery Seed', unit: 'oz', ratio: 'Math.ceil(crawfishLbs / 25)', min: 1, price: 3.50 },
                 { name: 'Beer (for boil)', unit: 'cans', ratio: 'Math.ceil(crawfishLbs / 20)', min: 6, price: 1.50 },
-                { name: 'Butter (for serving)', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 6.00 }
+                { name: 'Butter (for serving)', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 6.00 },
+                { name: 'Cayenne Pepper', unit: 'oz', ratio: 'peopleCount * 0.2', min: 2, price: 3.00 },
+                { name: 'Celery Seed', unit: 'oz', ratio: 'Math.ceil(crawfishLbs / 25)', min: 1, price: 3.50 },
+                { name: 'Liquid Boil Concentrate', unit: 'oz', ratio: 'Math.ceil(crawfishLbs * 4)', min: 32, price: 0.20, amazonSearch: 'crawfish boil liquid concentrate' },
+                { name: 'Oranges', unit: 'count', ratio: 'Math.ceil(peopleCount / 2)', min: 2, price: 0.75 },
+                { name: 'Paprika', unit: 'oz', ratio: 'peopleCount * 0.3', min: 3, price: 4.00 },
+                { name: 'Tex-Orleans Seasoning Blend', unit: 'oz', ratio: 'peopleCount * 0.6', min: 4, priceKey: 'cajunSeasoning', amazonSearch: 'crawfish boil seasoning' }
               ]
             },
-            'extra-proteins': {
-              title: 'Extra Proteins & Seafood',
+            'proteins-seafood': {
+              title: 'Proteins & Seafood',
               items: [
+                { name: 'Blue Crab or Snow Crab', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 18.00 },
                 { name: 'Boudin Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
                 { name: 'Bratwurst', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
-                { name: 'Shrimp (Medium-Large)', unit: 'lbs', ratio: 'peopleCount * 0.4', min: 2, price: 12.00 },
-                { name: 'Blue Crab or Snow Crab', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 18.00 },
+                { name: 'Chicken Wings', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.00 },
                 { name: 'Mussels', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.50 },
-                { name: 'Chicken Wings', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.00 }
+                { name: 'Shrimp (Medium-Large)', unit: 'lbs', ratio: 'peopleCount * 0.4', min: 2, price: 12.00 }
               ]
             },
             'vegetables-sides': {
               title: 'Texas Vegetables & Sides',
               items: [
+                { name: 'Artichoke Hearts', unit: 'count', ratio: 'Math.ceil(peopleCount / 4)', min: 2, price: 1.25 },
                 { name: 'Artichokes', unit: 'count', ratio: 'Math.ceil(peopleCount / 3)', min: 2, price: 3.50 },
                 { name: 'Brussels Sprouts', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 5.00 },
                 { name: 'Celery', unit: 'bunches', ratio: 'Math.ceil(peopleCount / 8)', min: 1, price: 2.50 },
-                { name: 'Orange Halves', unit: 'count', ratio: 'Math.ceil(peopleCount / 3)', min: 2, price: 0.75 },
-                { name: 'Sweet Potatoes', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 3.00 },
-                { name: 'Jalapeño Peppers', unit: 'lbs', ratio: 'peopleCount * 0.1', min: 0.5, price: 4.00 },
+                { name: 'Jalapeño Peppers', unit: 'lbs', ratio: 'peopleCount * 0.1', min: 1, price: 4.00 },
                 { name: 'Pineapple Chunks', unit: 'lbs', ratio: 'peopleCount * 0.2', min: 1, price: 4.50 },
-                { name: 'Artichoke Hearts', unit: 'count', ratio: 'Math.ceil(peopleCount / 4)', min: 2, price: 1.25 }
+                { name: 'Sweet Potatoes', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 3.00 }
               ]
             },
             'equipment-tools': {
               title: 'Boil Equipment & Tools',
               items: [
-                { name: 'DYNAMIC_BURNER_COMBO', unit: '', ratio: '1', min: 1, isDynamic: true, price: 200.00, amazonSearch: 'crawfish boil burner pot kit' },
-                { name: 'Propane Tanks (20lb)', unit: '', ratio: 'DYNAMIC_PROPANE_TANKS', min: 2, isDynamic: true, price: 45.00, amazonSearch: 'propane tank 20lb' },
+                { name: 'Crawfish Boiler Kit (Size Auto-Selected)', unit: 'set', ratio: '1', min: 1, price: 150.00, isDynamic: true, amazonSearch: 'crawfish boil burner pot kit' },
+                { name: 'Propane Tank (20lb)', unit: '', ratio: 'DYNAMIC_PROPANE_TANKS', min: 2, isDynamic: true, price: 45.00, amazonSearch: 'propane tank 20lb' },
                 { name: 'Long-handled Paddle', unit: '', ratio: '2', min: 2, price: 15.00, amazonSearch: 'crawfish boil paddle' },
                 { name: 'Heat-resistant Gloves', unit: 'pairs', ratio: '2', min: 2, price: 12.00, amazonSearch: 'heat resistant gloves' },
                 { name: 'Crawfish Basket Inserts', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 25.00, amazonSearch: 'crawfish basket strainer' },
@@ -551,8 +538,8 @@
                 { name: 'Fire Extinguisher', unit: '', ratio: '1', min: 1, price: 30.00, amazonSearch: 'fire extinguisher' }
               ]
             },
-            'serving-eating': {
-              title: 'Serving & Eating',
+            'serving-party-setup': {
+              title: 'Serving & Party Setup',
               items: [
                 { name: 'Folding Tables', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 2, price: 60.00 },
                 { name: 'Folding Chairs', unit: '', ratio: 'peopleCount * 1.1', min: 4, price: 25.00 },
@@ -582,10 +569,10 @@
                 { name: 'Coleslaw', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 6.00 },
                 { name: 'Texas Toast', unit: 'loaves', ratio: 'Math.ceil(peopleCount / 8)', min: 2, price: 3.50 },
                 { name: 'Potato Salad', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.00 },
-                { name: 'BBQ Sauce', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 4.50, amazonSearch: 'bbq sauce' },
-                { name: 'Hot Sauce Variety', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 12)', min: 3, price: 6.00, amazonSearch: 'hot sauce' },
-                { name: 'Ranch Dressing', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 3.50 },
-                { name: 'Cocktail Sauce', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 4.00, amazonSearch: 'cocktail sauce' }
+                { name: 'BBQ Sauce', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1.2)', min: 12, price: 0.38, amazonSearch: 'bbq sauce' },
+                { name: 'Hot Sauce Variety', unit: 'oz', ratio: 'Math.ceil(peopleCount * 2)', min: 10, price: 0.50, amazonSearch: 'hot sauce' },
+                { name: 'Ranch Dressing', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1.2)', min: 12, price: 0.29 },
+                { name: 'Cocktail Sauce', unit: 'oz', ratio: 'Math.ceil(peopleCount * 1.5)', min: 12, price: 0.35, amazonSearch: 'cocktail sauce' }
               ]
             },
             'cleanup': {
@@ -594,7 +581,7 @@
                 { name: 'Shell Waste Buckets', unit: '', ratio: 'Math.ceil(peopleCount / 6)', min: 4, price: 12.00, amazonSearch: 'waste bucket' },
                 { name: 'Trash Bags (Heavy Duty)', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 15)', min: 3, price: 8.00, amazonSearch: 'heavy duty trash bags' },
                 { name: 'Paper Towels', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 8)', min: 6, price: 2.50 },
-                { name: 'Cleaning Solution', unit: 'bottles', ratio: '2', min: 2, price: 4.00, amazonSearch: 'cleaning solution' },
+                { name: 'Cleaning Solution', unit: 'oz', ratio: 'peopleCount * 4', min: 32, price: 0.12, amazonSearch: 'cleaning solution' },
                 { name: 'Disposable Gloves', unit: 'boxes', ratio: '2', min: 2, price: 8.00, amazonSearch: 'disposable gloves' },
                 { name: 'Table Scrub Brush', unit: '', ratio: '2', min: 2, price: 8.00, amazonSearch: 'scrub brush' }
               ]
@@ -648,11 +635,11 @@
               
               // Handle dynamic equipment sizing
               if (item.isDynamic) {
-                if (item.name === 'DYNAMIC_BURNER_COMBO') {
+                if (item.name === 'Crawfish Boiler Kit (Size Auto-Selected)') {
                   processedItem.name = equipmentSize.burnerSize;
                   processedItem.price = equipmentSize.burnerPrice;
                   processedItem.amazonSearchTerm = equipmentSize.searchTerm;
-                } else if (item.name === 'Propane Tanks (20lb)' && item.ratio === 'DYNAMIC_PROPANE_TANKS') {
+                } else if (item.name === 'Propane Tank (20lb)' && item.ratio === 'DYNAMIC_PROPANE_TANKS') {
                   processedItem.ratio = equipmentSize.propaneTanks.toString();
                 }
               }
@@ -689,7 +676,7 @@
         // Helper function to format quantity display
         const formatQuantity = (qty, unit) => {
           const num = Number(qty);
-          const wholeNumberUnits = ['', 'rolls', 'ears', 'bottles', 'jars', 'boxes', 'packs', 'cans', 'bunches', 'dozen', 'servings', 'gallons'];
+          const wholeNumberUnits = ['', 'rolls', 'ears', 'bottles', 'boxes', 'packs', 'cans', 'bunches', 'dozen', 'servings', 'gallons'];
           
           if (wholeNumberUnits.includes(unit) || Number.isInteger(num)) {
             return Math.round(num).toString();
@@ -1066,17 +1053,17 @@
           const [actionMode, setActionMode] = useState('expand'); // 'expand', 'collapse', 'reset'
           const [categoryExpanded, setCategoryExpanded] = useState({
             'must-have': true,  // Core essentials - only category expanded by default
-            'seasonings-aromatics': false,
-            'extra-proteins': false,
-            'vegetables-sides': false,
-            'equipment-tools': false,
-            'serving-eating': false,
-            'table-setup': false,
-            'beverages': false,
-            'sides-condiments': false,
+            'seasonings': false,
+            'proteins-seafood': false,
+            'vegetables': false,
+            'side-dishes-condiments': false,
             'desserts': false,
-            'cleanup-safety': false,
-            'entertainment-lighting': false
+            'beverages': false,
+            'equipment-tools': false,
+            'serving-party-setup': false,
+            'comfort-safety': false,
+            'entertainment-lighting': false,
+            'cleanup-waste': false
           });
 
           // Toggle category expanded state
@@ -2346,9 +2333,30 @@
                     !isInitialized ? React.createElement('div', { 
                       className: "text-center py-8 text-gray-400" 
                     }, "Loading shopping list...") :
-                    // Comprehensive categorized shopping list
-                    Object.keys(ADVANCED_ITEMS[style] || ADVANCED_ITEMS.cajun).map(categoryKey => {
-                        const category = (ADVANCED_ITEMS[style] || ADVANCED_ITEMS.cajun)[categoryKey];
+                    // Comprehensive categorized shopping list with defined order
+                    (() => {
+                      // Define display order: Food items first, then Non-foodstuff
+                      const categoryOrder = [
+                        // Food items
+                        'must-have',
+                        'seasonings', 
+                        'proteins-seafood',
+                        'vegetables',
+                        'side-dishes-condiments',
+                        'desserts',
+                        'beverages',
+                        // Non-foodstuff items  
+                        'equipment-tools',
+                        'serving-party-setup',
+                        'comfort-safety',
+                        'entertainment-lighting',
+                        'cleanup-waste'
+                      ];
+                      
+                      const styleItems = ADVANCED_ITEMS[style] || ADVANCED_ITEMS.cajun;
+                      
+                      return categoryOrder.filter(categoryKey => styleItems[categoryKey]).map(categoryKey => {
+                        const category = styleItems[categoryKey];
                         const categoryItems = shoppingList.filter(item => item.category === category.title);
                         if (categoryItems.length === 0) return null;
                         
@@ -2378,7 +2386,8 @@
                             categoryItems.map((item, i) => renderShoppingItem(item, i, `${categoryKey}-`))
                           )
                         );
-                      }),
+                      });
+                    })(),
                     React.createElement('div', { 
                       className: "sticky bottom-0 bg-black/90 backdrop-blur-sm border-t border-white/10 p-3 mt-4 rounded-t-xl text-center font-display text-xl md:text-2xl z-10" 
                     },
