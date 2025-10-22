@@ -14,6 +14,8 @@
 <body style="margin: 0; padding: 0; background: #0b0b0b;">
     <div id="root"></div>
     
+    <script type="text/babel" src="./crawfish_calculator_react.jsx"></script>
+    
     <script type="text/babel">
         const { useState, useEffect } = React;
         
@@ -24,18 +26,7 @@
         const Button = ({ children, className = "", ...props }) => 
             React.createElement('button', { className, ...props }, children);
 
-        // Your component configuration and logic
-        // Helper function to format quantity display
-        const formatQuantity = (qty, unit) => {
-          const num = Number(qty);
-          // Units that should always be whole numbers
-          const wholeNumberUnits = ['', 'rolls', 'bottles', 'jars', 'boxes', 'packs', 'cans', 'bunches', 'dozen', 'servings', 'gallons'];
-          
-          if (wholeNumberUnits.includes(unit) || Number.isInteger(num)) {
-            return Math.round(num).toString();
-          }
-          return num.toFixed(1);
-        };
+        // Component will be imported from crawfish_calculator_react.jsx
 
         const CONFIG = {
           boilStyles: {
@@ -97,7 +88,8 @@
             1: { name: 'Mild' },
             2: { name: 'Medium' },
             3: { name: 'Hot' },
-            4: { name: 'Inferno' }
+            4: { name: 'Extra Hot' },
+            5: { name: 'Inferno' }
           }
         };
 
@@ -131,24 +123,30 @@
         };
 
 
-        // Dynamic color map for spice level (1..4)
+        // Dynamic color map for spice level (1..5)
         const SPICE_COLORS = {
-          1: '#66BB6A', // mild: green 400 (greenish)
-          2: '#FFB300', // medium: vivid amber (unchanged)
-          3: '#FF7043', // hot: deep orange (unchanged)
-          4: '#D32F2F'  // inferno: red 700 (more reddish)
+          1: '#66BB6A', // mild: green 400
+          2: '#FFB300', // medium: vivid amber  
+          3: '#FF7043', // hot: deep orange
+          4: '#D32F2F', // extra hot: red 700
+          5: '#8B0040'  // inferno: dark red with purple hue
         };
+
 
         // Advanced mode comprehensive party checklist with pricing
         const ADVANCED_ITEMS = {
           cajun: {
+            // === FOOD & INGREDIENTS ===
             'must-have': {
               title: 'Boil Essentials',
               items: [
                 { name: 'Live Crawfish', unit: 'lbs', ratio: 'peopleCount * lbsPerPerson', min: 35, priceKey: 'crawfish' },
                 { name: 'Smoked Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.15', min: 1, priceKey: 'sausage' },
+                { name: 'Andouille Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'sausage' },
                 { name: 'Crawfish Boil Dry Seasoning', unit: 'oz', ratio: 'crawfishLbs * 1.6', min: 8, priceKey: 'cajunSeasoning' },
                 { name: 'Salt', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'salt' },
+                { name: 'Lemon Juice', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 3.50 },
+                { name: 'White Vinegar', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 2.50 },
                 { name: 'Corn on the Cob', unit: 'ears', ratio: 'peopleCount * 3', min: 12, priceKey: 'corn' },
                 { name: 'Red Potatoes', unit: 'lbs', ratio: 'crawfishLbs * 0.4', min: 2, priceKey: 'redPotatoes' },
                 { name: 'Yellow Onions', unit: 'lbs', ratio: 'crawfishLbs * 0.15', min: 1, priceKey: 'onions' },
@@ -162,17 +160,16 @@
                 { name: 'Liquid Boil Concentrate', unit: 'bottles', ratio: 'Math.ceil(crawfishLbs / 30)', min: 1, price: 6.50, amazonSearch: 'crawfish boil liquid concentrate' },
                 { name: 'Cajun Seasoning (Table)', unit: 'oz', ratio: 'peopleCount * 0.5', min: 4, priceKey: 'cajunSeasoning', amazonSearch: 'crawfish boil seasoning' },
                 { name: 'Bay Leaves', unit: 'oz', ratio: 'Math.ceil(crawfishLbs / 20)', min: 1, price: 2.50, amazonSearch: 'crawfish boil bay leaves' },
-                { name: 'Lemon Juice', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 3.50 },
-                { name: 'White Vinegar', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 2.50 },
                 { name: 'Butter (for serving)', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 6.00 }
               ]
             },
             'extra-proteins': {
               title: 'Extra Proteins & Seafood',
               items: [
-                { name: 'Andouille Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'sausage' },
+                { name: 'Boudin Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
                 { name: 'Shrimp (Medium-Large)', unit: 'lbs', ratio: 'peopleCount * 0.4', min: 2, price: 12.00 },
-                { name: 'Blue Crab or Snow Crab', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 18.00 }
+                { name: 'Blue Crab or Snow Crab', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 18.00 },
+                { name: 'Mussels', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.50 }
               ]
             },
             'vegetables-sides': {
@@ -181,9 +178,12 @@
                 { name: 'Button Mushrooms', unit: 'lbs', ratio: 'peopleCount * 0.2', min: 1, price: 4.50 },
                 { name: 'Celery', unit: 'bunches', ratio: 'Math.ceil(peopleCount / 8)', min: 1, price: 2.50 },
                 { name: 'Orange Halves', unit: 'count', ratio: 'Math.ceil(peopleCount / 3)', min: 2, price: 0.75 },
-                { name: 'Green Beans', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 3.50 }
+                { name: 'Green Beans', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 3.50 },
+                { name: 'Artichoke Hearts', unit: 'count', ratio: 'Math.ceil(peopleCount / 4)', min: 2, price: 1.25 }
               ]
             },
+            
+            // === EQUIPMENT & SUPPLIES ===
             'equipment-tools': {
               title: 'Cooking Equipment & Tools',
               items: [
@@ -199,7 +199,7 @@
               ]
             },
             'table-setup': {
-              title: 'Tables & Seating Setup',
+              title: 'Serving & Party Setup',
               items: [
                 { name: 'Folding Tables', unit: 'count', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 95.00, amazonSearch: 'folding table outdoor' },
                 { name: 'Folding Chairs', unit: 'count', ratio: 'peopleCount * 1.1', min: 8, price: 35.00, amazonSearch: 'folding chairs outdoor' },
@@ -212,14 +212,14 @@
             'eating-supplies': {
               title: 'Eating Supplies',
               items: [
-                { name: 'Paper or Plastic Plates', unit: '', ratio: 'peopleCount * 3', min: 10, price: 0.15 },
-                { name: 'Plastic Utensils', unit: '', ratio: 'peopleCount * 1.5', min: 10, price: 0.25 },
-                { name: 'Napkins', unit: 'packs', ratio: 'Math.ceil(peopleCount / 15)', min: 3, price: 4.00 },
-                { name: 'Wet Wipes or Baby Wipes', unit: 'packs', ratio: 'Math.ceil(peopleCount / 6)', min: 3, price: 3.00 },
-                { name: 'Paper Towels', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 2.50 },
-                { name: 'Butter Cups or Dipping Cups', unit: '', ratio: 'peopleCount * 2', min: 10, price: 0.10 },
-                { name: 'Disposable Cups', unit: '', ratio: 'peopleCount * 4', min: 20, price: 0.08 },
-                { name: 'To-go Containers or Zip-top Bags', unit: '', ratio: 'Math.ceil(peopleCount / 3)', min: 10, price: 0.75 }
+                { name: 'Paper or Plastic Plates', unit: '', ratio: 'peopleCount * 3', min: 10, price: 0.15, amazonSearch: 'disposable paper plates party' },
+                { name: 'Plastic Utensils', unit: '', ratio: 'peopleCount * 1.5', min: 10, price: 0.25, amazonSearch: 'disposable plastic utensils party' },
+                { name: 'Napkins', unit: 'packs', ratio: 'Math.ceil(peopleCount / 15)', min: 3, price: 4.00, amazonSearch: 'party napkins disposable' },
+                { name: 'Wet Wipes or Baby Wipes', unit: 'packs', ratio: 'Math.ceil(peopleCount / 6)', min: 3, price: 3.00, amazonSearch: 'wet wipes baby wipes party' },
+                { name: 'Paper Towels', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 2.50, amazonSearch: 'paper towels rolls party' },
+                { name: 'Butter Cups or Dipping Cups', unit: '', ratio: 'peopleCount * 2', min: 10, price: 0.10, amazonSearch: 'dipping cups sauce containers disposable' },
+                { name: 'Disposable Cups', unit: '', ratio: 'peopleCount * 4', min: 20, price: 0.08, amazonSearch: 'disposable cups party plastic' },
+                { name: 'To-go Containers or Zip-top Bags', unit: '', ratio: 'Math.ceil(peopleCount / 3)', min: 10, price: 0.75, amazonSearch: 'takeout containers disposable food storage' }
               ]
             },
             'sides-condiments': {
@@ -260,52 +260,56 @@
             'cleanup-waste': {
               title: 'Cleanup & Waste',
               items: [
-                { name: 'Trash Cans', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 25.00 },
-                { name: 'Heavy-duty Trash Bags', unit: 'boxes', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 12.00 },
-                { name: 'Recycling Bins', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 20.00 },
-                { name: 'Shell Waste Buckets', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 12.00 },
-                { name: 'Cleaning Rags or Towels', unit: 'packs', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 3.00 },
-                { name: 'Bleach or Cleaning Solution', unit: 'bottles', ratio: '2', min: 2, price: 4.00 },
-                { name: 'Table Scrub Brushes', unit: '', ratio: '2', min: 2, price: 8.00 },
-                { name: 'Hose or Rinse Station', unit: '', ratio: '1', min: 1, price: 50.00 }
+                { name: 'Trash Cans', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 25.00, amazonSearch: 'outdoor trash can with lid' },
+                { name: 'Heavy-duty Trash Bags', unit: 'boxes', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 12.00, amazonSearch: 'heavy duty trash bags outdoor' },
+                { name: 'Recycling Bins', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 20.00, amazonSearch: 'outdoor recycling bin' },
+                { name: 'Shell Waste Buckets', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 12.00, amazonSearch: 'waste bucket seafood shells' },
+                { name: 'Cleaning Rags or Towels', unit: 'packs', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 3.00, amazonSearch: 'cleaning rags pack outdoor' },
+                { name: 'Bleach or Cleaning Solution', unit: 'bottles', ratio: '2', min: 2, price: 4.00, amazonSearch: 'bleach cleaning solution outdoor' },
+                { name: 'Table Scrub Brushes', unit: '', ratio: '2', min: 2, price: 8.00, amazonSearch: 'scrub brush cleaning outdoor table' },
+                { name: 'Hose or Rinse Station', unit: '', ratio: '1', min: 1, price: 50.00, amazonSearch: 'outdoor rinse station hose setup' }
               ]
             },
             'comfort-safety': {
               title: 'Comfort & Safety',
               items: [
-                { name: 'Bug Spray', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 6.00 },
-                { name: 'Citronella Candles or Torches', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00 },
-                { name: 'Sunscreen', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00 },
-                { name: 'Hand Sanitizer', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 4.00 },
-                { name: 'First Aid Kit', unit: 'kits', ratio: '1', min: 1, price: 25.00 }
+                { name: 'Bug Spray', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 6.00, amazonSearch: 'bug spray insect repellent outdoor' },
+                { name: 'Citronella Candles or Torches', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00, amazonSearch: 'citronella candles outdoor torches' },
+                { name: 'Sunscreen', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00, amazonSearch: 'sunscreen spf outdoor sports' },
+                { name: 'Hand Sanitizer', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 4.00, amazonSearch: 'hand sanitizer bottles travel size' },
+                { name: 'First Aid Kit', unit: 'kits', ratio: '1', min: 1, price: 25.00, amazonSearch: 'first aid kit outdoor camping' }
               ]
             },
             'entertainment-lighting': {
               title: 'Entertainment & Lighting',
               items: [
-                { name: 'Bluetooth Speaker or PA System', unit: '', ratio: 'Math.ceil(peopleCount / 30)', min: 1, price: 120.00 },
-                { name: 'Cornhole Set', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 45.00 },
-                { name: 'Ladder Toss', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 35.00 },
-                { name: 'Giant Jenga', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 40.00 },
-                { name: 'Horseshoe Set', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 30.00 },
-                { name: 'Frisbee', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 5.00 },
-                { name: 'Football', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 8.00 },
-                { name: 'Kubb', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 50.00 },
-                { name: 'Beer Pong or Flip Cup Table', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 60.00 },
-                { name: 'String Lights or Lanterns', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 15.00 },
-                { name: 'Tarp or Ground Cover', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 25.00 },
-                { name: 'Leftover Storage Coolers', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 50.00 }
+                { name: 'Bluetooth Speaker or PA System', unit: '', ratio: 'Math.ceil(peopleCount / 30)', min: 1, price: 120.00, amazonSearch: 'bluetooth speaker outdoor waterproof' },
+                { name: 'Cornhole Set', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 45.00, amazonSearch: 'cornhole bean bag toss game set' },
+                { name: 'Ladder Toss', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 35.00, amazonSearch: 'ladder toss ball game outdoor' },
+                { name: 'Giant Jenga', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 40.00, amazonSearch: 'giant jenga outdoor yard game' },
+                { name: 'Horseshoe Set', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 30.00, amazonSearch: 'horseshoe game set outdoor' },
+                { name: 'Frisbee', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 5.00, amazonSearch: 'frisbee disc outdoor ultimate' },
+                { name: 'Football', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 8.00, amazonSearch: 'football outdoor recreation' },
+                { name: 'Kubb', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 50.00, amazonSearch: 'kubb viking chess outdoor game' },
+                { name: 'Beer Pong or Flip Cup Table', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 60.00, amazonSearch: 'beer pong table folding outdoor' },
+                { name: 'String Lights or Lanterns', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 15.00, amazonSearch: 'string lights outdoor patio' },
+                { name: 'Tarp or Ground Cover', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 25.00, amazonSearch: 'tarp ground cover outdoor camping' },
+                { name: 'Leftover Storage Coolers', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 50.00, amazonSearch: 'cooler ice chest food storage' }
               ]
             }
           },
           vietcajun: {
+            // === FOOD & INGREDIENTS ===
             'must-have': {
               title: 'Boil Essentials',
               items: [
                 { name: 'Live Crawfish', unit: 'lbs', ratio: 'peopleCount * lbsPerPerson', min: 35, priceKey: 'crawfish' },
                 { name: 'Smoked Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.12', min: 1, priceKey: 'sausage' },
+                { name: 'Andouille Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
                 { name: 'Crawfish Boil Dry Seasoning', unit: 'oz', ratio: 'crawfishLbs * 1.2', min: 6, priceKey: 'cajunSeasoning' },
                 { name: 'Salt', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'salt' },
+                { name: 'Lemon Juice', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 3.50 },
+                { name: 'Rice Vinegar', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 3.00 },
                 { name: 'Corn on the Cob', unit: 'ears', ratio: 'peopleCount * 3', min: 12, priceKey: 'corn' },
                 { name: 'Red Potatoes', unit: 'lbs', ratio: 'crawfishLbs * 0.4', min: 2, priceKey: 'redPotatoes' },
                 { name: 'Yellow Onions', unit: 'lbs', ratio: 'crawfishLbs * 0.15', min: 1, priceKey: 'onions' },
@@ -324,17 +328,16 @@
                 { name: 'Thai Chilies', unit: 'oz', ratio: 'peopleCount * 0.15', min: 1, price: 3.50 },
                 { name: 'Cilantro', unit: 'bunches', ratio: 'peopleCount * 0.2', min: 2, price: 2.50 },
                 { name: 'Bay Leaves', unit: 'oz', ratio: 'Math.ceil(crawfishLbs / 20)', min: 1, price: 2.50 },
-                { name: 'Lemon Juice', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 3.50 },
-                { name: 'Rice Vinegar', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 3.00 },
                 { name: 'Butter (for serving)', unit: 'lbs', ratio: 'peopleCount * 0.12', min: 1, price: 6.00 }
               ]
             },
             'extra-proteins': {
               title: 'Extra Proteins & Seafood',
               items: [
-                { name: 'Andouille Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
+                { name: 'Boudin Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
                 { name: 'Shrimp (Large)', unit: 'lbs', ratio: 'peopleCount * 0.45', min: 2, price: 12.00 },
-                { name: 'Blue Crab or Snow Crab', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 18.00 }
+                { name: 'Blue Crab or Snow Crab', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 18.00 },
+                { name: 'Mussels', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.50 }
               ]
             },
             'vegetables-sides': {
@@ -342,7 +345,8 @@
               items: [
                 { name: 'Asian Mushrooms', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 1, price: 5.50 },
                 { name: 'Chinese Broccoli', unit: 'bunches', ratio: 'Math.ceil(peopleCount / 6)', min: 1, price: 3.00 },
-                { name: 'Baby Bok Choy', unit: 'heads', ratio: 'peopleCount * 0.5', min: 4, price: 1.25 }
+                { name: 'Baby Bok Choy', unit: 'heads', ratio: 'peopleCount * 0.5', min: 4, price: 1.25 },
+                { name: 'Artichoke Hearts', unit: 'count', ratio: 'Math.ceil(peopleCount / 4)', min: 2, price: 1.25 }
               ]
             },
             'beverages': {
@@ -371,86 +375,88 @@
                 { name: 'Mochi Ice Cream', unit: 'boxes', ratio: 'Math.ceil(peopleCount / 8)', min: 1, price: 12.00 }
               ]
             },
+            
+            // === EQUIPMENT & SUPPLIES ===
             'cleanup-waste': {
               title: 'Cleanup & Waste',
               items: [
-                { name: 'Trash Cans', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 25.00 },
-                { name: 'Heavy-duty Trash Bags', unit: 'boxes', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 12.00 },
-                { name: 'Recycling Bins', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 20.00 },
-                { name: 'Shell Waste Buckets', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 12.00 },
-                { name: 'Cleaning Rags or Towels', unit: 'packs', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 3.00 },
-                { name: 'Bleach or Cleaning Solution', unit: 'bottles', ratio: '2', min: 2, price: 4.00 },
-                { name: 'Table Scrub Brushes', unit: '', ratio: '2', min: 2, price: 8.00 },
-                { name: 'Hose or Rinse Station', unit: '', ratio: '1', min: 1, price: 50.00 }
+                { name: 'Trash Cans', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 25.00, amazonSearch: 'outdoor trash can with lid' },
+                { name: 'Heavy-duty Trash Bags', unit: 'boxes', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 12.00, amazonSearch: 'heavy duty trash bags outdoor' },
+                { name: 'Recycling Bins', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 20.00, amazonSearch: 'outdoor recycling bin' },
+                { name: 'Shell Waste Buckets', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 12.00, amazonSearch: 'waste bucket seafood shells' },
+                { name: 'Cleaning Rags or Towels', unit: 'packs', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 3.00, amazonSearch: 'cleaning rags pack outdoor' },
+                { name: 'Bleach or Cleaning Solution', unit: 'bottles', ratio: '2', min: 2, price: 4.00, amazonSearch: 'bleach cleaning solution outdoor' },
+                { name: 'Table Scrub Brushes', unit: '', ratio: '2', min: 2, price: 8.00, amazonSearch: 'scrub brush cleaning outdoor table' },
+                { name: 'Hose or Rinse Station', unit: '', ratio: '1', min: 1, price: 50.00, amazonSearch: 'outdoor rinse station hose setup' }
               ]
             },
             'comfort-safety': {
               title: 'Comfort & Safety',
               items: [
-                { name: 'Bug Spray', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 6.00 },
-                { name: 'Citronella Candles or Torches', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00 },
-                { name: 'Sunscreen', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00 },
-                { name: 'Hand Sanitizer', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 4.00 },
-                { name: 'First Aid Kit', unit: 'kits', ratio: '1', min: 1, price: 25.00 }
+                { name: 'Bug Spray', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 6.00, amazonSearch: 'bug spray insect repellent outdoor' },
+                { name: 'Citronella Candles or Torches', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00, amazonSearch: 'citronella candles outdoor torches' },
+                { name: 'Sunscreen', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 10)', min: 2, price: 8.00, amazonSearch: 'sunscreen spf outdoor sports' },
+                { name: 'Hand Sanitizer', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 4.00, amazonSearch: 'hand sanitizer bottles travel size' },
+                { name: 'First Aid Kit', unit: 'kits', ratio: '1', min: 1, price: 25.00, amazonSearch: 'first aid kit outdoor camping' }
               ]
             },
             'entertainment-lighting': {
               title: 'Entertainment & Lighting',
               items: [
-                { name: 'Bluetooth Speaker or PA System', unit: '', ratio: 'Math.ceil(peopleCount / 30)', min: 1, price: 120.00 },
-                { name: 'Cornhole Set', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 45.00 },
-                { name: 'Ladder Toss', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 35.00 },
-                { name: 'Giant Jenga', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 40.00 },
-                { name: 'Horseshoe Set', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 30.00 },
-                { name: 'Frisbee', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 5.00 },
-                { name: 'Football', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 8.00 },
-                { name: 'Kubb', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 50.00 },
-                { name: 'Beer Pong or Flip Cup Table', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 60.00 },
-                { name: 'String Lights or Lanterns', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 15.00 },
-                { name: 'Tarp or Ground Cover', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 25.00 },
-                { name: 'Leftover Storage Coolers', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 50.00 }
+                { name: 'Bluetooth Speaker or PA System', unit: '', ratio: 'Math.ceil(peopleCount / 30)', min: 1, price: 120.00, amazonSearch: 'bluetooth speaker outdoor waterproof' },
+                { name: 'Cornhole Set', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 45.00, amazonSearch: 'cornhole bean bag toss game set' },
+                { name: 'Ladder Toss', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 35.00, amazonSearch: 'ladder toss ball game outdoor' },
+                { name: 'Giant Jenga', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 40.00, amazonSearch: 'giant jenga outdoor yard game' },
+                { name: 'Horseshoe Set', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 30.00, amazonSearch: 'horseshoe game set outdoor' },
+                { name: 'Frisbee', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 5.00, amazonSearch: 'frisbee disc outdoor ultimate' },
+                { name: 'Football', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 8.00, amazonSearch: 'football outdoor recreation' },
+                { name: 'Kubb', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 50.00, amazonSearch: 'kubb viking chess outdoor game' },
+                { name: 'Beer Pong or Flip Cup Table', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 60.00, amazonSearch: 'beer pong table folding outdoor' },
+                { name: 'String Lights or Lanterns', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 15.00, amazonSearch: 'string lights outdoor patio' },
+                { name: 'Tarp or Ground Cover', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 25.00, amazonSearch: 'tarp ground cover outdoor camping' },
+                { name: 'Leftover Storage Coolers', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 50.00, amazonSearch: 'cooler ice chest food storage' }
               ]
             },
             'boil-equipment': {
               title: 'Boil Equipment',
               items: [
-                { name: 'DYNAMIC_BURNER_COMBO', unit: '', ratio: '1', min: 1, isDynamic: true, price: 200.00 },
-                { name: 'Propane Tanks (20lb)', unit: '', ratio: 'DYNAMIC_PROPANE_TANKS', min: 2, isDynamic: true, price: 45.00 },
-                { name: 'Long-handled Paddle or Stirring Spoon', unit: '', ratio: '2', min: 2, price: 15.00 },
-                { name: 'Heat-resistant Gloves', unit: 'pairs', ratio: '2', min: 2, price: 12.00 },
-                { name: 'Crawfish Tongs', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 8.00 },
-                { name: 'Hose with Spray Nozzle', unit: '', ratio: '1', min: 1, price: 35.00 },
-                { name: 'Crawfish Washer', unit: '', ratio: '1', min: 1, price: 75.00 },
-                { name: 'Long Mesh Skimmer', unit: '', ratio: '2', min: 2, price: 12.00 },
-                { name: 'Fire Extinguisher', unit: '', ratio: '1', min: 1, price: 30.00 }
+                { name: 'DYNAMIC_BURNER_COMBO', unit: '', ratio: '1', min: 1, isDynamic: true, price: 200.00, amazonSearch: 'crawfish boil burner pot kit' },
+                { name: 'Propane Tanks (20lb)', unit: '', ratio: 'DYNAMIC_PROPANE_TANKS', min: 2, isDynamic: true, price: 45.00, amazonSearch: 'propane tank 20lb outdoor cooking' },
+                { name: 'Long-handled Paddle or Stirring Spoon', unit: '', ratio: '2', min: 2, price: 15.00, amazonSearch: 'crawfish boil paddle stirring spoon' },
+                { name: 'Heat-resistant Gloves', unit: 'pairs', ratio: '2', min: 2, price: 12.00, amazonSearch: 'heat resistant gloves crawfish boil' },
+                { name: 'Crawfish Tongs', unit: '', ratio: 'Math.ceil(peopleCount / 20)', min: 2, price: 8.00, amazonSearch: 'crawfish tongs seafood' },
+                { name: 'Hose with Spray Nozzle', unit: '', ratio: '1', min: 1, price: 35.00, amazonSearch: 'garden hose spray nozzle' },
+                { name: 'Crawfish Washer', unit: '', ratio: '1', min: 1, price: 75.00, amazonSearch: 'crawfish washing machine basket seafood cleaner' },
+                { name: 'Long Mesh Skimmer', unit: '', ratio: '2', min: 2, price: 12.00, amazonSearch: 'long handle mesh skimmer strainer crawfish boil' },
+                { name: 'Fire Extinguisher', unit: '', ratio: '1', min: 1, price: 30.00, amazonSearch: 'fire extinguisher kitchen' }
               ]
             },
             'serving-setup': {
               title: 'Serving Setup',
               items: [
-                { name: 'Folding Tables', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 2, price: 60.00 },
-                { name: 'Seafood Serving Tables', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 80.00 },
-                { name: 'Folding Chairs', unit: '', ratio: 'peopleCount * 1.1', min: 4, price: 25.00 },
-                { name: 'Table Coverings or Butcher Paper Rolls', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 8.00 },
-                { name: 'Crawfish Serving Trays or Baskets', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 15.00 },
-                { name: 'Serving Scoops or Strainers', unit: '', ratio: 'Math.ceil(peopleCount / 12)', min: 2, price: 10.00 },
-                { name: 'Coolers', unit: '', ratio: 'Math.ceil(peopleCount / 12)', min: 3, price: 50.00 },
-                { name: 'Extension Cords', unit: '', ratio: '3', min: 3, price: 15.00 },
-                { name: 'Fans or Heaters', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 45.00 },
-                { name: 'Shade Tents or Canopies', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 80.00 }
+                { name: 'Folding Tables', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 2, price: 60.00, amazonSearch: 'folding table outdoor party' },
+                { name: 'Seafood Serving Tables', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 80.00, amazonSearch: 'seafood serving table outdoor' },
+                { name: 'Folding Chairs', unit: '', ratio: 'peopleCount * 1.1', min: 4, price: 25.00, amazonSearch: 'folding chairs outdoor party' },
+                { name: 'Table Coverings or Butcher Paper Rolls', unit: '', ratio: 'Math.ceil(peopleCount / 10)', min: 3, price: 8.00, amazonSearch: 'butcher paper roll table covering' },
+                { name: 'Crawfish Serving Trays or Baskets', unit: '', ratio: 'Math.ceil(peopleCount / 8)', min: 3, price: 15.00, amazonSearch: 'crawfish serving tray basket seafood' },
+                { name: 'Serving Scoops or Strainers', unit: '', ratio: 'Math.ceil(peopleCount / 12)', min: 2, price: 10.00, amazonSearch: 'serving scoop strainer seafood' },
+                { name: 'Coolers', unit: '', ratio: 'Math.ceil(peopleCount / 12)', min: 3, price: 50.00, amazonSearch: 'cooler ice chest outdoor party' },
+                { name: 'Extension Cords', unit: '', ratio: '3', min: 3, price: 15.00, amazonSearch: 'extension cord outdoor heavy duty' },
+                { name: 'Fans or Heaters', unit: '', ratio: 'Math.ceil(peopleCount / 25)', min: 1, price: 45.00, amazonSearch: 'portable fan outdoor party' },
+                { name: 'Shade Tents or Canopies', unit: '', ratio: 'Math.ceil(peopleCount / 15)', min: 2, price: 80.00, amazonSearch: 'pop up canopy tent shade' }
               ]
             },
             'eating-supplies': {
               title: 'Eating Supplies',
               items: [
-                { name: 'Paper or Plastic Plates', unit: '', ratio: 'peopleCount * 3', min: 10, price: 0.15 },
-                { name: 'Plastic Utensils', unit: '', ratio: 'peopleCount * 1.5', min: 10, price: 0.25 },
-                { name: 'Napkins', unit: 'packs', ratio: 'Math.ceil(peopleCount / 15)', min: 3, price: 4.00 },
-                { name: 'Wet Wipes or Baby Wipes', unit: 'packs', ratio: 'Math.ceil(peopleCount / 6)', min: 3, price: 3.00 },
-                { name: 'Paper Towels', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 2.50 },
-                { name: 'Butter Cups or Dipping Cups', unit: '', ratio: 'peopleCount * 2', min: 10, price: 0.10 },
-                { name: 'Disposable Cups', unit: '', ratio: 'peopleCount * 4', min: 20, price: 0.08 },
-                { name: 'To-go Containers or Zip-top Bags', unit: '', ratio: 'Math.ceil(peopleCount / 3)', min: 10, price: 0.75 }
+                { name: 'Paper or Plastic Plates', unit: '', ratio: 'peopleCount * 3', min: 10, price: 0.15, amazonSearch: 'disposable paper plates party' },
+                { name: 'Plastic Utensils', unit: '', ratio: 'peopleCount * 1.5', min: 10, price: 0.25, amazonSearch: 'disposable plastic utensils party' },
+                { name: 'Napkins', unit: 'packs', ratio: 'Math.ceil(peopleCount / 15)', min: 3, price: 4.00, amazonSearch: 'party napkins disposable' },
+                { name: 'Wet Wipes or Baby Wipes', unit: 'packs', ratio: 'Math.ceil(peopleCount / 6)', min: 3, price: 3.00, amazonSearch: 'wet wipes baby wipes party' },
+                { name: 'Paper Towels', unit: 'rolls', ratio: 'Math.ceil(peopleCount / 8)', min: 4, price: 2.50, amazonSearch: 'paper towels rolls party' },
+                { name: 'Butter Cups or Dipping Cups', unit: '', ratio: 'peopleCount * 2', min: 10, price: 0.10, amazonSearch: 'dipping cups sauce containers disposable' },
+                { name: 'Disposable Cups', unit: '', ratio: 'peopleCount * 4', min: 20, price: 0.08, amazonSearch: 'disposable cups party plastic' },
+                { name: 'To-go Containers or Zip-top Bags', unit: '', ratio: 'Math.ceil(peopleCount / 3)', min: 10, price: 0.75, amazonSearch: 'takeout containers disposable food storage' }
               ]
             },
             'side-dishes': {
@@ -475,14 +481,18 @@
           },
           
           texorleans: {
+            // === FOOD & INGREDIENTS ===
             'must-have': {
               title: 'Boil Essentials',
               items: [
                 { name: 'Live Crawfish', unit: 'lbs', ratio: 'peopleCount * lbsPerPerson', min: 35, priceKey: 'crawfish' },
                 { name: 'Smoked Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.12', min: 1, priceKey: 'sausage' },
                 { name: 'Kielbasa Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
+                { name: 'Andouille Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'sausage' },
                 { name: 'Crawfish Boil Dry Seasoning', unit: 'oz', ratio: 'crawfishLbs * 1.4', min: 8, priceKey: 'cajunSeasoning' },
                 { name: 'Salt', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'salt' },
+                { name: 'Lemon Juice', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 3.50 },
+                { name: 'White Vinegar', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 20)', min: 1, price: 2.50 },
                 { name: 'Corn on the Cob', unit: 'ears', ratio: 'peopleCount * 3', min: 12, priceKey: 'corn' },
                 { name: 'Red Potatoes', unit: 'lbs', ratio: 'crawfishLbs * 0.45', min: 2, priceKey: 'redPotatoes' },
                 { name: 'Yellow Onions', unit: 'lbs', ratio: 'crawfishLbs * 0.18', min: 1, priceKey: 'onions' },
@@ -500,7 +510,6 @@
                 { name: 'Bay Leaves', unit: 'oz', ratio: 'Math.ceil(crawfishLbs / 20)', min: 1, price: 2.50, amazonSearch: 'crawfish boil bay leaves' },
                 { name: 'Paprika', unit: 'oz', ratio: 'peopleCount * 0.3', min: 3, price: 4.00 },
                 { name: 'Celery Seed', unit: 'oz', ratio: 'Math.ceil(crawfishLbs / 25)', min: 1, price: 3.50 },
-                { name: 'Lemon Juice', unit: 'bottles', ratio: 'Math.ceil(peopleCount / 15)', min: 1, price: 3.50 },
                 { name: 'Beer (for boil)', unit: 'cans', ratio: 'Math.ceil(crawfishLbs / 20)', min: 6, price: 1.50 },
                 { name: 'Butter (for serving)', unit: 'lbs', ratio: 'peopleCount * 0.15', min: 1, price: 6.00 }
               ]
@@ -508,10 +517,11 @@
             'extra-proteins': {
               title: 'Extra Proteins & Seafood',
               items: [
-                { name: 'Andouille Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.1', min: 1, priceKey: 'sausage' },
+                { name: 'Boudin Sausage', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
                 { name: 'Bratwurst', unit: 'lbs', ratio: 'crawfishLbs * 0.08', min: 1, priceKey: 'sausage' },
                 { name: 'Shrimp (Medium-Large)', unit: 'lbs', ratio: 'peopleCount * 0.4', min: 2, price: 12.00 },
                 { name: 'Blue Crab or Snow Crab', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 18.00 },
+                { name: 'Mussels', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.50 },
                 { name: 'Chicken Wings', unit: 'lbs', ratio: 'peopleCount * 0.3', min: 2, price: 8.00 }
               ]
             },
@@ -524,7 +534,8 @@
                 { name: 'Orange Halves', unit: 'count', ratio: 'Math.ceil(peopleCount / 3)', min: 2, price: 0.75 },
                 { name: 'Sweet Potatoes', unit: 'lbs', ratio: 'peopleCount * 0.25', min: 2, price: 3.00 },
                 { name: 'Jalapeño Peppers', unit: 'lbs', ratio: 'peopleCount * 0.1', min: 0.5, price: 4.00 },
-                { name: 'Pineapple Chunks', unit: 'lbs', ratio: 'peopleCount * 0.2', min: 1, price: 4.50 }
+                { name: 'Pineapple Chunks', unit: 'lbs', ratio: 'peopleCount * 0.2', min: 1, price: 4.50 },
+                { name: 'Artichoke Hearts', unit: 'count', ratio: 'Math.ceil(peopleCount / 4)', min: 2, price: 1.25 }
               ]
             },
             'equipment-tools': {
@@ -591,13 +602,23 @@
           }
         };
 
-        function buildAdvancedItems({ peopleCount, lbsPerPerson, location, style = 'cajun' }) {
+        function buildAdvancedItems({ peopleCount, lbsPerPerson, location, style = 'cajun', spiceLevel = 3 }) {
           const people = Number(peopleCount);
           const lpp = Number(lbsPerPerson);
           const prices = CONFIG.regionalPricing[location] ?? CONFIG.regionalPricing.louisiana;
           const crawfishLbs = people * lpp;
           const styleItems = ADVANCED_ITEMS[style] ?? ADVANCED_ITEMS.cajun;
           const equipmentSize = getEquipmentSize(crawfishLbs);
+          
+          // Spice level multipliers for seasoning ingredients
+          const spiceMultipliers = {
+            1: 0.7,  // Mild - 30% less seasoning
+            2: 0.85, // Medium - 15% less seasoning  
+            3: 1.0,  // Hot - normal amount (baseline)
+            4: 1.5,  // Extra Hot - 50% more seasoning
+            5: 2.0   // Inferno - 100% more seasoning
+          };
+          const spiceMultiplier = spiceMultipliers[Number(spiceLevel)] || 1.0;
           
           // Helper function to evaluate ratio strings safely
           const evalRatio = (ratioStr) => {
@@ -636,7 +657,18 @@
                 }
               }
               
-              const qty = Math.max(processedItem.min, evalRatio(processedItem.ratio));
+              // Apply spice multiplier to seasoning ingredients
+              const isSeasoningItem = processedItem.name.toLowerCase().includes('season') ||
+                                    processedItem.name.toLowerCase().includes('spice') ||
+                                    processedItem.name.toLowerCase().includes('cajun') ||
+                                    processedItem.name.toLowerCase().includes('salt') ||
+                                    processedItem.name.toLowerCase().includes('pepper') ||
+                                    processedItem.name.toLowerCase().includes('bay') ||
+                                    processedItem.name.toLowerCase().includes('liquid boil') ||
+                                    category.title.toLowerCase().includes('seasoning');
+              
+              let baseQty = Math.max(processedItem.min, evalRatio(processedItem.ratio));
+              const qty = isSeasoningItem ? Math.max(processedItem.min, baseQty * spiceMultiplier) : baseQty;
               const price = processedItem.priceKey ? prices[processedItem.priceKey] : processedItem.price || 0;
               const itemTotal = qty * price;
               
@@ -653,6 +685,54 @@
           
           return { items: allItems, total, categories: Object.keys(styleItems).map(key => styleItems[key]) };
         }
+
+        // Helper function to format quantity display
+        const formatQuantity = (qty, unit) => {
+          const num = Number(qty);
+          const wholeNumberUnits = ['', 'rolls', 'ears', 'bottles', 'jars', 'boxes', 'packs', 'cans', 'bunches', 'dozen', 'servings', 'gallons'];
+          
+          if (wholeNumberUnits.includes(unit) || Number.isInteger(num)) {
+            return Math.round(num).toString();
+          }
+          return num.toFixed(1);
+        };
+
+        // Helper function to categorize items into foodstuffs vs non-foodstuffs
+        const categorizeShoppingList = (items) => {
+          const foodstuffs = [];
+          const nonFoodstuffs = [];
+          
+          const foodKeywords = [
+            'crawfish', 'sausage', 'corn', 'potato', 'onion', 'garlic', 'lemon', 'mushroom', 'celery', 'carrot', 'artichoke',
+            'seasoning', 'salt', 'juice', 'vinegar', 'butter', 'sauce', 'remoulade', 'parsley', 'thyme', 'bay leaves',
+            'beer', 'seltzer', 'hurricane', 'bloody mary', 'margarita', 'whiskey', 'soft drink', 'tea', 'water',
+            'bread', 'coleslaw', 'potato salad', 'hush puppies', 'pickle', 'cracker',
+            'pudding', 'pie', 'brownie', 'cake', 'ice cream'
+          ];
+          
+          const nonFoodKeywords = [
+            'burner', 'propane', 'tank', 'strainer', 'paddle', 'thermometer', 'glove', 'tong', 'bucket', 'cooler',
+            'plate', 'utensil', 'tray', 'napkin', 'towel', 'wipe', 'cup', 'trash', 'bag', 'bin', 'container',
+            'table', 'covering', 'cord', 'extinguisher', 'opener'
+          ];
+          
+          items.forEach(item => {
+            const itemNameLower = item.name.toLowerCase();
+            const isFood = foodKeywords.some(keyword => itemNameLower.includes(keyword)) || 
+                           (item.category && ['Crawfish & Main Ingredients', 'Sides & Extras', 'Desserts', 'Drinks & Ice', 'Main Ingredients', 'Seasonings'].includes(item.category));
+            
+            const isNonFood = nonFoodKeywords.some(keyword => itemNameLower.includes(keyword)) ||
+                              (item.category && ['Cooking Gear & Setup', 'Serving & Dining Supplies'].includes(item.category));
+            
+            if (isFood && !isNonFood) {
+              foodstuffs.push(item);
+            } else {
+              nonFoodstuffs.push(item);
+            }
+          });
+          
+          return { foodstuffs, nonFoodstuffs };
+        };
 
         function buildToupsBoilItems({ peopleCount, lbsPerPerson, location }) {
           const people = Number(peopleCount);
@@ -884,8 +964,9 @@
           const [location, setLocation] = useState('other'); // Default to 'other' for estimates
           const [locationStatus, setLocationStatus] = useState('detecting'); // 'detecting', 'detected', 'denied', 'error'
           const [detectedRegion, setDetectedRegion] = useState('');
-          const [peopleCount, setPeopleCount] = useState(25);
-          const [lbsPerPerson, setLbsPerPerson] = useState(3);
+          const [peopleCount, setPeopleCount] = useState(50);
+          const [lbsPerPerson, setLbsPerPerson] = useState(3.0);
+          const [showExportMenu, setShowExportMenu] = useState(false);
           
           // Regional smart defaults for lbs per person
           const getRegionalDefault = (location) => {
@@ -911,55 +992,53 @@
           return `${baseUrl}?${params.toString()}`;
         };
 
-        // Enhanced scale helpers for people count slider (1-100000 range with better small number precision)
+        // Enhanced scale helpers for people count slider with 50 people at exact middle (slider position 50)
           const peopleCountToSlider = (people) => {
-            // Convert people count (1-100000) to slider value (0-100)
-            if (people <= 1) return 0;
+            // Convert people count to slider value (0-100) with 50 people at position 50
+            if (people <= 0) return 0;
             if (people >= 100000) return 100;
             
-            // Use three-phase scale: linear for 1-50, then logarithmic for 50-100000
             if (people <= 50) {
-              // Linear scale for 1-50 (uses first 60% of slider)
-              return Math.round(((people - 1) / (50 - 1)) * 60);
+              // Linear scale for 0-50 people (uses first 50% of slider: 0-50)
+              return Math.round((people / 50) * 50);
             } else {
-              // Logarithmic scale for 50-100000 (uses last 40% of slider)
+              // Logarithmic scale for 50-100000 people (uses last 50% of slider: 50-100)
               const minLog = Math.log(50);
               const maxLog = Math.log(100000);
-              const logValue = ((Math.log(people) - minLog) / (maxLog - minLog)) * 40;
-              return Math.round(60 + logValue);
+              const logValue = ((Math.log(people) - minLog) / (maxLog - minLog)) * 50;
+              return Math.round(50 + logValue);
             }
           };
 
           const sliderToPeopleCount = (sliderValue) => {
-            // Convert slider value (0-100) to people count (1-100000)
-            if (sliderValue <= 0) return 1;
+            // Convert slider value (0-100) to people count with 50 people at position 50
+            if (sliderValue <= 0) return 0;
             if (sliderValue >= 100) return 100000;
             
-            // Use three-phase scale: linear for 1-50, then logarithmic for 50-100000
-            if (sliderValue <= 60) {
-              // Linear scale for 1-50 (first 60% of slider)
-              return Math.round(1 + (sliderValue / 60) * (50 - 1));
+            if (sliderValue <= 50) {
+              // Linear scale for 0-50 people (first 50% of slider)
+              return Math.round((sliderValue / 50) * 50);
             } else {
-              // Logarithmic scale for 50-100000 (last 40% of slider)
+              // Logarithmic scale for 50-100000 people (last 50% of slider)
               const minLog = Math.log(50);
               const maxLog = Math.log(100000);
-              const logValue = minLog + ((sliderValue - 60) / 40) * (maxLog - minLog);
+              const logValue = minLog + ((sliderValue - 50) / 50) * (maxLog - minLog);
               return Math.round(Math.exp(logValue));
             }
           };
           
           const validatePeopleCount = (value) => {
-            const num = Math.max(1, Number(value) || 1);
+            const num = Math.max(0, Number(value) || 0);
             return num;
           };
 
           const validateLbsPerPerson = (value) => {
-            const num = Math.max(0.5, Math.min(10, Number(value) || 0.5));
+            const num = Math.max(0, Math.min(10, Number(value) || 0));
             return num;
           };
 
           const validateSpiceLevel = (value) => {
-            const num = Math.max(1, Math.min(4, Number(value) || 3));
+            const num = Math.max(1, Math.min(5, Number(value) || 3));
             return num;
           };
 
@@ -982,6 +1061,7 @@
           const [itemToggles, setItemToggles] = useState({});
           const [error, setError] = useState(null);
           const [amazonSectionExpanded, setAmazonSectionExpanded] = useState(false);
+          const [musicSectionExpanded, setMusicSectionExpanded] = useState(false);
           const [isInitialized, setIsInitialized] = useState(false);
           const [actionMode, setActionMode] = useState('expand'); // 'expand', 'collapse', 'reset'
           const [categoryExpanded, setCategoryExpanded] = useState({
@@ -1107,6 +1187,9 @@
             setItemMode('enable'); // Reset the cycling button to 'enable' state
           };
 
+
+
+
           // Music platform search links for zydeco
           const musicLinks = {
             spotify: {
@@ -1133,8 +1216,10 @@
 
 
           // Compute current spice accent color and expose as CSS var "--spice" for uniform theming
-          const spiceColor = SPICE_COLORS[Number(spiceLevel)] || '#FF7043';
-          const spiceStyle = { ['--spice']: spiceColor };
+          const spiceColor = SPICE_COLORS[Number(spiceLevel)] || SPICE_COLORS[3];
+          const spiceStyle = { 
+            ['--spice']: spiceColor
+          };
 
           // Geolocation detection with localStorage persistence
           useEffect(() => {
@@ -1228,7 +1313,8 @@
                 peopleCount: validPeopleCount, 
                 lbsPerPerson: validLbsPerPerson, 
                 location, 
-                style 
+                style,
+                spiceLevel 
               });
               const items = result.items;
               const total = result.total;
@@ -1265,7 +1351,7 @@
               setShoppingList([]);
               setTotalCost(0);
             }
-          }, [peopleCount, lbsPerPerson, location, style]);
+          }, [peopleCount, lbsPerPerson, location, style, spiceLevel]);
 
           // Update total when toggles change
           useEffect(() => {
@@ -1311,7 +1397,36 @@
             setItemToggles(allEnabled);
           };
 
-          const exportShoppingList = () => {
+          // Modern toast notification system
+          const showToast = (message, type = 'success') => {
+            const toast = document.createElement('div');
+            toast.className = 'fixed top-4 right-4 z-50 p-4 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full';
+            toast.style.background = type === 'success' 
+              ? `linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice))`
+              : 'linear-gradient(135deg, #dc3545, #b02a37)';
+            toast.style.color = '#0b0b0b';
+            toast.style.fontWeight = '600';
+            toast.style.boxShadow = `0 0 15px color-mix(in srgb, var(--spice) 40%, transparent), 0 8px 32px rgba(0,0,0,0.2)`;
+            toast.style.border = type === 'success' 
+              ? `1px solid color-mix(in srgb, var(--spice) 60%, transparent)`
+              : '1px solid #dc3545';
+            toast.textContent = message;
+            document.body.appendChild(toast);
+            
+            // Animate in
+            setTimeout(() => {
+              toast.style.transform = 'translateX(0)';
+            }, 100);
+            
+            // Animate out and remove
+            setTimeout(() => {
+              toast.style.transform = 'translateX(full)';
+              setTimeout(() => document.body.removeChild(toast), 300);
+            }, 3000);
+          };
+
+          // Modern export functions with multiple formats
+          const exportAsText = () => {
             const enabledItems = shoppingList.filter(item => itemToggles[item.name] === true);
             const listText = [
               `CRAWFISH BOIL SHOPPING LIST`,
@@ -1328,7 +1443,7 @@
             ].join('\n');
             
             navigator.clipboard.writeText(listText).then(() => {
-              alert('Shopping list copied to clipboard!');
+              showToast('Shopping list copied to clipboard!');
             }).catch(() => {
               // Fallback for older browsers
               const textArea = document.createElement('textarea');
@@ -1337,9 +1452,103 @@
               textArea.select();
               document.execCommand('copy');
               document.body.removeChild(textArea);
-              alert('Shopping list copied to clipboard!');
+              showToast('Shopping list copied to clipboard!');
             });
           };
+
+          const exportAsCSV = () => {
+            const enabledItems = shoppingList.filter(item => itemToggles[item.name] === true);
+            const csvData = [
+              ['Item', 'Quantity', 'Unit', 'Unit Price', 'Total Price'],
+              ...enabledItems.map(item => [
+                item.name,
+                formatQuantity(item.qty, item.unit),
+                item.unit,
+                `$${Number(item.price).toFixed(2)}`,
+                `$${(Number(item.qty) * Number(item.price)).toFixed(2)}`
+              ]),
+              ['', '', '', 'Total:', `$${Number(totalCost).toFixed(2)}`]
+            ];
+            
+            const csvContent = csvData.map(row => 
+              row.map(cell => `"${cell}"`).join(',')
+            ).join('\n');
+            
+            const blob = new Blob([csvContent], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `crawfish-boil-list-${peopleCount}people.csv`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('CSV file downloaded!');
+          };
+
+          const exportAsJSON = () => {
+            const enabledItems = shoppingList.filter(item => itemToggles[item.name] === true);
+            const jsonData = {
+              metadata: {
+                title: "Crawfish Boil Shopping List",
+                peopleCount,
+                lbsPerPerson,
+                totalCost: Number(totalCost).toFixed(2),
+                generated: new Date().toISOString()
+              },
+              items: enabledItems.map(item => ({
+                name: item.name,
+                quantity: formatQuantity(item.qty, item.unit),
+                unit: item.unit,
+                unitPrice: Number(item.price).toFixed(2),
+                totalPrice: (Number(item.qty) * Number(item.price)).toFixed(2)
+              }))
+            };
+            
+            const blob = new Blob([JSON.stringify(jsonData, null, 2)], { type: 'application/json' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `crawfish-boil-list-${peopleCount}people.json`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showToast('JSON file downloaded!');
+          };
+
+          const shareList = async () => {
+            const enabledItems = shoppingList.filter(item => itemToggles[item.name] === true);
+            const listText = [
+              `CRAWFISH BOIL SHOPPING LIST`,
+              `For ${peopleCount} people (${lbsPerPerson} lbs per person)`,
+              ``,
+              ...enabledItems.map(item => 
+                `• ${formatQuantity(item.qty, item.unit)} ${item.unit} ${item.name} - $${(Number(item.qty) * Number(item.price)).toFixed(2)}`
+              ),
+              ``,
+              `Total: $${Number(totalCost).toFixed(2)}`
+            ].join('\n');
+
+            if (navigator.share) {
+              try {
+                await navigator.share({
+                  title: 'Crawfish Boil Shopping List',
+                  text: listText
+                });
+                showToast('List shared successfully!');
+              } catch (err) {
+                if (err.name !== 'AbortError') {
+                  exportAsText(); // Fallback to copy
+                }
+              }
+            } else {
+              exportAsText(); // Fallback to copy
+            }
+          };
+
+          // Legacy function name for backward compatibility
+          const exportShoppingList = exportAsText;
 
           const renderShoppingItem = (item, index, keyPrefix = '') => {
             // Don't render anything until properly initialized
@@ -1355,7 +1564,7 @@
             
             return React.createElement('li', {
               key: `${keyPrefix}${index}`,
-              className: `bg-white/5 p-3 sm:p-3 rounded-lg flex items-center gap-3 mobile-item-row ${!isEnabled ? 'mg-item-disabled' : ''}`
+              className: `bg-white/5 p-2 sm:p-3 rounded-lg flex items-center gap-2 sm:gap-3 mobile-item-row ${!isEnabled ? 'mg-item-disabled' : ''}`
             },
               React.createElement('button', {
                 className: buttonClasses,
@@ -1407,36 +1616,157 @@
 
           const printShoppingList = () => {
             const enabledItems = shoppingList.filter(item => itemToggles[item.name] === true);
+            const categorized = categorizeShoppingList(enabledItems);
+            
             const printWindow = window.open('', '_blank');
             const printContent = `
               <html>
                 <head>
                   <title>Crawfish Boil Shopping List</title>
                   <style>
-                    body { font-family: Arial, sans-serif; padding: 20px; max-width: 600px; }
-                    h1 { color: #333; border-bottom: 2px solid #FF3D00; }
-                    .item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid #eee; }
-                    .total { font-weight: bold; font-size: 1.2em; margin-top: 20px; }
-                    .disclaimer { color: #666; font-style: italic; margin-top: 20px; font-size: 0.9em; }
+                    @media print {
+                      body { margin: 0; }
+                      .no-print { display: none; }
+                    }
+                    body { 
+                      font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; 
+                      padding: 30px; 
+                      max-width: 800px; 
+                      margin: 0 auto;
+                      line-height: 1.6;
+                      color: #1f2937;
+                    }
+                    h1 { 
+                      color: #dc2626; 
+                      border-bottom: 3px solid #dc2626; 
+                      padding-bottom: 10px;
+                      font-family: 'Bungee', cursive;
+                      font-size: 2em;
+                      text-align: center;
+                    }
+                    h2 {
+                      color: #374151;
+                      margin-top: 30px;
+                      margin-bottom: 15px;
+                      font-size: 1.3em;
+                      border-left: 4px solid #f59e0b;
+                      padding-left: 12px;
+                    }
+                    .meta { 
+                      text-align: center; 
+                      font-size: 1.1em; 
+                      color: #6b7280; 
+                      margin-bottom: 30px;
+                    }
+                    .section {
+                      margin-bottom: 25px;
+                    }
+                    .item { 
+                      display: flex; 
+                      justify-content: space-between; 
+                      align-items: center;
+                      padding: 12px 15px; 
+                      border-bottom: 1px solid #e5e7eb;
+                      background: #f9fafb;
+                      margin-bottom: 2px;
+                    }
+                    .item:hover {
+                      background: #f3f4f6;
+                    }
+                    .item-name {
+                      font-weight: 500;
+                    }
+                    .item-qty {
+                      color: #6b7280;
+                      font-size: 0.9em;
+                    }
+                    .item-price {
+                      font-weight: 600;
+                      color: #059669;
+                    }
+                    .total { 
+                      font-weight: bold; 
+                      font-size: 1.3em; 
+                      margin-top: 25px; 
+                      padding: 15px;
+                      background: #fef3c7;
+                      border: 2px solid #f59e0b;
+                      border-radius: 8px;
+                      text-align: center;
+                    }
+                    .disclaimer { 
+                      color: #6b7280; 
+                      font-style: italic; 
+                      margin-top: 20px; 
+                      font-size: 0.9em;
+                      text-align: center;
+                    }
+                    .print-btn {
+                      background: #dc2626;
+                      color: white;
+                      border: none;
+                      padding: 12px 24px;
+                      border-radius: 6px;
+                      font-size: 1em;
+                      cursor: pointer;
+                      margin: 20px auto;
+                      display: block;
+                    }
+                    .print-btn:hover {
+                      background: #b91c1c;
+                    }
                   </style>
+                  <link href="https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
                 </head>
                 <body>
-                  <h1>Crawfish Boil Shopping List</h1>
-                  <p><strong>For ${peopleCount} people (${lbsPerPerson} lbs per person)</strong></p>
-                  ${enabledItems.map(item => 
-                    `<div class="item">
-                      <span>${formatQuantity(item.qty, item.unit)} ${item.unit} ${item.name}</span>
-                      <span>$${(Number(item.qty) * Number(item.price)).toFixed(2)}</span>
-                    </div>`
-                  ).join('')}
-                  <div class="total">Total: $${Number(totalCost).toFixed(2)}</div>
-                  <div class="disclaimer">* Prices vary by season and location</div>
+                  <h1>🦞 Crawfish Boil Shopping List</h1>
+                  <div class="meta">
+                    <strong>For ${peopleCount} people (${lbsPerPerson} lbs per person)</strong><br>
+                    Generated on ${new Date().toLocaleDateString()}
+                  </div>
+                  
+                  <div class="section">
+                    <h2>🥘 Food & Ingredients</h2>
+                    ${categorized.foodstuffs.map(item => 
+                      `<div class="item">
+                        <div>
+                          <div class="item-name">${item.name}</div>
+                          <div class="item-qty">${formatQuantity(item.qty, item.unit)} ${item.unit}</div>
+                        </div>
+                        <div class="item-price">$${(Number(item.qty) * Number(item.price)).toFixed(2)}</div>
+                      </div>`
+                    ).join('')}
+                  </div>
+                  
+                  <div class="section">
+                    <h2>🔧 Equipment & Supplies</h2>
+                    ${categorized.nonFoodstuffs.map(item => 
+                      `<div class="item">
+                        <div>
+                          <div class="item-name">${item.name}</div>
+                          <div class="item-qty">${formatQuantity(item.qty, item.unit)} ${item.unit}</div>
+                        </div>
+                        <div class="item-price">$${(Number(item.qty) * Number(item.price)).toFixed(2)}</div>
+                      </div>`
+                    ).join('')}
+                  </div>
+                  
+                  <div class="total">
+                    Total Cost: $${Number(totalCost).toFixed(2)}
+                  </div>
+                  
+                  <div class="disclaimer">
+                    * Prices vary by season and location<br>
+                    Generated by Crawfish Boil Calculator
+                  </div>
+                  
+                  <button class="print-btn no-print" onclick="window.print()">🖨️ Print This List</button>
                 </body>
               </html>
             `;
             printWindow.document.write(printContent);
             printWindow.document.close();
-            printWindow.print();
+            showToast('Print preview opened!');
           };
 
           return React.createElement(React.Fragment, {},
@@ -1465,6 +1795,27 @@
               .mg-label { color: #f5f5f5; font-weight: 700; }
               .mg-slider { accent-color: var(--spice); box-shadow: 0 0 10px color-mix(in srgb, var(--spice) 35%, transparent); border-radius: 999px; }
               .mg-chip { background: color-mix(in srgb, var(--spice) 18%, transparent); color: var(--spice); border: 1px solid color-mix(in srgb, var(--spice) 60%, transparent); }
+              /* Inferno pulsing animation */
+              @keyframes inferno-pulse {
+                0%, 100% { 
+                  box-shadow: 0 0 10px color-mix(in srgb, var(--spice) 35%, transparent), 
+                             0 0 20px color-mix(in srgb, var(--spice) 15%, transparent);
+                }
+                50% { 
+                  box-shadow: 0 0 15px color-mix(in srgb, var(--spice) 50%, transparent), 
+                             0 0 30px color-mix(in srgb, var(--spice) 25%, transparent),
+                             0 0 40px color-mix(in srgb, #8B0040 20%, transparent);
+                }
+              }
+              .mg-slider.inferno-pulse { 
+                animation: inferno-pulse 2s ease-in-out infinite;
+              }
+              .mg-border.inferno-pulse {
+                animation: inferno-pulse 2.5s ease-in-out infinite;
+              }
+              .mg-chip.inferno-pulse {
+                animation: inferno-pulse 1.8s ease-in-out infinite;
+              }
               .no-spinner::-webkit-outer-spin-button,
               .no-spinner::-webkit-inner-spin-button {
                 -webkit-appearance: none;
@@ -1523,18 +1874,28 @@
 
               /* Mobile responsive improvements */
               @media (max-width: 640px) {
-                .mg-card { margin: 0.5rem; max-width: calc(100vw - 1rem); }
-                .mg-item-text { font-size: 15px; line-height: 1.4; }
+                .mg-card { margin: 0.25rem; max-width: calc(100vw - 0.5rem); }
+                .mg-item-text { font-size: 15px; line-height: 1.3; }
                 .mg-price { font-size: 14px; }
-                .mg-gradient-text { line-height: 1.2; }
+                .mg-gradient-text { line-height: 1.1; font-size: 1.5rem; }
                 .mg-toggle { gap: 0.25rem; }
-                .mg-toggle > button { padding: 0.75rem 1rem; font-size: 14px; min-height: 44px; }
-                input[type="range"] { height: 38px; }
-                .mobile-button-group { flex-direction: column; gap: 0.5rem; }
-                .mobile-button-group button { width: 100%; min-height: 44px; font-size: 14px; }
-                .mobile-category-header { padding: 0.75rem 0.5rem; }
-                .mobile-category-title { font-size: 1.125rem; min-height: 44px; }
-                .mobile-item-row { padding: 0.75rem; gap: 0.75rem; }
+                .mg-toggle > button { padding: 0.6rem 0.8rem; font-size: 14px; min-height: 44px; }
+                input[type="range"] { height: 36px; }
+                .mobile-button-group { flex-direction: column; gap: 0.375rem; }
+                .mobile-button-group button { width: 100%; min-height: 44px; font-size: 14px; padding: 0.6rem 1rem; }
+                .mobile-category-header { padding: 0.5rem 0.25rem; }
+                .mobile-category-title { font-size: 1rem; min-height: 44px; }
+                .mobile-item-row { padding: 0.5rem; gap: 0.5rem; }
+                
+                /* Tighter spacing for inputs */
+                .mg-input-enhanced { padding: 10px 12px; font-size: 16px; }
+                
+                /* Compact sliders */
+                input[type="range"] { margin: 0.25rem 0; }
+                
+                /* Smaller text on mobile for better density */
+                .mg-label { font-size: 14px; }
+                .mg-chip { font-size: 12px; padding: 0.25rem 0.5rem; }
               }
 
               /* Touch-friendly interactive elements */
@@ -1546,6 +1907,172 @@
               /* Prevent zoom on input focus for iOS */
               input, select, textarea {
                 font-size: 16px !important;
+              }
+
+              /* Ultra-smooth mobile experience */
+              @media (max-width: 640px) {
+                /* Reduce animation intensity on mobile for better performance */
+                .inferno-pulse {
+                  animation-duration: 3s !important;
+                }
+                
+                /* Tighter header spacing */
+                h1 { font-size: 1.875rem; line-height: 1.2; margin-bottom: 0.5rem; }
+                h2 { font-size: 1.25rem; line-height: 1.3; }
+                
+                /* Streamlined total display */
+                .total-display { font-size: 1.25rem; margin-top: 1rem; }
+                
+                /* Sticky controls for mobile */
+                .mobile-sticky-controls {
+                  position: sticky;
+                  top: 0;
+                  z-index: 10;
+                  background: rgba(15, 15, 15, 0.95);
+                  backdrop-filter: blur(10px);
+                  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+                  margin: -0.5rem -0.5rem 1rem -0.5rem;
+                  padding: 0.75rem;
+                  border-radius: 0 0 1rem 1rem;
+                }
+              }
+
+              /* Enhanced visual hierarchy */
+              .section-divider {
+                margin: 2rem 0 1.5rem 0;
+                padding: 0.5rem 0;
+                border-bottom: 2px solid color-mix(in srgb, var(--spice) 30%, transparent);
+                position: relative;
+              }
+              
+              .section-divider::before {
+                content: '';
+                position: absolute;
+                bottom: -2px;
+                left: 0;
+                width: 60px;
+                height: 2px;
+                background: var(--spice);
+                box-shadow: 0 0 8px color-mix(in srgb, var(--spice) 50%, transparent);
+              }
+              
+
+              /* Desktop two-column layout */
+              @media (min-width: 1024px) {
+                .desktop-layout {
+                  display: grid;
+                  grid-template-columns: 400px 1fr;
+                  gap: 2rem;
+                  max-width: 1400px;
+                  margin: 0 auto;
+                }
+                
+                .controls-column {
+                  position: sticky;
+                  top: 1rem;
+                  height: fit-content;
+                }
+                
+                .results-column {
+                  min-height: 100vh;
+                }
+              }
+
+
+              /* Loading and transition states */
+              .fade-in {
+                animation: fadeIn 0.5s ease-in-out;
+              }
+              
+              @keyframes fadeIn {
+                from { opacity: 0; transform: translateY(10px); }
+                to { opacity: 1; transform: translateY(0); }
+              }
+              
+              .loading-shimmer {
+                background: linear-gradient(90deg, 
+                  rgba(255,255,255,0.1) 25%, 
+                  rgba(255,255,255,0.2) 50%, 
+                  rgba(255,255,255,0.1) 75%);
+                background-size: 200% 100%;
+                animation: shimmer 1.5s infinite;
+              }
+              
+              @keyframes shimmer {
+                0% { background-position: -200% 0; }
+                100% { background-position: 200% 0; }
+              }
+              
+              /* Enhanced interactions */
+              .interactive-hover {
+                transition: all 0.2s ease;
+              }
+              
+              .interactive-hover:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+              }
+
+              
+
+              /* Theme-adaptive styles */
+              .themed-element {
+                background: var(--theme-card-bg, #0f0f0f) !important;
+                color: var(--theme-text, #f5f5f5) !important;
+                border-color: var(--theme-border, rgba(255,255,255,0.1)) !important;
+              }
+              
+              .themed-bg {
+                background: var(--theme-bg, #0b0b0b) !important;
+              }
+
+              /* Override hardcoded colors */
+              .mg-label {
+                color: var(--theme-text, #f5f5f5) !important;
+              }
+              
+              .mg-chip {
+                background: color-mix(in srgb, var(--spice) 18%, transparent) !important;
+                color: var(--spice) !important;
+                border: 1px solid color-mix(in srgb, var(--spice) 60%, transparent) !important;
+              }
+              
+              .mg-toggle .inactive {
+                background: var(--theme-accent, rgba(255,255,255,0.05)) !important;
+                color: var(--theme-text-secondary, #eee) !important;
+              }
+              
+              .mg-toggle .active {
+                background: linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice)) !important;
+                color: var(--theme-bg, #0b0b0b) !important;
+              }
+              
+              .mg-item-text {
+                color: var(--theme-text, #f5f5f5) !important;
+              }
+              
+              .mg-price {
+                color: var(--spice) !important;
+              }
+              
+              .bg-white\\/5 {
+                background: var(--theme-accent, rgba(255,255,255,0.05)) !important;
+              }
+              
+              .text-gray-100 {
+                color: var(--theme-text, #f5f5f5) !important;
+              }
+              
+              .text-gray-300 {
+                color: var(--theme-text-secondary, #ccc) !important;
+              }
+              
+              .text-gray-400 {
+                color: var(--theme-text-secondary, #999) !important;
+              }
+              
+              .border-white\\/10 {
+                border-color: var(--theme-border, rgba(255,255,255,0.1)) !important;
               }
               
               .mg-toggle > button {
@@ -1589,15 +2116,23 @@
             `),
 
             React.createElement('div', {
-              className: "font-body flex justify-center items-start bg-[var(--ember-black)] text-gray-100 p-2 sm:p-3",
-              style: { minHeight: '100vh', margin: 0, padding: '0.5rem', ...spiceStyle }
+              className: `font-body flex justify-center items-start p-1 sm:p-3`,
+              style: { 
+                minHeight: '100vh', 
+                margin: 0, 
+                padding: '0.25rem', 
+                background: '#0b0b0b',
+                color: '#f5f5f5',
+                ...spiceStyle 
+              }
             },
               React.createElement(Card, {
-                className: "mg-card mg-border max-w-2xl w-full rounded-xl p-3 sm:p-4 md:p-5",
+                className: `mg-card mg-border max-w-2xl w-full rounded-xl p-2 sm:p-3 md:p-4${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}`,
                 role: "main",
                 "aria-label": "Crawfish Boil Calculator"
               },
                 React.createElement(CardContent, {},
+                  // Header
                   React.createElement('div', { className: "text-center mb-4" },
                     React.createElement('h1', {
                       className: "font-display text-lg sm:text-xl md:text-2xl lg:text-3xl mg-gradient-text drop-shadow flex items-center justify-center gap-1 sm:gap-2 md:gap-3"
@@ -1611,7 +2146,10 @@
                   // Style selector
                   React.createElement('div', { className: "mb-4" },
                     React.createElement('label', { className: "mg-label block mb-2" }, "Boil Style"),
-                    React.createElement('div', { className: "mg-toggle flex gap-1 sm:gap-2 bg-black/20 p-1 rounded-xl" },
+                    React.createElement('div', { 
+                      className: "mg-toggle flex gap-1 sm:gap-2 p-1 rounded-xl",
+                      style: { background: 'rgba(255,255,255,0.05)' }
+                    },
                       React.createElement('button', {
                         className: style === 'cajun' ? 'active' : 'inactive',
                         onClick: () => setStyle('cajun')
@@ -1629,7 +2167,11 @@
 
                   // Location Status Indicator - More compact
                   locationStatus !== 'detecting' && React.createElement('div', { 
-                    className: "mb-3 p-2 rounded bg-black/20 text-center text-xs text-gray-400" 
+                    className: "mb-3 p-2 rounded text-center text-xs",
+                    style: { 
+                      background: 'rgba(255,255,255,0.05)',
+                      color: '#eee'
+                    }
                   },
                     locationStatus === 'detected' && React.createElement('span', { className: "text-green-400" }, `📍 ${detectedRegion} pricing`),
                     locationStatus === 'denied' && React.createElement('span', { className: "text-yellow-400" }, "📍 Estimated pricing (location denied)"),
@@ -1638,15 +2180,26 @@
 
                   // Error Display
                   error && React.createElement('div', { 
-                    className: "mb-4 p-3 rounded-lg bg-red-900/20 border border-red-500/30" 
+                    className: "mb-4 p-3 rounded-lg border",
+                    style: {
+                      background: themeMode === 'light' || themeMode === 'bw' ? 'rgba(220, 53, 69, 0.1)' : 'rgba(220, 53, 69, 0.2)',
+                      borderColor: themeMode === 'light' || themeMode === 'bw' ? 'rgba(220, 53, 69, 0.4)' : 'rgba(220, 53, 69, 0.3)'
+                    }
                   },
                     React.createElement('div', { className: "flex items-center gap-2" },
-                      React.createElement('span', { className: "text-red-400 text-lg" }, "⚠️"),
-                      React.createElement('div', { className: "text-sm text-red-300" }, error)
+                      React.createElement('span', { 
+                        className: "text-lg",
+                        style: { color: themeMode === 'bw' ? '#666' : '#dc3545' }
+                      }, "⚠️"),
+                      React.createElement('div', { 
+                        className: "text-sm",
+                        style: { color: themeMode === 'bw' ? '#333' : themeMode === 'light' ? '#dc3545' : '#f8d7da' }
+                      }, error)
                     )
                   ),
 
-                  React.createElement('div', { className: "space-y-3" },
+
+                  React.createElement('div', { className: "space-y-2 sm:space-y-3" },
 
                     React.createElement('div', {},
                       React.createElement('div', { className: "flex items-center justify-between mb-1" },
@@ -1655,7 +2208,7 @@
                           React.createElement('input', { 
                             type: 'number',
                             value: peopleCount,
-                            onChange: (e) => setValidatedPeopleCount(Number(e.target.value) || 1),
+                            onChange: (e) => setValidatedPeopleCount(Number(e.target.value) || 0),
                             className: "bg-transparent border-0 outline-none text-center font-semibold no-spinner min-h-[32px] sm:min-h-auto",
                             style: { 
                               color: 'inherit',
@@ -1677,9 +2230,9 @@
                         max: "100",
                         value: peopleCountToSlider(peopleCount),
                         onChange: (e) => setValidatedPeopleCount(sliderToPeopleCount(Number(e.target.value))),
-                        className: "mg-slider w-full mb-3",
+                        className: `mg-slider w-full mb-2 sm:mb-3${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}`,
                         "aria-label": `Number of people: ${peopleCount}`,
-                        "aria-valuemin": "1",
+                        "aria-valuemin": "0",
                         "aria-valuemax": "100000",
                         "aria-valuenow": peopleCount,
                         "aria-valuetext": `${peopleCount} people`
@@ -1693,10 +2246,10 @@
                           React.createElement('input', { 
                             type: 'number',
                             value: lbsPerPerson,
-                            onChange: (e) => setLbsPerPerson(Number(e.target.value) || 1),
+                            onChange: (e) => setLbsPerPerson(Number(e.target.value) || 0),
                             className: "bg-transparent border-0 outline-none text-center w-12 font-semibold no-spinner min-h-[32px] sm:min-h-auto",
                             style: { color: 'inherit' },
-                            min: 0.5,
+                            min: 0,
                             max: 10,
                             step: 0.5,
                             onBlur: (e) => {
@@ -1714,14 +2267,14 @@
                       React.createElement('input', {
                         type: "range",
                         min: "0.5",
-                        max: "8",
+                        max: "5.5",
                         step: "0.5",
                         value: Number(lbsPerPerson),
                         onChange: (e) => setValidatedLbsPerPerson(Number(e.target.value)),
-                        className: "mg-slider w-full mb-3",
+                        className: `mg-slider w-full mb-2 sm:mb-3${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}`,
                         "aria-label": `Pounds per person: ${lbsPerPerson}`,
-                        "aria-valuemin": "0.5",
-                        "aria-valuemax": "8",
+                        "aria-valuemin": "0",
+                        "aria-valuemax": "5.5",
                         "aria-valuenow": lbsPerPerson,
                         "aria-valuetext": `${lbsPerPerson} pounds per person`
                       }),
@@ -1730,40 +2283,61 @@
                     React.createElement('div', {},
                       React.createElement('div', { className: "flex items-center justify-between mb-1" },
                         React.createElement('label', { className: "mg-label" }, "Spice Level"),
-                        React.createElement('span', { className: "mg-chip px-2 py-0.5 rounded text-sm font-semibold" }, CONFIG.spiceLevels[Number(spiceLevel)].name)
+                        React.createElement('span', { className: `mg-chip px-2 py-0.5 rounded text-sm font-semibold${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}` }, CONFIG.spiceLevels[Number(spiceLevel)].name)
                       ),
                       React.createElement('input', {
                         type: "range",
                         min: "1",
-                        max: "4",
+                        max: "5",
                         value: Number(spiceLevel),
                         onChange: (e) => setValidatedSpiceLevel(Number(e.target.value)),
-                        className: "mg-slider w-full",
+                        className: `mg-slider w-full${Number(spiceLevel) === 5 ? ' inferno-pulse' : ''}`,
                         "aria-label": `Spice level: ${CONFIG.spiceLevels[spiceLevel].name}`,
                         "aria-valuemin": "1",
-                        "aria-valuemax": "4",
+                        "aria-valuemax": "5",
                         "aria-valuenow": spiceLevel,
                         "aria-valuetext": CONFIG.spiceLevels[spiceLevel].name
                       })
                     ),
 
-                  React.createElement('div', { className: "mt-6 border-t border-white/10 pt-4" },
-                    React.createElement('div', { className: "flex items-center justify-between mb-3 flex-col sm:flex-row gap-3 sm:gap-0" },
-                      React.createElement('h2', { className: "font-display text-lg sm:text-xl md:text-2xl mg-gradient-text" }, "Shopping List"),
+                  React.createElement('div', { className: "section-divider" },
+                    React.createElement('h2', { className: "font-display text-lg sm:text-xl md:text-2xl mg-gradient-text" }, "Shopping List")
+                  ),
+                  React.createElement('div', { className: "mt-4" },
+                    React.createElement('div', { className: "flex items-center justify-between mb-2 sm:mb-3 flex-col sm:flex-row gap-2 sm:gap-0" },
+                      React.createElement('div', {}), // Empty div to maintain layout
                       React.createElement('div', { className: "flex gap-2 sm:flex-row flex-col mobile-button-group" },
                         React.createElement('button', {
                           onClick: handleCyclingAction,
-                          className: "px-3 py-2 sm:py-1 rounded bg-blue-600 hover:bg-blue-700 text-white transition-colors text-sm min-h-[44px] sm:min-h-auto",
+                          className: "mg-btn-enhanced px-3 py-2 sm:py-1 rounded-xl transition-all text-sm min-h-[44px] sm:min-h-auto font-semibold",
+                          style: {
+                            background: `linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice))`,
+                            color: 'var(--theme-bg)',
+                            border: '1px solid var(--spice)',
+                            boxShadow: '0 0 8px color-mix(in srgb, var(--spice) 40%, transparent)'
+                          },
                           title: "Click to cycle: Expand All → Collapse All"
                         }, getActionButtonText()),
                         React.createElement('button', {
                           onClick: handleItemCycling,
-                          className: "px-3 py-2 sm:py-1 rounded bg-emerald-600 hover:bg-emerald-700 text-white transition-colors text-sm min-h-[44px] sm:min-h-auto",
+                          className: "mg-btn-enhanced px-3 py-2 sm:py-1 rounded-xl transition-all text-sm min-h-[44px] sm:min-h-auto font-semibold",
+                          style: {
+                            background: 'var(--theme-accent)',
+                            color: 'var(--theme-text)',
+                            border: '1px solid var(--theme-border)',
+                            boxShadow: '0 0 4px color-mix(in srgb, var(--theme-text) 20%, transparent)'
+                          },
                           title: "Click to cycle: Enable All → Disable All"
                         }, getItemButtonText()),
                         React.createElement('button', {
                           onClick: handleResetItems,
-                          className: "px-3 py-2 sm:py-1 rounded bg-orange-600 hover:bg-orange-700 text-white transition-colors text-sm min-h-[44px] sm:min-h-auto",
+                          className: "mg-btn-enhanced px-3 py-2 sm:py-1 rounded-xl transition-all text-sm min-h-[44px] sm:min-h-auto font-semibold",
+                          style: {
+                            background: '#DC2626',
+                            color: 'white',
+                            border: '1px solid #DC2626',
+                            boxShadow: '0 0 4px color-mix(in srgb, #DC2626 30%, transparent)'
+                          },
                           title: "Reset to default (only Boil Essentials enabled)"
                         }, "Reset")
                       )
@@ -1780,10 +2354,10 @@
                         
                         return React.createElement('div', {
                           key: categoryKey,
-                          className: "mb-4"
+                          className: "mb-2 sm:mb-4"
                         },
                           React.createElement('div', { 
-                            className: "flex items-center justify-between mb-3 mobile-category-header"
+                            className: "flex items-center justify-between mb-2 sm:mb-3 mobile-category-header"
                           },
                             React.createElement('div', { className: "flex items-center gap-2" },
                               React.createElement('button', {
@@ -1800,12 +2374,14 @@
                               }, category.title)
                             )
                           ),
-                          categoryExpanded[categoryKey] && React.createElement('ul', { className: "space-y-1" },
+                          categoryExpanded[categoryKey] && React.createElement('ul', { className: "space-y-0.5 sm:space-y-1" },
                             categoryItems.map((item, i) => renderShoppingItem(item, i, `${categoryKey}-`))
                           )
                         );
                       }),
-                    React.createElement('div', { className: "text-right mt-3 font-display text-xl md:text-2xl" },
+                    React.createElement('div', { 
+                      className: "sticky bottom-0 bg-black/90 backdrop-blur-sm border-t border-white/10 p-3 mt-4 rounded-t-xl text-center font-display text-xl md:text-2xl z-10" 
+                    },
                       React.createElement('span', { className: "mg-gradient-text" }, `Total: $${Number(totalCost).toFixed(2)}`)
                     ),
                     
@@ -1846,7 +2422,25 @@
                             item.amazonSearch.includes('washer') || 
                             item.amazonSearch.includes('hose') || 
                             item.amazonSearch.includes('regulator') || 
-                            item.amazonSearch.includes('propane')
+                            item.amazonSearch.includes('propane') ||
+                            item.amazonSearch.includes('extinguisher') ||
+                            item.amazonSearch.includes('table') ||
+                            item.amazonSearch.includes('chair') ||
+                            item.amazonSearch.includes('tent') ||
+                            item.amazonSearch.includes('canopy') ||
+                            item.amazonSearch.includes('extension cord') ||
+                            item.amazonSearch.includes('cooler') ||
+                            item.amazonSearch.includes('speaker') ||
+                            item.amazonSearch.includes('cornhole') ||
+                            item.amazonSearch.includes('ladder toss') ||
+                            item.amazonSearch.includes('jenga') ||
+                            item.amazonSearch.includes('horseshoe') ||
+                            item.amazonSearch.includes('frisbee') ||
+                            item.amazonSearch.includes('football') ||
+                            item.amazonSearch.includes('kubb') ||
+                            item.amazonSearch.includes('beer pong') ||
+                            item.amazonSearch.includes('string lights') ||
+                            item.amazonSearch.includes('tarp')
                           );
                           
                           const seasoningItems = enabledAmazonItems.filter(item => 
@@ -1860,14 +2454,30 @@
                             item.amazonSearch.includes('butter')
                           );
                           
-                          const safetyItems = enabledAmazonItems.filter(item => 
-                            item.amazonSearch.includes('extinguisher') || 
+                          const partySuppliesItems = enabledAmazonItems.filter(item => 
+                            item.amazonSearch.includes('paper plates') ||
+                            item.amazonSearch.includes('plastic utensils') ||
+                            item.amazonSearch.includes('napkins') ||
+                            item.amazonSearch.includes('wet wipes') ||
+                            item.amazonSearch.includes('paper towels') ||
+                            item.amazonSearch.includes('dipping cups') ||
+                            item.amazonSearch.includes('disposable cups') ||
+                            item.amazonSearch.includes('takeout containers') ||
+                            item.amazonSearch.includes('butcher paper')
+                          );
+                          
+                          const safetyCleanupItems = enabledAmazonItems.filter(item => 
                             item.amazonSearch.includes('first aid') || 
-                            item.amazonSearch.includes('bucket') || 
                             item.amazonSearch.includes('trash') || 
                             item.amazonSearch.includes('bug') || 
                             item.amazonSearch.includes('sunscreen') || 
-                            item.amazonSearch.includes('sanitizer')
+                            item.amazonSearch.includes('sanitizer') ||
+                            item.amazonSearch.includes('citronella') ||
+                            item.amazonSearch.includes('cleaning') ||
+                            item.amazonSearch.includes('bleach') ||
+                            item.amazonSearch.includes('scrub') ||
+                            item.amazonSearch.includes('recycling') ||
+                            item.amazonSearch.includes('waste bucket')
                           );
                           
                           const sections = [];
@@ -1932,11 +2542,31 @@
                             ));
                           }
                           
-                          if (safetyItems.length > 0) {
-                            sections.push(React.createElement('div', { className: "mb-4", key: "safety" },
+                          if (partySuppliesItems.length > 0) {
+                            sections.push(React.createElement('div', { className: "mb-6", key: "party-supplies" },
+                              React.createElement('h3', { className: "font-semibold text-md mg-gradient-text mb-3" }, "Party Supplies"),
+                              React.createElement('div', { className: "grid grid-cols-1 sm:grid-cols-2 gap-3" },
+                                partySuppliesItems.map((item, index) => 
+                                  React.createElement('a', {
+                                    key: index,
+                                    href: generateAmazonLink(item.amazonSearch),
+                                    target: "_blank",
+                                    rel: "noopener noreferrer",
+                                    className: "bg-white/5 p-3 rounded-lg hover:bg-white/10 transition-colors border border-white/10 hover:border-orange-500/30"
+                                  },
+                                    React.createElement('div', { className: "font-medium text-white" }, item.name),
+                                    React.createElement('div', { className: "text-sm text-gray-400" }, `${formatQuantity(item.qty, item.unit)} ${item.unit} needed`)
+                                  )
+                                )
+                              )
+                            ));
+                          }
+
+                          if (safetyCleanupItems.length > 0) {
+                            sections.push(React.createElement('div', { className: "mb-4", key: "safety-cleanup" },
                               React.createElement('h3', { className: "font-semibold text-md mg-gradient-text mb-3" }, "Safety & Cleanup"),
                               React.createElement('div', { className: "grid grid-cols-1 sm:grid-cols-2 gap-3" },
-                                safetyItems.map((item, index) => 
+                                safetyCleanupItems.map((item, index) => 
                                   React.createElement('a', {
                                     key: index,
                                     href: generateAmazonLink(item.amazonSearch),
@@ -1964,18 +2594,214 @@
                       )
                     ),
                     
-                    // Export/Print Buttons
-                    React.createElement('div', { className: "flex flex-col gap-3 mt-4" },
+                    // Music Section
+                    React.createElement('div', { className: "mt-6 border-t border-white/10 pt-4" },
                       React.createElement('button', {
-                        onClick: exportShoppingList,
-                        className: "w-full px-4 py-3 rounded bg-white/10 hover:bg-white/20 transition-colors text-sm font-semibold min-h-[44px]",
-                        title: "Copy shopping list to clipboard"
-                      }, "📋 Copy List"),
+                        onClick: () => setMusicSectionExpanded(!musicSectionExpanded),
+                        className: "flex items-center justify-between w-full hover:bg-white/5 p-3 rounded transition-colors min-h-[44px]"
+                      },
+                        React.createElement('h2', { className: "font-display text-lg sm:text-xl md:text-2xl mg-gradient-text" }, "🎵 Set the Mood"),
+                        React.createElement('span', { className: "text-lg" }, musicSectionExpanded ? '▼' : '▶')
+                      ),
+                      musicSectionExpanded && React.createElement('div', { className: "mt-4" },
+                        React.createElement('p', { className: "text-gray-300 text-sm mb-4" },
+                          "Get your crawfish boil party started with authentic Louisiana zydeco and Cajun music!"
+                        ),
+                        React.createElement('div', { className: "grid grid-cols-1 sm:grid-cols-2 gap-3" },
+                          Object.values(musicLinks).map((platform, index) =>
+                            React.createElement('a', {
+                              key: index,
+                              href: platform.url,
+                              target: '_blank',
+                              rel: 'noopener noreferrer',
+                              className: "flex items-center gap-3 p-3 bg-white/5 hover:bg-white/10 rounded-lg border border-white/10 transition-colors min-h-[44px]"
+                            },
+                              React.createElement('span', { className: "text-2xl" }, platform.icon),
+                              React.createElement('div', {},
+                                React.createElement('div', { className: "font-semibold text-white" }, platform.name),
+                                React.createElement('div', { className: "text-xs text-gray-400" }, "Search: Zydeco & Cajun")
+                              )
+                            )
+                          )
+                        )
+                      )
+                    ),
+                    
+                    // Modern Export Dropdown
+                    React.createElement('div', { className: "relative mt-4" },
                       React.createElement('button', {
-                        onClick: printShoppingList,
-                        className: "w-full px-4 py-3 rounded bg-white/10 hover:bg-white/20 transition-colors text-sm font-semibold min-h-[44px]",
-                        title: "Print shopping list"
-                      }, "🖨️ Print")
+                        onClick: () => setShowExportMenu(!showExportMenu),
+                        className: "mg-btn-enhanced w-full px-4 py-3 rounded-xl transition-all text-sm font-semibold min-h-[44px] flex items-center justify-center gap-2",
+                        style: {
+                          background: `linear-gradient(135deg, color-mix(in srgb, var(--spice) 85%, white), var(--spice))`,
+                          color: 'var(--theme-bg, #0b0b0b)',
+                          border: `1px solid color-mix(in srgb, var(--spice) 60%, transparent)`,
+                          boxShadow: `0 0 8px color-mix(in srgb, var(--spice) 40%, transparent)`
+                        }
+                      }, 
+                        "📤 Export & Share",
+                        React.createElement('span', { className: `transition-transform ${showExportMenu ? 'rotate-180' : ''}` }, "▼")
+                      ),
+                      
+                      // Export dropdown menu
+                      showExportMenu && React.createElement('div', {
+                        className: "absolute top-full left-0 right-0 mt-2 rounded-xl overflow-hidden z-10",
+                        style: { 
+                          background: 'var(--theme-accent, rgba(255,255,255,0.05))',
+                          border: '1px solid var(--theme-border, rgba(255,255,255,0.1))',
+                          boxShadow: '0 0 10px color-mix(in srgb, var(--spice) 35%, transparent), 0 8px 32px rgba(0,0,0,0.3)',
+                          backdropFilter: 'blur(10px)'
+                        }
+                      },
+                        // Copy to Clipboard
+                        React.createElement('button', {
+                          onClick: () => {
+                            exportAsText();
+                            setShowExportMenu(false);
+                          },
+                          className: "w-full px-4 py-3 text-left transition-colors flex items-center gap-3 text-sm",
+                          style: {
+                            background: 'transparent',
+                            color: 'var(--theme-text, #f5f5f5)',
+                            border: 'none',
+                            cursor: 'pointer'
+                          },
+                          onMouseEnter: (e) => {
+                            e.target.style.background = 'color-mix(in srgb, var(--spice) 20%, transparent)';
+                            e.target.style.boxShadow = '0 0 8px color-mix(in srgb, var(--spice) 25%, transparent)';
+                          },
+                          onMouseLeave: (e) => {
+                            e.target.style.background = 'transparent';
+                            e.target.style.boxShadow = 'none';
+                          }
+                        },
+                          React.createElement('span', { className: "text-lg" }, "📋"),
+                          React.createElement('div', {},
+                            React.createElement('div', { className: "font-medium mg-label" }, "Copy to Clipboard"),
+                            React.createElement('div', { className: "text-xs", style: { color: 'var(--theme-text-secondary, #bbb)' } }, "Copy as formatted text")
+                          )
+                        ),
+                        
+                        // Download as CSV
+                        React.createElement('button', {
+                          onClick: () => {
+                            exportAsCSV();
+                            setShowExportMenu(false);
+                          },
+                          className: "w-full px-4 py-3 text-left transition-colors flex items-center gap-3 text-sm",
+                          style: {
+                            background: 'transparent',
+                            color: 'var(--theme-text, #f5f5f5)',
+                            border: 'none',
+                            borderTop: '1px solid var(--theme-border, rgba(255,255,255,0.1))',
+                            cursor: 'pointer'
+                          },
+                          onMouseEnter: (e) => {
+                            e.target.style.background = 'color-mix(in srgb, var(--spice) 20%, transparent)';
+                            e.target.style.boxShadow = '0 0 8px color-mix(in srgb, var(--spice) 25%, transparent)';
+                          },
+                          onMouseLeave: (e) => {
+                            e.target.style.background = 'transparent';
+                            e.target.style.boxShadow = 'none';
+                          }
+                        },
+                          React.createElement('span', { className: "text-lg" }, "📊"),
+                          React.createElement('div', {},
+                            React.createElement('div', { className: "font-medium mg-label" }, "Download CSV"),
+                            React.createElement('div', { className: "text-xs", style: { color: 'var(--theme-text-secondary, #bbb)' } }, "Spreadsheet format")
+                          )
+                        ),
+                        
+                        // Download as JSON
+                        React.createElement('button', {
+                          onClick: () => {
+                            exportAsJSON();
+                            setShowExportMenu(false);
+                          },
+                          className: "w-full px-4 py-3 text-left transition-colors flex items-center gap-3 text-sm",
+                          style: {
+                            background: 'transparent',
+                            color: 'var(--theme-text, #f5f5f5)',
+                            border: 'none',
+                            borderTop: '1px solid var(--theme-border, rgba(255,255,255,0.1))',
+                            cursor: 'pointer'
+                          },
+                          onMouseEnter: (e) => {
+                            e.target.style.background = 'color-mix(in srgb, var(--spice) 20%, transparent)';
+                            e.target.style.boxShadow = '0 0 8px color-mix(in srgb, var(--spice) 25%, transparent)';
+                          },
+                          onMouseLeave: (e) => {
+                            e.target.style.background = 'transparent';
+                            e.target.style.boxShadow = 'none';
+                          }
+                        },
+                          React.createElement('span', { className: "text-lg" }, "📄"),
+                          React.createElement('div', {},
+                            React.createElement('div', { className: "font-medium mg-label" }, "Download JSON"),
+                            React.createElement('div', { className: "text-xs", style: { color: 'var(--theme-text-secondary, #bbb)' } }, "Structured data format")
+                          )
+                        ),
+                        
+                        // Share (Web Share API)
+                        React.createElement('button', {
+                          onClick: () => {
+                            shareList();
+                            setShowExportMenu(false);
+                          },
+                          className: "w-full px-4 py-3 text-left transition-colors flex items-center gap-3 text-sm",
+                          style: {
+                            background: 'transparent',
+                            color: 'var(--theme-text, #f5f5f5)',
+                            border: 'none',
+                            borderTop: '1px solid var(--theme-border, rgba(255,255,255,0.1))',
+                            cursor: 'pointer'
+                          },
+                          onMouseEnter: (e) => {
+                            e.target.style.background = 'color-mix(in srgb, var(--spice) 20%, transparent)';
+                            e.target.style.boxShadow = '0 0 8px color-mix(in srgb, var(--spice) 25%, transparent)';
+                          },
+                          onMouseLeave: (e) => {
+                            e.target.style.background = 'transparent';
+                            e.target.style.boxShadow = 'none';
+                          }
+                        },
+                          React.createElement('span', { className: "text-lg" }, "📱"),
+                          React.createElement('div', {},
+                            React.createElement('div', { className: "font-medium mg-label" }, "Share"),
+                            React.createElement('div', { className: "text-xs", style: { color: 'var(--theme-text-secondary, #bbb)' } }, "Send to others")
+                          )
+                        ),
+                        
+                        // Print
+                        React.createElement('button', {
+                          onClick: () => {
+                            printShoppingList();
+                            setShowExportMenu(false);
+                          },
+                          className: "w-full px-4 py-3 text-left transition-colors flex items-center gap-3 text-sm",
+                          style: {
+                            background: 'transparent',
+                            color: 'var(--theme-text, #f5f5f5)',
+                            border: 'none',
+                            borderTop: '1px solid var(--theme-border, rgba(255,255,255,0.1))',
+                            cursor: 'pointer'
+                          },
+                          onMouseEnter: (e) => {
+                            e.target.style.background = 'color-mix(in srgb, var(--spice) 20%, transparent)';
+                            e.target.style.boxShadow = '0 0 8px color-mix(in srgb, var(--spice) 25%, transparent)';
+                          },
+                          onMouseLeave: (e) => {
+                            e.target.style.background = 'transparent';
+                            e.target.style.boxShadow = 'none';
+                          }
+                        },
+                          React.createElement('span', { className: "text-lg" }, "🖨️"),
+                          React.createElement('div', {},
+                            React.createElement('div', { className: "font-medium mg-label" }, "Print"),
+                            React.createElement('div', { className: "text-xs", style: { color: 'var(--theme-text-secondary, #bbb)' } }, "Professional layout")
+                          )
+                        )
+                      )
                     ),
                     
                     // Season Disclaimer
@@ -2028,8 +2854,8 @@
           console.assert(lemonJuice.qty >= 0.5, 'T4 lemon juice minimum bottle applied');
 
           // Test 5: spice color mapping — ensure known keys resolve
-          const colors = [SPICE_COLORS[1], SPICE_COLORS[2], SPICE_COLORS[3], SPICE_COLORS[4]];
-          console.assert(colors.every(Boolean), 'T5 spice color map should have all 4 levels');
+          const colors = [SPICE_COLORS[1], SPICE_COLORS[2], SPICE_COLORS[3], SPICE_COLORS[4], SPICE_COLORS[5]];
+          console.assert(colors.every(Boolean), 'T5 spice color map should have all 5 levels for dark theme');
 
           console.log('[CrawfishBoilCalculator] tests passed');
         })();
