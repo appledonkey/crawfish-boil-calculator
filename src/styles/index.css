@@ -1,0 +1,45 @@
+@import url('https://fonts.googleapis.com/css2?family=Bungee&family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --spice: #FFD54F;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background: #0a0a0a;
+  color: #ffffff;
+}
+
+.font-display {
+  font-family: 'Bungee', cursive;
+}
+
+.ember-glow {
+  text-shadow: 0 0 10px var(--spice), 0 0 20px var(--spice);
+}
+
+.ember-border {
+  border-color: var(--spice);
+  box-shadow: 0 0 10px var(--spice);
+}
+
+.ember-bg {
+  background-color: var(--spice);
+}
+
+.ember-text {
+  color: var(--spice);
+}
+
+@layer utilities {
+  .transition-smooth {
+    transition: all 0.3s ease-in-out;
+  }
+}
