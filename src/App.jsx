@@ -175,7 +175,7 @@ function Nav({ active, setActive }) {
   return (
     <nav className="nav">
       <div className="nav-inner">
-        <div className="brand">CrawfishBoilCalculator.com</div>
+        <div className="brand"><img src="/icon-192.png" alt="" className="brand-icon" />CrawfishBoilCalculator.com</div>
         <div className="tabs">
           {tabs.map(t => (
             <button key={t.id} onClick={() => setActive(t.id)}
@@ -801,7 +801,8 @@ input[type="number"]{-moz-appearance:textfield}
 /* NAV */
 .nav{position:sticky;top:0;z-index:100;background:rgba(11,11,11,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .nav-inner{max-width:680px;margin:0 auto;display:flex;flex-wrap:wrap;align-items:center;padding:0 12px}
-.brand{font-weight:700;font-size:14px;color:var(--accent);letter-spacing:-0.3px;margin-right:auto;padding:10px 0 0;width:100%;text-align:center}
+.brand{font-weight:700;font-size:14px;color:var(--accent);letter-spacing:-0.3px;margin-right:auto;padding:10px 0 0;width:100%;text-align:center;display:flex;align-items:center;justify-content:center;gap:6px}
+.brand-icon{width:24px;height:24px;border-radius:50%;flex-shrink:0}
 .tabs{display:flex;gap:2px;width:100%;justify-content:center}
 .tab{background:transparent;color:var(--text3);border:none;padding:10px 10px;cursor:pointer;font-size:12px;font-weight:500;font-family:var(--font);border-bottom:2px solid transparent;transition:all .15s;-webkit-tap-highlight-color:transparent;flex:1;text-align:center}
 .tab--on{color:var(--text);border-bottom-color:var(--accent)}
@@ -986,7 +987,8 @@ input[type="number"]{-moz-appearance:textfield}
 @media(min-width:600px){
   .page{padding:24px 16px 48px}
   .page--calc{padding-bottom:100px}
-  .brand{font-size:18px;width:auto;padding:12px 0;text-align:left}
+  .brand{font-size:18px;width:auto;padding:12px 0;text-align:left;justify-content:flex-start}
+  .brand-icon{width:28px;height:28px}
   .tabs{width:auto;justify-content:flex-end}
   .tab{padding:14px 14px;font-size:13px;flex:unset}
   .guest-row{flex-direction:row;align-items:center}
