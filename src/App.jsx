@@ -146,6 +146,137 @@ const ITEM_LINKS = {
 
 const round = (v) => Math.ceil(v * 100) / 100;
 
+/* ── POT SIZE & BATCH HELPERS ── */
+const POT_SIZES = [
+  { maxLbs: 15, size: "40-qt" },
+  { maxLbs: 25, size: "60-qt" },
+  { maxLbs: 35, size: "80-qt" },
+  { maxLbs: 50, size: "100-qt" },
+];
+function getPotSize(lbs) {
+  if (lbs <= 0) return "—";
+  const match = POT_SIZES.find(p => lbs <= p.maxLbs);
+  return match ? match.size : "100-qt+";
+}
+
+const BATCH_MAX_LBS = 35;
+const BATCH_COOK_MIN = 45;
+
+function formatTime(minutes) {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h === 0) return `${m}m`;
+  return m > 0 ? `${h}h ${m}m` : `${h}h`;
+}
+
+/* ── TIMELINE GENERATOR ── */
+function formatTimeAgo(minutes) {
+  if (minutes <= 0) return "Serve time!";
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (h === 0) return `${m} min before`;
+  return m > 0 ? `${h}h ${m}m before` : `${h}h before`;
+}
+
+function generateTimeline(batches, totalLbs) {
+  const steps = [];
+  const lbsPerBatch = batches > 0 ? Math.ceil(totalLbs / batches) : 0;
+  const totalCookMin = batches * BATCH_COOK_MIN;
+
+  // Work backwards from serve time
+  // Each batch: 5 min boil + 20 min soak + 5 min dump/reset + 15 min reheat = ~45 min
+  // Prep before first batch: ~90 min (setup, season, veggies)
+  // Purge: 2 hours before first batch drop
+  const firstBatchDrop = totalCookMin + 30; // last batch soak/dump
+  const purgeStart = firstBatchDrop + 90 + 120;
+  const setupStart = firstBatchDrop + 90;
+  const fillPotStart = firstBatchDrop + 60;
+  const boilVeggiesStart = firstBatchDrop + 30;
+
+  steps.push({ time: "Day before", label: "Buy supplies", desc: "Pick up everything on your shopping list. Get crawfish as close to boil day as possible." });
+  steps.push({ time: formatTimeAgo(purgeStart), label: "Purge crawfish", desc: `Dump ${totalLbs} lbs into a tub. Rinse with clean water 3-4 changes until clear. Remove dead ones (straight tails).` });
+  steps.push({ time: formatTimeAgo(setupStart), label: "Set up tables & equipment", desc: "Cover tables with butcher paper, position burner, check propane, lay out supplies and trays." });
+  steps.push({ time: formatTimeAgo(fillPotStart), label: "Fill pot & season water", desc: "Fill pot halfway. Add seasoning, lemons, oranges, garlic, onions. Bring to a rolling boil." });
+  steps.push({ time: formatTimeAgo(boilVeggiesStart), label: "Boil vegetables first", desc: "Drop potatoes and sausage. Boil 10 min. Add corn, boil 5 more. Remove and set aside in cooler." });
+
+  for (let b = 1; b <= batches; b++) {
+    const batchStart = firstBatchDrop - ((b - 1) * BATCH_COOK_MIN);
+    const batchLabel = batches > 1 ? ` batch ${b} (~${lbsPerBatch} lbs)` : ` crawfish (${totalLbs} lbs)`;
+
+    steps.push({
+      time: formatTimeAgo(batchStart),
+      label: `Drop${batchLabel}`,
+      desc: "Add crawfish at rolling boil. Cover, return to boil, cook 3-5 min until bright red.",
+      highlight: true,
+    });
+    steps.push({
+      time: formatTimeAgo(batchStart - 5),
+      label: `Kill fire & soak${batches > 1 ? ` batch ${b}` : ""}`,
+      desc: "Add ice or frozen corn to drop temp. Soak 15-20 min. When they sink, they've absorbed the flavor.",
+    });
+
+    if (b < batches) {
+      steps.push({
+        time: formatTimeAgo(batchStart - 25),
+        label: `Dump batch ${b} & reheat`,
+        desc: "Lift basket, dump on table. Reheat pot, add more seasoning if needed for next batch.",
+      });
+    } else {
+      steps.push({
+        time: formatTimeAgo(0),
+        label: batches > 1 ? `Dump batch ${b} — EAT!` : "Dump & EAT!",
+        desc: "Lift basket, dump on newspaper-covered table. Serve immediately. Laissez les bons temps rouler!",
+        highlight: true,
+      });
+    }
+  }
+
+  return steps;
+}
+
+/* ── URL STATE ENCODING/DECODING ── */
+const DEFAULT_ENABLED_IDS = new Set(
+  Object.entries(DEFAULTS)
+    .filter(([, v]) => v.category === "essentials" || v.category === "supplies")
+    .map(([k]) => k)
+);
+
+function encodeStateToURL(guests, items, heat) {
+  const params = new URLSearchParams();
+  if (guests !== 10) params.set("g", guests);
+  if (heat !== 2) params.set("h", heat);
+
+  const enabledIds = items.filter(i => i.enabled && !i.id.startsWith("c_")).map(i => i.id);
+  const enabledSet = new Set(enabledIds);
+  const isDifferent = enabledIds.length !== DEFAULT_ENABLED_IDS.size ||
+    enabledIds.some(id => !DEFAULT_ENABLED_IDS.has(id)) ||
+    [...DEFAULT_ENABLED_IDS].some(id => !enabledSet.has(id));
+  if (isDifferent) params.set("on", enabledIds.join(","));
+
+  const overrides = items.filter(i => i.enabled && i.qtyOverride !== null && !i.id.startsWith("c_"));
+  if (overrides.length > 0) params.set("q", overrides.map(i => `${i.id}:${i.qtyOverride}`).join(","));
+
+  const qs = params.toString();
+  return qs ? `${window.location.origin}${window.location.pathname}?${qs}` : `${window.location.origin}${window.location.pathname}`;
+}
+
+function decodeStateFromURL() {
+  const params = new URLSearchParams(window.location.search);
+  if (!params.has("g") && !params.has("h") && !params.has("on") && !params.has("q")) return null;
+  const result = {};
+  if (params.has("g")) result.guests = Math.min(500, Math.max(1, parseInt(params.get("g")) || 10));
+  if (params.has("h")) result.heat = Math.min(4, Math.max(0, parseInt(params.get("h")) || 2));
+  if (params.has("on")) result.enabledIds = new Set(params.get("on").split(",").filter(Boolean));
+  if (params.has("q")) {
+    result.qtyOverrides = {};
+    params.get("q").split(",").forEach(pair => {
+      const [id, qty] = pair.split(":");
+      if (id && qty) result.qtyOverrides[id] = parseInt(qty) || 0;
+    });
+  }
+  return result;
+}
+
 const HEAT_LEVELS = [
   { label: "Mild", desc: "Just a tingle", mult: 0.5, color: "#60a5fa" },
   { label: "Medium", desc: "Crowd pleaser", mult: 0.75, color: "#34d399" },
@@ -204,35 +335,73 @@ function saveState(state) {
 
 function Calculator() {
   const saved = useMemo(() => loadState(), []);
+  const urlState = useMemo(() => decodeStateFromURL(), []);
 
-  const [guests, setGuests] = useState(saved?.guests ?? 10);
+  const [guests, setGuests] = useState(urlState?.guests ?? saved?.guests ?? 10);
   const [items, setItems] = useState(() => {
     const defaults = Object.entries(DEFAULTS).map(([key, val]) => ({
       id: key, ...val,
       enabled: val.category === "essentials" || val.category === "supplies",
       qtyOverride: null,
     }));
-    if (!saved?.items) return defaults;
-    // Merge saved state into defaults (preserves new items added to DEFAULTS)
-    const savedMap = Object.fromEntries(saved.items.map(i => [i.id, i]));
-    const merged = defaults.map(d => savedMap[d.id] ? { ...d, enabled: savedMap[d.id].enabled, qtyOverride: savedMap[d.id].qtyOverride, pricePerUnit: savedMap[d.id].pricePerUnit } : d);
+
+    if (urlState?.enabledIds) {
+      // URL params take priority
+      defaults.forEach(d => { d.enabled = urlState.enabledIds.has(d.id); });
+    } else if (saved?.items) {
+      // Merge saved state into defaults (preserves new items added to DEFAULTS)
+      const savedMap = Object.fromEntries(saved.items.map(i => [i.id, i]));
+      defaults.forEach((d, idx) => {
+        if (savedMap[d.id]) defaults[idx] = { ...d, enabled: savedMap[d.id].enabled, qtyOverride: savedMap[d.id].qtyOverride, pricePerUnit: savedMap[d.id].pricePerUnit };
+      });
+    }
+
+    // Apply URL quantity overrides
+    if (urlState?.qtyOverrides) {
+      defaults.forEach(d => {
+        if (urlState.qtyOverrides[d.id] !== undefined) d.qtyOverride = urlState.qtyOverrides[d.id];
+      });
+    }
+
     // Append any custom items from saved state
-    const customItems = saved.items.filter(i => i.category === "custom");
-    return [...merged, ...customItems];
+    if (saved?.items) {
+      const customItems = saved.items.filter(i => i.category === "custom");
+      return [...defaults, ...customItems];
+    }
+    return defaults;
   });
   const [collapsed, setCollapsed] = useState({});
   const [showAdd, setShowAdd] = useState(false);
   const [editingPrice, setEditingPrice] = useState(null);
-  const [heat, setHeat] = useState(saved?.heat ?? 2);
+  const [heat, setHeat] = useState(urlState?.heat ?? saved?.heat ?? 2);
   const [newItem, setNewItem] = useState({ name: "", perPerson: 0.25, pricePerUnit: 1.00, unit: "ea" });
   const [showList, setShowList] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
   const [checked, setChecked] = useState(saved?.checked ?? {});
+
+  // Save/load plans
+  const [plans, setPlans] = useState(() => {
+    try { const raw = localStorage.getItem("boilcalc_plans"); return raw ? JSON.parse(raw) : []; } catch { return []; }
+  });
+  const [showPlans, setShowPlans] = useState(false);
+  const [planName, setPlanName] = useState("");
+  const [showSaveInput, setShowSaveInput] = useState(false);
+
+  // Clean URL after loading state from params
+  useEffect(() => {
+    if (urlState) window.history.replaceState({}, "", window.location.pathname);
+  }, []);
 
   // Persist state on changes
   useEffect(() => {
     saveState({ guests, items, heat, checked });
   }, [guests, items, heat, checked]);
+
+  // Persist plans
+  useEffect(() => {
+    try { localStorage.setItem("boilcalc_plans", JSON.stringify(plans)); } catch {}
+  }, [plans]);
 
   // Lock body scroll when modal is open
   useEffect(() => {
@@ -252,6 +421,14 @@ function Calculator() {
   const totalCost = items.filter(i => i.enabled).reduce((s, i) => s + getQty(i) * i.pricePerUnit, 0);
   const perPerson = guests > 0 ? totalCost / guests : 0;
   const totalLbs = items.filter(i => i.enabled && i.id === "crawfish").reduce((s, i) => s + getQty(i), 0);
+  const batchCount = totalLbs > 0 ? Math.ceil(totalLbs / BATCH_MAX_LBS) : 0;
+  const lbsPerBatch = batchCount > 0 ? Math.ceil(totalLbs / batchCount) : 0;
+  const totalCookMinutes = batchCount * BATCH_COOK_MIN;
+  const potSize = getPotSize(batchCount > 1 ? lbsPerBatch : totalLbs);
+  const timeline = useMemo(() =>
+    totalLbs > 0 ? generateTimeline(batchCount > 1 ? batchCount : 1, totalLbs) : [],
+    [batchCount, totalLbs]
+  );
 
   const upd = (id, c) => setItems(p => p.map(i => i.id === id ? { ...i, ...c } : i));
   const del = (id) => setItems(p => p.filter(i => i.id !== id));
@@ -314,6 +491,28 @@ function Calculator() {
     });
     text += `---\nMade with CrawfishBoilCalculator.com`;
     return text;
+  };
+
+  // Plans
+  const savePlan = () => {
+    const name = planName.trim() || `${guests} guests — ${new Date().toLocaleDateString()}`;
+    setPlans(prev => [{ id: "plan_" + Date.now(), name, createdAt: Date.now(), state: { guests, heat, items: items.map(i => ({ ...i })) } }, ...prev]);
+    setPlanName(""); setShowSaveInput(false);
+  };
+  const loadPlan = (plan) => {
+    setGuests(plan.state.guests); setHeat(plan.state.heat);
+    setItems(plan.state.items.map(i => ({ ...i }))); setChecked({}); setShowPlans(false);
+  };
+  const deletePlan = (planId) => setPlans(prev => prev.filter(p => p.id !== planId));
+
+  // Share link
+  const copyLink = async () => {
+    const url = encodeStateToURL(guests, items, heat);
+    try {
+      await navigator.clipboard.writeText(url);
+      setLinkCopied(true);
+      setTimeout(() => setLinkCopied(false), 2000);
+    } catch {}
   };
 
   const copyList = async () => {
@@ -400,6 +599,40 @@ function Calculator() {
             ))}
           </div>
         </div>
+        <div className="plans-row">
+          {!showSaveInput ? (
+            <>
+              <button className="btn-outline btn-sm" onClick={() => setShowSaveInput(true)}>Save plan</button>
+              {plans.length > 0 && (
+                <button className="btn-outline btn-sm" onClick={() => setShowPlans(!showPlans)}>
+                  Load ({plans.length})
+                </button>
+              )}
+            </>
+          ) : (
+            <div className="plans-save-row">
+              <input className="input plans-name-input"
+                placeholder={`${guests} guests — ${new Date().toLocaleDateString()}`}
+                value={planName} onChange={e => setPlanName(e.target.value)}
+                onKeyDown={e => e.key === "Enter" && savePlan()} autoFocus />
+              <button className="btn-primary btn-sm" onClick={savePlan}>Save</button>
+              <button className="btn-outline btn-sm" onClick={() => setShowSaveInput(false)}>Cancel</button>
+            </div>
+          )}
+        </div>
+        {showPlans && plans.length > 0 && (
+          <div className="plans-list">
+            {plans.map(p => (
+              <div key={p.id} className="plans-item">
+                <button className="plans-load" onClick={() => loadPlan(p)}>
+                  <span className="plans-item-name">{p.name}</span>
+                  <span className="plans-item-meta">{new Date(p.createdAt).toLocaleDateString()}</span>
+                </button>
+                <button className="plans-del" onClick={() => deletePlan(p.id)}>&times;</button>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Heat Level */}
@@ -509,6 +742,44 @@ function Calculator() {
         <button onClick={() => setShowAdd(true)} className="btn-outline btn-full">+ Add custom item</button>
       )}
 
+      {/* Batch Calculator */}
+      {batchCount > 1 && (
+        <div className="card batch-card">
+          <div className="batch-icon">🦞</div>
+          <div className="batch-info">
+            <div className="batch-headline">{batchCount} batches needed</div>
+            <div className="batch-details">
+              ~{lbsPerBatch} lbs each &middot; {formatTime(BATCH_COOK_MIN)}/batch &middot; {formatTime(totalCookMinutes)} total cook time
+            </div>
+            <div className="batch-tip">
+              Standard 80-qt pot holds ~{BATCH_MAX_LBS} lbs. Recommended pot: {getPotSize(lbsPerBatch)}.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Boil Day Timeline */}
+      {timeline.length > 0 && (
+        <div className="card timeline-card">
+          <div className="card-label">Boil Day Timeline</div>
+          <div className="timeline">
+            {timeline.map((step, i) => (
+              <div key={i} className={`tl-step ${step.highlight ? "tl-step--hl" : ""}`}>
+                <div className="tl-marker">
+                  <div className="tl-dot" />
+                  {i < timeline.length - 1 && <div className="tl-line" />}
+                </div>
+                <div className="tl-content">
+                  <div className="tl-time">{step.time}</div>
+                  <div className="tl-label">{step.label}</div>
+                  <div className="tl-desc">{step.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="calc-footer-row">
         <p className="footnote">
           Prices are estimates. Tap any cost to edit the price per unit. Crawfish prices peak early spring and drop March-June.
@@ -580,6 +851,10 @@ function Calculator() {
                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
                 Print
               </button>
+              <button className="sl-btn" onClick={copyLink}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg>
+                {linkCopied ? "Copied!" : "Link"}
+              </button>
             </div>
             <div className="sl-affiliate-note">
               Some links support CrawfishBoilCalculator.com at no extra cost to you.
@@ -602,7 +877,7 @@ function Calculator() {
         <div className="ss-divider" />
         <div className="ss-item">
           <span className="ss-val">{totalLbs} lbs</span>
-          <span className="ss-lbl">Crawfish</span>
+          <span className="ss-lbl">{potSize !== "—" ? `${potSize} pot` : "Crawfish"}</span>
         </div>
         <div className="ss-divider" />
         <button className="ss-share" onClick={() => setShowList(true)}>
@@ -941,12 +1216,49 @@ input[type="number"]{-moz-appearance:textfield}
 .sl-checkmark{color:#000;font-size:12px;font-weight:700;line-height:1}
 .sl-checked-count{color:var(--accent);font-weight:600}
 .sl-uncheck{background:none;border:none;color:var(--text3);font-size:11px;font-weight:500;font-family:var(--font);cursor:pointer;text-decoration:underline;margin-left:6px;-webkit-tap-highlight-color:transparent;padding:0}
-.sl-actions{padding:8px 16px 12px;padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));position:sticky;bottom:0;background:#111;display:flex;gap:6px}
-.sl-btn{flex:1;display:flex;align-items:center;justify-content:center;gap:6px;padding:10px 8px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:12px;font-weight:600;font-family:var(--font);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s}
+.sl-actions{padding:8px 16px 12px;padding-bottom:calc(12px + env(safe-area-inset-bottom, 0px));position:sticky;bottom:0;background:#111;display:flex;flex-wrap:wrap;gap:6px}
+.sl-btn{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:4px;padding:10px 6px;border-radius:var(--rs);border:1px solid var(--border);background:var(--surface);color:var(--text2);font-size:11px;font-weight:600;font-family:var(--font);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s}
 .sl-btn--primary{background:var(--accent);color:#000;border-color:var(--accent)}
 .sl-btn:active{transform:scale(0.97)}
 .sl-btn svg{flex-shrink:0}
 .sl-affiliate-note{font-size:10px;color:var(--text3);text-align:center;padding:0 16px 16px}
+
+/* BATCH CALCULATOR */
+.batch-card{display:flex;align-items:flex-start;gap:12px;border-color:var(--border-accent);background:rgba(245,158,11,0.03)}
+.batch-icon{font-size:24px;flex-shrink:0;line-height:1}
+.batch-info{min-width:0}
+.batch-headline{font-size:15px;font-weight:700;color:var(--accent);margin-bottom:2px}
+.batch-details{font-size:13px;color:var(--text);line-height:1.5}
+.batch-tip{font-size:11px;color:var(--text3);margin-top:4px;line-height:1.4}
+
+/* TIMELINE */
+.timeline-card{padding:16px 14px}
+.timeline{display:flex;flex-direction:column}
+.tl-step{display:flex;gap:12px}
+.tl-marker{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:16px}
+.tl-dot{width:10px;height:10px;border-radius:50%;background:var(--surface2);border:2px solid var(--text3);flex-shrink:0;z-index:1}
+.tl-step--hl .tl-dot{background:var(--accent);border-color:var(--accent)}
+.tl-line{width:2px;flex:1;background:var(--border);min-height:12px}
+.tl-content{padding-bottom:16px;min-width:0}
+.tl-time{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;margin-bottom:2px}
+.tl-step--hl .tl-time{color:var(--accent)}
+.tl-label{font-size:14px;font-weight:600;color:var(--text);margin-bottom:2px}
+.tl-desc{font-size:12px;color:var(--text2);line-height:1.5}
+.tl-step:last-child .tl-line{display:none}
+.tl-step:last-child .tl-content{padding-bottom:0}
+
+/* PLANS */
+.plans-row{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.btn-sm{padding:7px 14px;font-size:12px}
+.plans-save-row{display:flex;gap:6px;width:100%;align-items:center}
+.plans-name-input{flex:1;font-size:13px;padding:7px 10px}
+.plans-list{margin-top:8px;border-top:1px solid var(--border);padding-top:8px}
+.plans-item{display:flex;align-items:center;gap:4px;margin-bottom:4px}
+.plans-load{flex:1;background:var(--surface);border:1px solid var(--border);border-radius:var(--rs);padding:8px 12px;cursor:pointer;text-align:left;font-family:var(--font);-webkit-tap-highlight-color:transparent;display:flex;flex-direction:column;gap:1px}
+.plans-load:active{background:var(--surface2)}
+.plans-item-name{font-size:13px;font-weight:600;color:var(--text)}
+.plans-item-meta{font-size:10px;color:var(--text3)}
+.plans-del{background:none;border:1px solid rgba(248,113,113,0.2);border-radius:var(--rs);color:#f87171;width:32px;height:32px;font-size:18px;cursor:pointer;flex-shrink:0;font-family:var(--font);-webkit-tap-highlight-color:transparent;display:flex;align-items:center;justify-content:center}
 
 /* ═══ DESKTOP 600px+ ═══ */
 @media(min-width:600px){
