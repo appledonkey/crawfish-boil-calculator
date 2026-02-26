@@ -16,6 +16,27 @@
     <meta property="og:image" content="https://crawfishboilcalculator.com/icon-512.png" />
     <meta property="og:url" content="https://crawfishboilcalculator.com" />
     <link rel="manifest" href="/manifest.json" />
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "WebApplication",
+      "name": "CrawfishBoilCalculator.com",
+      "url": "https://crawfishboilcalculator.com",
+      "description": "Plan your crawfish boil. Calculate quantities, costs, and get a shopping list for any group size.",
+      "applicationCategory": "UtilityApplication",
+      "operatingSystem": "Any",
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "USD" },
+      "image": "https://crawfishboilcalculator.com/icon-512.png"
+    }
+    </script>
+    <!-- Google Analytics: replace G-XXXXXXXXXX with your GA4 measurement ID -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-XXXXXXXXXX');
+    </script>
   </head>
   <body>
     <div id="root"></div>
