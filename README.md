@@ -25,8 +25,8 @@ A crawfish boil planning calculator. Figure out exactly how much to buy, what it
 ## Getting Started
 
 ```bash
-git clone https://github.com/yourusername/boilcalc.git
-cd boilcalc
+git clone https://github.com/appledonkey/crawfish-boil-calculator.git
+cd crawfish-boil-calculator
 npm install
 npm run dev
 ```
