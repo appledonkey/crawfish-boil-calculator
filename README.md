@@ -2,7 +2,7 @@
 
 A crawfish boil planning calculator. Figure out exactly how much to buy, what it'll cost, and get a printable shopping list for any group size.
 
-![Screenshot](screenshot.png)
+**[Live site →](https://crawfishboilcalculator.com)**
 
 ## Features
 
@@ -13,7 +13,6 @@ A crawfish boil planning calculator. Figure out exactly how much to buy, what it
 - **Shopping List** — Copy, share, text, or print your list
 - **Persistence** — Saves your inputs to localStorage so nothing is lost on refresh
 - **Mobile-First** — Fully responsive dark UI with the Outfit font
-- **Email Capture** — Newsletter signup footer
 
 ## Tech Stack
 

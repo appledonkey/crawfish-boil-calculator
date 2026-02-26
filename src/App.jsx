@@ -113,7 +113,7 @@ const TIPS = [
   { title: "Use Oranges Too", body: "Oranges add sweetness that balances heat. Squeeze juice in first, toss halves in. Some use grapefruit -- citrus breaks down shells." },
 ];
 
-const AFFILIATE_TAG = "boilcalc-20"; // Replace with your Amazon Associates tag
+const AFFILIATE_TAG = "crawfishboilc-20"; // Replace with your Amazon Associates tag
 const amazonLink = (query) => `https://www.amazon.com/s?k=${encodeURIComponent(query)}&tag=${AFFILIATE_TAG}`;
 
 const EQUIPMENT_LINKS = {
@@ -735,14 +735,10 @@ export default function App() {
     link.href = "https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&display=swap";
     link.rel = "stylesheet";
     document.head.appendChild(link);
-    const meta = document.createElement("meta");
-    meta.name = "viewport";
-    meta.content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover";
-    document.head.appendChild(meta);
     const s = document.createElement("style");
     s.textContent = CSS;
     document.head.appendChild(s);
-    return () => { document.head.removeChild(link); document.head.removeChild(meta); document.head.removeChild(s); };
+    return () => { document.head.removeChild(link); document.head.removeChild(s); };
   }, []);
   return (
     <div className="app">
