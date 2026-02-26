@@ -1,4 +1,4 @@
-# BoilCalc
+# CrawfishBoilCalculator.com
 
 A crawfish boil planning calculator. Figure out exactly how much to buy, what it'll cost, and get a printable shopping list for any group size.
 

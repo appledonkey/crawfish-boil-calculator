@@ -175,7 +175,7 @@ function Nav({ active, setActive }) {
   return (
     <nav className="nav">
       <div className="nav-inner">
-        <div className="brand">boilcalc</div>
+        <div className="brand">CrawfishBoilCalculator.com</div>
         <div className="tabs">
           {tabs.map(t => (
             <button key={t.id} onClick={() => setActive(t.id)}
@@ -312,7 +312,7 @@ function Calculator() {
       });
       text += `\n`;
     });
-    text += `---\nMade with boilcalc — boilcalc.com`;
+    text += `---\nMade with CrawfishBoilCalculator.com`;
     return text;
   };
 
@@ -369,7 +369,7 @@ function Calculator() {
       });
     });
     html += `<div class="total"><span>Total</span><span>$${round(totalCost).toFixed(2)}</span></div>`;
-    html += `<div class="footer">boilcalc.com</div>`;
+    html += `<div class="footer">CrawfishBoilCalculator.com</div>`;
     html += `</body></html>`;
     w.document.write(html);
     w.document.close();
@@ -582,7 +582,7 @@ function Calculator() {
               </button>
             </div>
             <div className="sl-affiliate-note">
-              Some links support boilcalc at no extra cost to you.
+              Some links support CrawfishBoilCalculator.com at no extra cost to you.
             </div>
           </div>
         </div>
@@ -744,7 +744,7 @@ function Footer() {
         </div>
       )}
       <div className="footer-bottom">
-        <span className="footer-brand">boilcalc</span>
+        <span className="footer-brand">CrawfishBoilCalculator.com</span>
         <span className="footer-copy">&copy; {new Date().getFullYear()}</span>
       </div>
     </footer>
