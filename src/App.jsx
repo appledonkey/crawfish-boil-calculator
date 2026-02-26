@@ -1262,33 +1262,77 @@ input[type="number"]{-moz-appearance:textfield}
 
 /* ═══ DESKTOP 600px+ ═══ */
 @media(min-width:600px){
-  .page{padding:24px 16px 48px}
-  .page--calc{padding-bottom:100px}
-  .brand{font-size:18px;width:auto;padding:12px 0;text-align:left;justify-content:flex-start}
-  .brand-icon{width:36px;height:36px}
+  .page{max-width:800px;padding:28px 24px 56px}
+  .page--calc{padding-bottom:110px}
+  .nav-inner{max-width:800px}
+  .brand{font-size:20px;width:auto;padding:14px 0;text-align:left;justify-content:flex-start}
+  .brand-icon{width:38px;height:38px}
   .tabs{width:auto;justify-content:flex-end}
-  .tab{padding:14px 14px;font-size:13px;flex:unset}
+  .tab{padding:14px 16px;font-size:14px;flex:unset}
+  .page-title{font-size:28px}
+  .page-desc{font-size:15px;margin-bottom:20px}
+  .card{padding:18px;margin-bottom:10px}
+  .card-label{font-size:12px;letter-spacing:1px;margin-bottom:12px}
   .guest-row{flex-direction:row;align-items:center}
+  .guest-num{font-size:32px}
+  .btn-step{width:52px;height:52px;font-size:22px}
   .pills{margin-left:auto}
-  .sticky-stats{max-width:680px;left:50%;transform:translateX(-50%);border-radius:var(--r) var(--r) 0 0;border-left:1px solid var(--border);border-right:1px solid var(--border)}
-  .ss-val{font-size:20px}
-  .ss-lbl{font-size:10px}
-  .row{padding:6px 10px;gap:6px}
-  .row-name{font-size:14px}
-  .row-cost{font-size:13px;min-width:52px}
-  .btn-xs{width:32px;height:32px;font-size:15px}
-  .qty-in{width:40px;font-size:14px}
-  .row-unit{width:26px}
+  .pill{padding:8px 16px;font-size:14px}
+  .sticky-stats{max-width:800px;left:50%;transform:translateX(-50%);border-radius:var(--r) var(--r) 0 0;border-left:1px solid var(--border);border-right:1px solid var(--border);padding:12px 16px}
+  .ss-val{font-size:22px}
+  .ss-lbl{font-size:10px;letter-spacing:.5px}
+  .group-hdr{padding:12px 14px}
+  .group-title{font-size:13px;letter-spacing:.8px}
+  .group-count{font-size:12px}
+  .group-sub{font-size:14px}
+  .group-toggle{padding:4px 12px;font-size:11px}
+  .row{padding:8px 12px;gap:8px;min-height:44px}
+  .row-name{font-size:15px}
+  .row-cost{font-size:14px;min-width:60px}
+  .btn-xs{width:34px;height:34px;font-size:16px}
+  .qty-in{width:44px;font-size:15px}
+  .row-unit{width:30px;font-size:11px}
+  .tog{width:36px;height:22px}
+  .tog-knob{width:16px;height:16px}
+  .tog--on .tog-knob{transform:translateX(14px)}
   .add-grid{grid-template-columns:1fr 1fr}
-  .heat-row{grid-template-columns:repeat(5,1fr)}
+  .heat-row{grid-template-columns:repeat(5,1fr);gap:6px}
   .heat-desc{display:block}
-  .heat-btn{padding:10px 6px}
+  .heat-btn{padding:12px 8px;gap:4px}
+  .heat-label{font-size:13px}
+  .heat-desc{font-size:10px}
+  .heat-note{font-size:12px}
+  .batch-headline{font-size:17px}
+  .batch-details{font-size:14px}
+  .batch-tip{font-size:12px}
+  .tl-label{font-size:15px}
+  .tl-desc{font-size:13px;line-height:1.6}
+  .tl-time{font-size:11px}
   .equip-top{flex-direction:row;justify-content:space-between;align-items:baseline}
-  .recipe-name{font-size:17px}
+  .equip-name{font-size:16px}
+  .equip-price{font-size:14px}
+  .equip-desc{font-size:13px}
+  .recipe-name{font-size:18px}
+  .recipe-meta{font-size:12px}
   .recipe-body{padding:0 18px 18px}
-  .tip-title{font-size:15px}
+  .recipe-desc{font-size:14px}
+  .recipe-steps li{font-size:14px}
+  .pro-tip-txt{font-size:13px}
+  .tip-title{font-size:16px}
+  .tip-body{font-size:13px}
+  .tip-num{font-size:12px}
+  .footnote{font-size:12px}
   .sl-overlay{align-items:center}
-  .sl-modal{border-radius:var(--r);max-height:70vh}
+  .sl-modal{border-radius:var(--r);max-height:70vh;max-width:520px}
+  .sl-title{font-size:18px}
+  .sl-row{font-size:14px}
+  .sl-qty{font-size:13px}
+  .sl-btn{font-size:12px;padding:12px 10px}
   .equip-link:hover{background:rgba(245,158,11,0.08)}
+  .equip-link{font-size:13px;padding:6px 14px}
+  .plans-item-name{font-size:14px}
+  .btn-sm{padding:8px 16px;font-size:13px}
+  .btn-outline{font-size:14px}
+  .btn-primary{font-size:14px}
 }
 `;
