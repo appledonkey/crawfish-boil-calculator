@@ -299,6 +299,7 @@ const CATS = [
 function Nav({ active, setActive }) {
   const tabs = [
     { id: "calculator", label: "Calculator" },
+    { id: "plan", label: "Plan" },
     { id: "recipes", label: "Recipes" },
     { id: "equipment", label: "Gear" },
     { id: "tips", label: "Tips" },
@@ -656,44 +657,6 @@ function Calculator() {
         <div className="heat-note">Adjusts seasoning and spice quantities. Currently at {HEAT_LEVELS[heat].mult}x seasoning.</div>
       </div>
 
-      {/* Batch Calculator */}
-      {batchCount > 1 && (
-        <div className="card batch-card">
-          <div className="batch-icon">🦞</div>
-          <div className="batch-info">
-            <div className="batch-headline">{batchCount} batches needed</div>
-            <div className="batch-details">
-              ~{lbsPerBatch} lbs each &middot; {formatTime(BATCH_COOK_MIN)}/batch &middot; {formatTime(totalCookMinutes)} total cook time
-            </div>
-            <div className="batch-tip">
-              Standard 80-qt pot holds ~{BATCH_MAX_LBS} lbs. Recommended pot: {getPotSize(lbsPerBatch)}.
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Boil Day Timeline */}
-      {timeline.length > 0 && (
-        <div className="card timeline-card">
-          <div className="card-label">Boil Day Timeline</div>
-          <div className="timeline">
-            {timeline.map((step, i) => (
-              <div key={i} className={`tl-step ${step.highlight ? "tl-step--hl" : ""}`}>
-                <div className="tl-marker">
-                  <div className="tl-dot" />
-                  {i < timeline.length - 1 && <div className="tl-line" />}
-                </div>
-                <div className="tl-content">
-                  <div className="tl-time">{step.time}</div>
-                  <div className="tl-label">{step.label}</div>
-                  <div className="tl-desc">{step.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Items by category */}
       {CATS.map(cat => {
         const ci = items.filter(i => i.category === cat.key);
@@ -968,6 +931,111 @@ function Equipment() {
   );
 }
 
+/* ── PLAN (TIMELINE + BATCH) ── */
+function Plan() {
+  const saved = useMemo(() => loadState(), []);
+  const guests = saved?.guests ?? 10;
+  const heat = saved?.heat ?? 2;
+  const items = useMemo(() => {
+    const defaults = Object.entries(DEFAULTS).map(([key, val]) => ({
+      id: key, ...val,
+      enabled: val.category === "essentials" || val.category === "supplies",
+      qtyOverride: null,
+    }));
+    if (!saved?.items) return defaults;
+    const savedMap = Object.fromEntries(saved.items.map(i => [i.id, i]));
+    return defaults.map(d => savedMap[d.id] ? { ...d, enabled: savedMap[d.id].enabled, qtyOverride: savedMap[d.id].qtyOverride } : d);
+  }, [saved]);
+
+  const heatMult = HEAT_LEVELS[heat].mult;
+  const getQty = useCallback((item) => {
+    if (item.qtyOverride !== null) return item.qtyOverride;
+    const base = Math.ceil(item.perPerson * guests);
+    return SEASONING_IDS.includes(item.id) ? Math.ceil(base * heatMult) : base;
+  }, [guests, heatMult]);
+
+  const totalLbs = items.filter(i => i.enabled && i.id === "crawfish").reduce((s, i) => s + getQty(i), 0);
+  const batchCount = totalLbs > 0 ? Math.ceil(totalLbs / BATCH_MAX_LBS) : 0;
+  const lbsPerBatch = batchCount > 0 ? Math.ceil(totalLbs / batchCount) : 0;
+  const totalCookMinutes = batchCount * BATCH_COOK_MIN;
+  const timeline = useMemo(() =>
+    totalLbs > 0 ? generateTimeline(batchCount > 1 ? batchCount : 1, totalLbs) : [],
+    [batchCount, totalLbs]
+  );
+
+  if (totalLbs === 0) {
+    return (
+      <section className="page">
+        <h2 className="page-title">Boil Day Plan</h2>
+        <p className="page-desc">Set your guest count and enable crawfish in the Calculator tab to see your boil day plan.</p>
+      </section>
+    );
+  }
+
+  return (
+    <section className="page">
+      <h2 className="page-title">Boil Day Plan</h2>
+      <p className="page-desc">{guests} guests &middot; {totalLbs} lbs crawfish &middot; {HEAT_LEVELS[heat].label} heat</p>
+
+      {/* Batch Calculator */}
+      {batchCount > 1 && (
+        <div className="card batch-card">
+          <div className="batch-icon">🦞</div>
+          <div className="batch-info">
+            <div className="batch-headline">{batchCount} batches needed</div>
+            <div className="batch-details">
+              ~{lbsPerBatch} lbs each &middot; {formatTime(BATCH_COOK_MIN)}/batch &middot; {formatTime(totalCookMinutes)} total cook time
+            </div>
+            <div className="batch-tip">
+              Standard 80-qt pot holds ~{BATCH_MAX_LBS} lbs. Recommended pot: {getPotSize(lbsPerBatch)}.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Quick stats */}
+      <div className="card plan-stats">
+        <div className="plan-stat">
+          <span className="plan-stat-val">{totalLbs} lbs</span>
+          <span className="plan-stat-lbl">Crawfish</span>
+        </div>
+        <div className="plan-stat">
+          <span className="plan-stat-val">{getPotSize(batchCount > 1 ? lbsPerBatch : totalLbs)}</span>
+          <span className="plan-stat-lbl">Pot size</span>
+        </div>
+        <div className="plan-stat">
+          <span className="plan-stat-val">{batchCount > 1 ? batchCount : 1}</span>
+          <span className="plan-stat-lbl">{batchCount > 1 ? "Batches" : "Batch"}</span>
+        </div>
+        <div className="plan-stat">
+          <span className="plan-stat-val">{formatTime(totalCookMinutes || BATCH_COOK_MIN)}</span>
+          <span className="plan-stat-lbl">Cook time</span>
+        </div>
+      </div>
+
+      {/* Timeline */}
+      <div className="card timeline-card">
+        <div className="card-label">Timeline</div>
+        <div className="timeline">
+          {timeline.map((step, i) => (
+            <div key={i} className={`tl-step ${step.highlight ? "tl-step--hl" : ""}`}>
+              <div className="tl-marker">
+                <div className="tl-dot" />
+                {i < timeline.length - 1 && <div className="tl-line" />}
+              </div>
+              <div className="tl-content">
+                <div className="tl-time">{step.time}</div>
+                <div className="tl-label">{step.label}</div>
+                <div className="tl-desc">{step.desc}</div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 /* ── TIPS ── */
 function Tips() {
   return (
@@ -1020,6 +1088,7 @@ export default function App() {
     <div className="app">
       <Nav active={page} setActive={changePage} />
       {page === "calculator" && <Calculator />}
+      {page === "plan" && <Plan />}
       {page === "recipes" && <Recipes />}
       {page === "equipment" && <Equipment />}
       {page === "tips" && <Tips />}
@@ -1223,6 +1292,13 @@ input[type="number"]{-moz-appearance:textfield}
 .sl-btn svg{flex-shrink:0}
 .sl-affiliate-note{font-size:10px;color:var(--text3);text-align:center;padding:0 16px 16px}
 
+/* PLAN STATS */
+.plan-stats{display:flex;gap:0;padding:0;overflow:hidden}
+.plan-stat{flex:1;text-align:center;padding:12px 8px}
+.plan-stat:not(:last-child){border-right:1px solid var(--border)}
+.plan-stat-val{display:block;font-size:16px;font-weight:700;color:var(--accent);letter-spacing:-.3px}
+.plan-stat-lbl{font-size:9px;color:var(--text3);font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+
 /* BATCH CALCULATOR */
 .batch-card{display:flex;align-items:flex-start;gap:12px;border-color:var(--border-accent);background:rgba(245,158,11,0.03)}
 .batch-icon{font-size:24px;flex-shrink:0;line-height:1}
@@ -1328,6 +1404,9 @@ input[type="number"]{-moz-appearance:textfield}
   .sl-row{font-size:14px}
   .sl-qty{font-size:13px}
   .sl-btn{font-size:12px;padding:12px 10px}
+  .plan-stat-val{font-size:20px}
+  .plan-stat-lbl{font-size:10px}
+  .plan-stat{padding:14px 10px}
   .equip-link:hover{background:rgba(245,158,11,0.08)}
   .equip-link{font-size:13px;padding:6px 14px}
   .plans-item-name{font-size:14px}
