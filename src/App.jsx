@@ -716,33 +716,8 @@ function Tips() {
 
 /* ── FOOTER ── */
 function Footer() {
-  const [email, setEmail] = useState("");
-  const [submitted, setSubmitted] = useState(false);
-  const handleSubmit = () => {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) return;
-    // Replace with your email service (Mailchimp, ConvertKit, etc.)
-    // Example: fetch('https://api.convertkit.com/v3/forms/YOUR_FORM_ID/subscribe', { ... })
-    console.log("Email signup:", email);
-    setSubmitted(true);
-  };
   return (
     <footer className="footer">
-      {!submitted ? (
-        <div className="email-capture">
-          <div className="email-hook">Get notified when crawfish season starts + price alerts</div>
-          <div className="email-row">
-            <input type="email" value={email} onChange={e => setEmail(e.target.value)}
-              onKeyDown={e => e.key === "Enter" && handleSubmit()}
-              placeholder="your@email.com" className="input email-input" />
-            <button onClick={handleSubmit} className="btn-primary email-btn">Notify me</button>
-          </div>
-          <div className="email-note">No spam. Just seasonal updates.</div>
-        </div>
-      ) : (
-        <div className="email-capture">
-          <div className="email-hook email-hook--done">You're in. We'll let you know when it's boil time.</div>
-        </div>
-      )}
       <div className="footer-bottom">
         <span className="footer-brand">CrawfishBoilCalculator.com</span>
         <span className="footer-copy">&copy; {new Date().getFullYear()}</span>
@@ -937,14 +912,6 @@ input[type="number"]{-moz-appearance:textfield}
 .footer-brand{font-size:14px;font-weight:700;color:var(--text3)}
 .footer-copy{font-size:12px;color:var(--text3)}
 
-/* EMAIL CAPTURE */
-.email-capture{max-width:360px;margin:0 auto;padding:24px 16px 8px;text-align:center}
-.email-hook{font-size:14px;font-weight:600;color:var(--text);margin-bottom:10px;line-height:1.4}
-.email-hook--done{color:var(--accent)}
-.email-row{display:flex;gap:6px}
-.email-input{flex:1;font-size:14px;padding:10px 12px;border-radius:var(--rs) 0 0 var(--rs)}
-.email-btn{border-radius:0 var(--rs) var(--rs) 0;padding:10px 14px;font-size:13px;white-space:nowrap}
-.email-note{font-size:11px;color:var(--text3);margin-top:6px}
 
 /* EQUIPMENT AFFILIATE */
 .equip-link{display:inline-block;margin-top:8px;font-size:12px;font-weight:600;color:var(--accent);text-decoration:none;padding:5px 12px;border:1px solid var(--border-accent);border-radius:100px;transition:all .15s}
@@ -1013,6 +980,5 @@ input[type="number"]{-moz-appearance:textfield}
   .sl-overlay{align-items:center}
   .sl-modal{border-radius:var(--r);max-height:70vh}
   .equip-link:hover{background:rgba(245,158,11,0.08)}
-  .email-capture{padding:28px 16px 12px}
 }
 `;
