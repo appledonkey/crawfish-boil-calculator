@@ -718,6 +718,7 @@ function Tips() {
 function Footer() {
   return (
     <footer className="footer">
+      <div className="footer-affiliate">As an Amazon Associate I earn from qualifying purchases.</div>
       <div className="footer-bottom">
         <span className="footer-brand">CrawfishBoilCalculator.com</span>
         <span className="footer-copy">&copy; {new Date().getFullYear()}</span>
@@ -904,7 +905,8 @@ input[type="number"]{-moz-appearance:textfield}
 
 /* FOOTER */
 .footer{border-top:1px solid var(--border);margin-top:16px;padding:0}
-.footer-bottom{display:flex;align-items:center;justify-content:center;gap:12px;padding:16px}
+.footer-affiliate{font-size:10px;color:var(--text3);text-align:center;padding:12px 16px 0;line-height:1.4}
+.footer-bottom{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px 16px}
 .footer-brand{font-size:14px;font-weight:700;color:var(--text3)}
 .footer-copy{font-size:12px;color:var(--text3)}
 
