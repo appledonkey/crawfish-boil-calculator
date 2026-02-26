@@ -656,6 +656,44 @@ function Calculator() {
         <div className="heat-note">Adjusts seasoning and spice quantities. Currently at {HEAT_LEVELS[heat].mult}x seasoning.</div>
       </div>
 
+      {/* Batch Calculator */}
+      {batchCount > 1 && (
+        <div className="card batch-card">
+          <div className="batch-icon">🦞</div>
+          <div className="batch-info">
+            <div className="batch-headline">{batchCount} batches needed</div>
+            <div className="batch-details">
+              ~{lbsPerBatch} lbs each &middot; {formatTime(BATCH_COOK_MIN)}/batch &middot; {formatTime(totalCookMinutes)} total cook time
+            </div>
+            <div className="batch-tip">
+              Standard 80-qt pot holds ~{BATCH_MAX_LBS} lbs. Recommended pot: {getPotSize(lbsPerBatch)}.
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Boil Day Timeline */}
+      {timeline.length > 0 && (
+        <div className="card timeline-card">
+          <div className="card-label">Boil Day Timeline</div>
+          <div className="timeline">
+            {timeline.map((step, i) => (
+              <div key={i} className={`tl-step ${step.highlight ? "tl-step--hl" : ""}`}>
+                <div className="tl-marker">
+                  <div className="tl-dot" />
+                  {i < timeline.length - 1 && <div className="tl-line" />}
+                </div>
+                <div className="tl-content">
+                  <div className="tl-time">{step.time}</div>
+                  <div className="tl-label">{step.label}</div>
+                  <div className="tl-desc">{step.desc}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Items by category */}
       {CATS.map(cat => {
         const ci = items.filter(i => i.category === cat.key);
@@ -740,44 +778,6 @@ function Calculator() {
         </div>
       ) : (
         <button onClick={() => setShowAdd(true)} className="btn-outline btn-full">+ Add custom item</button>
-      )}
-
-      {/* Batch Calculator */}
-      {batchCount > 1 && (
-        <div className="card batch-card">
-          <div className="batch-icon">🦞</div>
-          <div className="batch-info">
-            <div className="batch-headline">{batchCount} batches needed</div>
-            <div className="batch-details">
-              ~{lbsPerBatch} lbs each &middot; {formatTime(BATCH_COOK_MIN)}/batch &middot; {formatTime(totalCookMinutes)} total cook time
-            </div>
-            <div className="batch-tip">
-              Standard 80-qt pot holds ~{BATCH_MAX_LBS} lbs. Recommended pot: {getPotSize(lbsPerBatch)}.
-            </div>
-          </div>
-        </div>
-      )}
-
-      {/* Boil Day Timeline */}
-      {timeline.length > 0 && (
-        <div className="card timeline-card">
-          <div className="card-label">Boil Day Timeline</div>
-          <div className="timeline">
-            {timeline.map((step, i) => (
-              <div key={i} className={`tl-step ${step.highlight ? "tl-step--hl" : ""}`}>
-                <div className="tl-marker">
-                  <div className="tl-dot" />
-                  {i < timeline.length - 1 && <div className="tl-line" />}
-                </div>
-                <div className="tl-content">
-                  <div className="tl-time">{step.time}</div>
-                  <div className="tl-label">{step.label}</div>
-                  <div className="tl-desc">{step.desc}</div>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
       )}
 
       <div className="calc-footer-row">
