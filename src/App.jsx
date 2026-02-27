@@ -4,9 +4,9 @@ const DEFAULTS = {
   crawfish: { name: "Live Crawfish", perPerson: 3, pricePerUnit: 4.50, unit: "lb", category: "essentials" },
   potatoes: { name: "Red Potatoes", perPerson: 0.5, pricePerUnit: 1.25, unit: "lb", category: "essentials" },
   corn: { name: "Corn (frozen ears)", perPerson: 2, pricePerUnit: 0.75, unit: "ear", category: "essentials" },
-  sausage: { name: "Andouille / Smoked Sausage", perPerson: 0.33, pricePerUnit: 5.99, unit: "lb", category: "essentials" },
+  sausage: { name: "Andouille Sausage", perPerson: 0.33, pricePerUnit: 5.99, unit: "lb", category: "essentials" },
   seasoning: { name: "Boil Seasoning, 4 lb bag", perPerson: 0.15, pricePerUnit: 6.99, unit: "bag", category: "essentials" },
-  seasonliq: { name: "Liquid Boil Concentrate, 16 oz", perPerson: 0.08, pricePerUnit: 5.49, unit: "btl", category: "essentials" },
+  seasonliq: { name: "Liquid Seasoning, 16 oz", perPerson: 0.08, pricePerUnit: 5.49, unit: "btl", category: "essentials" },
   lemons: { name: "Lemons", perPerson: 0.5, pricePerUnit: 0.60, unit: "ea", category: "essentials" },
   garlic: { name: "Garlic (whole heads)", perPerson: 0.25, pricePerUnit: 0.75, unit: "head", category: "essentials" },
   onions: { name: "Yellow Onions", perPerson: 0.25, pricePerUnit: 1.00, unit: "ea", category: "essentials" },
@@ -15,7 +15,7 @@ const DEFAULTS = {
   brusselsprouts: { name: "Brussels Sprouts", perPerson: 0.15, pricePerUnit: 3.49, unit: "lb", category: "popular" },
   artichokes: { name: "Whole Artichokes", perPerson: 0.25, pricePerUnit: 2.50, unit: "ea", category: "popular" },
   oranges: { name: "Oranges", perPerson: 0.25, pricePerUnit: 0.75, unit: "ea", category: "popular" },
-  celery: { name: "Celery (stalks)", perPerson: 0.5, pricePerUnit: 2.49, unit: "bunch", category: "popular" },
+  celery: { name: "Celery (stalks)", perPerson: 0.5, pricePerUnit: 2.49, unit: "pkg", category: "popular" },
   sweetpotato: { name: "Sweet Potatoes", perPerson: 0.25, pricePerUnit: 1.49, unit: "lb", category: "popular" },
   pineapple: { name: "Pineapple (whole)", perPerson: 0.1, pricePerUnit: 3.99, unit: "ea", category: "popular" },
   carrots: { name: "Baby Carrots, 1 lb bag", perPerson: 0.15, pricePerUnit: 2.49, unit: "bag", category: "popular" },
@@ -25,22 +25,22 @@ const DEFAULTS = {
   hotdogs: { name: "Hot Dogs, 8-ct pack", perPerson: 0.5, pricePerUnit: 4.99, unit: "pk", category: "extras" },
   jalapenos: { name: "Whole Jalapenos", perPerson: 0.25, pricePerUnit: 1.49, unit: "lb", category: "extras" },
   bellpepper: { name: "Mini Bell Peppers, 16 oz", perPerson: 0.15, pricePerUnit: 3.49, unit: "bag", category: "extras" },
-  cauliflower: { name: "Cauliflower (whole head)", perPerson: 0.1, pricePerUnit: 2.99, unit: "head", category: "extras" },
+  cauliflower: { name: "Cauliflower, whole", perPerson: 0.1, pricePerUnit: 2.99, unit: "head", category: "extras" },
   boiledeggs: { name: "Hard-Boiled Eggs", perPerson: 1, pricePerUnit: 0.30, unit: "ea", category: "extras" },
-  greenbeans: { name: "Green Beans, 14.5 oz can", perPerson: 0.15, pricePerUnit: 1.29, unit: "can", category: "extras" },
+  greenbeans: { name: "Green Beans, 14 oz", perPerson: 0.15, pricePerUnit: 1.29, unit: "can", category: "extras" },
   cabbage: { name: "Cabbage (quartered)", perPerson: 0.1, pricePerUnit: 2.49, unit: "head", category: "extras" },
   cocktailsauce: { name: "Cocktail Sauce, 12 oz", perPerson: 0.1, pricePerUnit: 3.49, unit: "btl", category: "extras" },
   ice: { name: "Ice, 10 lb bag", perPerson: 0.5, pricePerUnit: 3.50, unit: "bag", category: "supplies" },
-  newspaper: { name: "Butcher Paper, 100 ft roll", perPerson: 0.05, pricePerUnit: 8.99, unit: "roll", category: "supplies" },
+  newspaper: { name: "Butcher Paper, 100 ft", perPerson: 0.05, pricePerUnit: 8.99, unit: "roll", category: "supplies" },
   vinegar: { name: "White Vinegar", perPerson: 0.05, pricePerUnit: 3.49, unit: "gal", category: "supplies" },
   salt: { name: "Coarse Salt, 3 lb box", perPerson: 0.05, pricePerUnit: 2.49, unit: "box", category: "supplies" },
   papertowels: { name: "Paper Towels, 6-roll pk", perPerson: 0.15, pricePerUnit: 5.99, unit: "pk", category: "supplies" },
-  trashbags: { name: "Trash Bags, 30 ct heavy duty", perPerson: 0.1, pricePerUnit: 8.99, unit: "box", category: "supplies" },
-  plates: { name: "Disposable Plates, 50 ct", perPerson: 0.3, pricePerUnit: 5.99, unit: "pk", category: "supplies" },
-  cups: { name: "Plastic Cups, 16 oz 50 ct", perPerson: 0.3, pricePerUnit: 4.99, unit: "pk", category: "supplies" },
+  trashbags: { name: "Trash Bags, 30 ct HD", perPerson: 0.1, pricePerUnit: 8.99, unit: "box", category: "supplies" },
+  plates: { name: "Plates, 50 ct", perPerson: 0.3, pricePerUnit: 5.99, unit: "pk", category: "supplies" },
+  cups: { name: "Plastic Cups, 16 oz", perPerson: 0.3, pricePerUnit: 4.99, unit: "pk", category: "supplies" },
   wetwipes: { name: "Wet Wipes, 40 ct pack", perPerson: 0.15, pricePerUnit: 3.99, unit: "pk", category: "supplies" },
-  servingtrays: { name: "Aluminum Serving Trays, 5 pk", perPerson: 0.05, pricePerUnit: 8.99, unit: "pk", category: "supplies" },
-  ziplocks: { name: "Zip-Lock Bags, gallon 30 ct", perPerson: 0.1, pricePerUnit: 4.99, unit: "box", category: "supplies" },
+  servingtrays: { name: "Serving Trays, 5 pk", perPerson: 0.05, pricePerUnit: 8.99, unit: "pk", category: "supplies" },
+  ziplocks: { name: "Zip-Lock Bags, gallon", perPerson: 0.1, pricePerUnit: 4.99, unit: "box", category: "supplies" },
   beer: { name: "Beer, 12-pack", perPerson: 0.5, pricePerUnit: 15.99, unit: "pk", category: "drinks" },
   water: { name: "Bottled Water, 24-pack", perPerson: 0.15, pricePerUnit: 5.99, unit: "case", category: "drinks" },
   soda: { name: "Soft Drinks, 12-pack", perPerson: 0.2, pricePerUnit: 6.99, unit: "pk", category: "drinks" },
@@ -984,7 +984,7 @@ function Plan() {
           <div className="batch-info">
             <div className="batch-headline">{batchCount} batches needed</div>
             <div className="batch-details">
-              ~{lbsPerBatch} lbs each &middot; {formatTime(BATCH_COOK_MIN)}/batch &middot; {formatTime(totalCookMinutes)} total cook time
+              ~{lbsPerBatch} lbs/batch &middot; {formatTime(BATCH_COOK_MIN)} each &middot; {formatTime(totalCookMinutes)} total
             </div>
             <div className="batch-tip">
               Standard 80-qt pot holds ~{BATCH_MAX_LBS} lbs. Recommended pot: {getPotSize(lbsPerBatch)}.
