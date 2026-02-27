@@ -113,6 +113,21 @@ const TIPS = [
   { title: "Use Oranges Too", body: "Oranges add sweetness that balances heat. Squeeze juice in first, toss halves in. Some use grapefruit -- citrus breaks down shells." },
 ];
 
+const SAFETY_CHECKLIST = [
+  { id: "outdoor", label: "Boil is set up outdoors", desc: "Never use a propane burner indoors, in a garage, or under a carport. Open air only.", severity: "critical" },
+  { id: "stable", label: "Burner is on flat, stable ground", desc: "Level surface away from structures, fences, and overhangs. At least 10 ft from anything flammable.", severity: "critical" },
+  { id: "extinguisher", label: "Fire extinguisher nearby", desc: "Keep a Class B extinguisher rated for grease/propane within arm's reach. Know how to use it.", severity: "critical" },
+  { id: "propane", label: "Propane connections checked", desc: "Spray soapy water on all fittings. Bubbles mean a leak. Tighten or replace before lighting.", severity: "critical" },
+  { id: "kidsaway", label: "Kids & pets kept 10+ ft away", desc: "Set a clear boundary. Hot water, steam, and propane are all serious hazards for little ones.", severity: "warning" },
+  { id: "gloves", label: "Heat-resistant gloves ready", desc: "Heavy-duty silicone or leather gloves for lifting baskets and handling the pot. No bare hands.", severity: "warning" },
+  { id: "shoes", label: "Wearing closed-toe shoes", desc: "No sandals or flip-flops near boiling water. Spills happen. Protect your feet.", severity: "warning" },
+  { id: "neverleave", label: "Plan to never leave burner unattended", desc: "Someone watches the flame at all times. Wind can blow it out and leak propane.", severity: "critical" },
+  { id: "dontmove", label: "Won't move pot while full", desc: "A full 80-qt pot weighs 100+ lbs. Turn off burner and let it cool before any moving.", severity: "warning" },
+  { id: "firstaid", label: "First aid kit accessible", desc: "Burn gel, bandages, and clean water nearby. Know where the nearest ER is just in case.", severity: "info" },
+  { id: "phone", label: "Phone charged and nearby", desc: "Keep your phone close for emergencies. 911 first, then deal with the boil.", severity: "info" },
+  { id: "overfill", label: "Pot is not overfilled", desc: "Leave 4-6 inches at the top. Crawfish displace water and can cause dangerous boil-overs.", severity: "warning" },
+];
+
 const AFFILIATE_TAG = "crawfishboilc-20"; // Replace with your Amazon Associates tag
 const amazonLink = (query) => `https://www.amazon.com/s?k=${encodeURIComponent(query)}&tag=${AFFILIATE_TAG}`;
 
@@ -302,6 +317,7 @@ function Nav({ active, setActive }) {
     { id: "plan", label: "Plan" },
     { id: "recipes", label: "Recipes" },
     { id: "equipment", label: "Gear" },
+    { id: "safety", label: "Safety" },
     { id: "tips", label: "Tips" },
   ];
   return (
@@ -1036,6 +1052,71 @@ function Plan() {
   );
 }
 
+/* ── SAFETY ── */
+function Safety() {
+  const STORAGE_KEY = "boilcalc_safety";
+  const [checked, setChecked] = useState(() => {
+    try { return JSON.parse(localStorage.getItem(STORAGE_KEY)) || {}; } catch { return {}; }
+  });
+  const toggle = (id) => {
+    setChecked(prev => {
+      const next = { ...prev, [id]: !prev[id] };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+  };
+  const resetAll = () => { setChecked({}); localStorage.removeItem(STORAGE_KEY); };
+  const total = SAFETY_CHECKLIST.length;
+  const done = SAFETY_CHECKLIST.filter(i => checked[i.id]).length;
+  const pct = Math.round((done / total) * 100);
+
+  return (
+    <section className="page">
+      <h2 className="page-title">Boil Day Safety</h2>
+      <p className="page-desc">Go through this checklist before you light the burner. Every item matters.</p>
+
+      {/* Progress */}
+      <div className="card safety-progress-card">
+        <div className="safety-progress-top">
+          <span className="safety-progress-label">{done} of {total} checked</span>
+          {done === total && <span className="safety-progress-done">Ready to boil!</span>}
+          {done > 0 && done < total && <button className="btn-reset" onClick={resetAll}>Reset</button>}
+        </div>
+        <div className="safety-bar-bg">
+          <div className="safety-bar-fill" style={{ width: `${pct}%` }} />
+        </div>
+      </div>
+
+      {/* Checklist */}
+      <div className="safety-list">
+        {SAFETY_CHECKLIST.map(item => (
+          <button key={item.id} className={`card safety-item ${checked[item.id] ? "safety-item--done" : ""}`}
+            onClick={() => toggle(item.id)}>
+            <div className={`safety-check ${checked[item.id] ? "safety-check--on" : ""}`}>
+              {checked[item.id] && <span className="safety-checkmark">&#10003;</span>}
+            </div>
+            <div className="safety-text">
+              <div className="safety-item-label">
+                {item.severity === "critical" && <span className="safety-badge safety-badge--crit">Critical</span>}
+                {item.label}
+              </div>
+              <div className="safety-item-desc">{item.desc}</div>
+            </div>
+          </button>
+        ))}
+      </div>
+
+      {done === total && (
+        <div className="card safety-allclear">
+          <div className="safety-allclear-icon">&#10003;</div>
+          <div className="safety-allclear-title">All clear!</div>
+          <div className="safety-allclear-msg">You've checked every safety item. Stay alert and have a great boil.</div>
+        </div>
+      )}
+    </section>
+  );
+}
+
 /* ── TIPS ── */
 function Tips() {
   return (
@@ -1091,6 +1172,7 @@ export default function App() {
       {page === "plan" && <Plan />}
       {page === "recipes" && <Recipes />}
       {page === "equipment" && <Equipment />}
+      {page === "safety" && <Safety />}
       {page === "tips" && <Tips />}
       <Footer />
     </div>
@@ -1246,6 +1328,30 @@ input[type="number"]{-moz-appearance:textfield}
 .tip-num{font-size:11px;font-weight:700;color:var(--accent);background:rgba(245,158,11,0.1);border-radius:6px;padding:2px 7px;font-variant-numeric:tabular-nums;flex-shrink:0}
 .tip-title{font-size:14px;font-weight:600;color:var(--text)}
 .tip-body{font-size:12px;color:var(--text2);line-height:1.6}
+
+/* SAFETY */
+.safety-progress-card{padding:14px}
+.safety-progress-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:8px}
+.safety-progress-label{font-size:13px;font-weight:600;color:var(--text)}
+.safety-progress-done{font-size:12px;font-weight:700;color:#34d399}
+.safety-bar-bg{height:6px;background:var(--surface2);border-radius:3px;overflow:hidden}
+.safety-bar-fill{height:100%;background:var(--accent);border-radius:3px;transition:width .3s ease}
+.safety-list{display:grid;gap:4px}
+.safety-item{display:flex;align-items:flex-start;gap:12px;text-align:left;cursor:pointer;padding:12px 14px;font-family:var(--font);-webkit-tap-highlight-color:transparent;transition:opacity .15s}
+.safety-item--done{opacity:.5}
+.safety-item--done .safety-item-label{text-decoration:line-through;text-decoration-color:var(--text3)}
+.safety-check{width:22px;height:22px;border-radius:6px;border:2px solid var(--text3);flex-shrink:0;display:flex;align-items:center;justify-content:center;transition:all .15s;margin-top:1px}
+.safety-check--on{background:var(--accent);border-color:var(--accent)}
+.safety-checkmark{color:#000;font-size:13px;font-weight:700;line-height:1}
+.safety-text{min-width:0}
+.safety-item-label{font-size:13px;font-weight:600;color:var(--text);margin-bottom:2px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+.safety-item-desc{font-size:11px;color:var(--text2);line-height:1.5}
+.safety-badge{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;padding:1px 6px;border-radius:4px;flex-shrink:0}
+.safety-badge--crit{background:rgba(239,68,68,0.15);color:#f87171}
+.safety-allclear{text-align:center;padding:20px 14px;border-color:rgba(52,211,153,0.25);margin-top:8px}
+.safety-allclear-icon{font-size:32px;color:#34d399;margin-bottom:4px}
+.safety-allclear-title{font-size:18px;font-weight:700;color:#34d399;margin-bottom:4px}
+.safety-allclear-msg{font-size:13px;color:var(--text2);line-height:1.5}
 
 /* FOOTER */
 .footer{border-top:1px solid var(--border);margin-top:16px;padding:0}
@@ -1415,5 +1521,10 @@ input[type="number"]{-moz-appearance:textfield}
   .btn-sm{padding:8px 16px;font-size:13px}
   .btn-outline{font-size:14px}
   .btn-primary{font-size:14px}
+  .safety-item-label{font-size:15px}
+  .safety-item-desc{font-size:12px}
+  .safety-progress-label{font-size:14px}
+  .safety-allclear-title{font-size:20px}
+  .safety-allclear-msg{font-size:14px}
 }
 `;
