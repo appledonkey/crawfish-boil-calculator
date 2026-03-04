@@ -63,6 +63,13 @@ const amazonLink = (query) => `https://www.amazon.com/s?k=${encodeURIComponent(q
 const ITEM_LINKS = {
   seasoning: amazonLink("crawfish boil seasoning Zatarains"),
   seasonliq: amazonLink("liquid crab boil concentrate Louisiana"),
+  sausage: amazonLink("andouille sausage cajun"),
+  mushrooms: amazonLink("whole button mushrooms canned"),
+  cocktailsauce: amazonLink("cocktail sauce seafood"),
+  butter: amazonLink("unsalted butter sticks"),
+  ice: amazonLink("reusable ice packs large cooler"),
+  salt: amazonLink("coarse sea salt kosher"),
+  vinegar: amazonLink("white distilled vinegar gallon"),
   trashbags: amazonLink("heavy duty trash bags outdoor"),
   newspaper: amazonLink("butcher paper roll table covering"),
   papertowels: amazonLink("paper towels bulk"),
@@ -314,6 +321,7 @@ function Calculator() {
   const [copied, setCopied] = useState(false);
   const [linkCopied, setLinkCopied] = useState(false);
   const [checked, setChecked] = useState(saved?.checked ?? {});
+  const [showSharedBanner, setShowSharedBanner] = useState(!!urlState);
 
   // Save/load plans
   const [plans, setPlans] = useState(() => {
@@ -424,6 +432,7 @@ function Calculator() {
       enabled: val.category === "essentials" || val.category === "supplies",
       qtyOverride: null,
     })));
+    setShowSharedBanner(false);
     localStorage.removeItem(STORAGE_KEY);
   };
 
@@ -532,10 +541,41 @@ function Calculator() {
     w.print();
   };
 
+  const shareUrl = encodeStateToURL(guests, items, heat);
+  const shareFacebook = () => {
+    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`, '_blank', 'width=600,height=400');
+  };
+  const shareTwitter = () => {
+    const text = `Planning a crawfish boil for ${guests} guests! Check out my shopping list:`;
+    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(text)}`, '_blank', 'width=600,height=400');
+  };
+  const sharePinterest = () => {
+    const desc = `Crawfish Boil Shopping List for ${guests} guests - ${totalLbs} lbs crawfish, $${round(perPerson).toFixed(2)}/person`;
+    window.open(`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(shareUrl)}&description=${encodeURIComponent(desc)}&media=${encodeURIComponent('https://crawfishboilcalculator.com/icon-512.png')}`, '_blank', 'width=600,height=400');
+  };
+  const shareEmail = () => {
+    const subject = `Crawfish Boil Plan for ${guests} guests`;
+    const body = generateListText() + `\n\nPlan it yourself: ${shareUrl}`;
+    window.location.href = `mailto:?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  };
+
   return (
     <section className="page page--calc">
       <h2 className="page-title">Calculator</h2>
       <p className="page-desc">Plan quantities and costs for your crawfish boil.</p>
+
+      {showSharedBanner && (
+        <div className="shared-banner">
+          <div className="shared-banner-text">
+            <strong>Someone shared a crawfish boil plan with you!</strong>
+            <span>{guests} guests &middot; {totalLbs} lbs crawfish &middot; ${round(totalCost).toFixed(2)} total</span>
+          </div>
+          <div className="shared-banner-actions">
+            <button className="btn-primary btn-sm" onClick={() => setShowSharedBanner(false)}>Customize this plan</button>
+            <button className="btn-outline btn-sm" onClick={resetAll}>Start fresh</button>
+          </div>
+        </div>
+      )}
 
       {/* Guests */}
       <div className="card">
@@ -772,6 +812,23 @@ function Calculator() {
                 {linkCopied ? "Copied!" : "Link"}
               </button>
             </div>
+            <div className="sl-social">
+              <span className="sl-social-label">Share on</span>
+              <div className="sl-social-icons">
+                <button className="sl-social-btn" onClick={shareFacebook} title="Facebook">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+                </button>
+                <button className="sl-social-btn" onClick={shareTwitter} title="X / Twitter">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+                </button>
+                <button className="sl-social-btn" onClick={sharePinterest} title="Pinterest">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg>
+                </button>
+                <button className="sl-social-btn" onClick={shareEmail} title="Email">
+                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+                </button>
+              </div>
+            </div>
             <div className="sl-affiliate-note">
               Some links support CrawfishBoilCalculator.com at no extra cost to you.
             </div>
@@ -914,8 +971,27 @@ function Plan() {
 
 /* ── FOOTER ── */
 function Footer() {
+  const url = 'https://crawfishboilcalculator.com';
+  const text = 'Free crawfish boil calculator - plan quantities, costs, and get a shopping list:';
   return (
     <footer className="footer">
+      <div className="footer-share">
+        <span className="footer-share-label">Spread the word</span>
+        <div className="footer-share-icons">
+          <button onClick={() => window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}`, '_blank', 'width=600,height=400')} className="footer-share-btn" title="Facebook">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>
+          </button>
+          <button onClick={() => window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(url)}&text=${encodeURIComponent(text)}`, '_blank', 'width=600,height=400')} className="footer-share-btn" title="X / Twitter">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+          </button>
+          <button onClick={() => window.open(`https://pinterest.com/pin/create/button/?url=${encodeURIComponent(url)}&description=${encodeURIComponent(text)}`, '_blank', 'width=600,height=400')} className="footer-share-btn" title="Pinterest">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.372 0 12c0 5.084 3.163 9.426 7.627 11.174-.105-.949-.2-2.405.042-3.441.218-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.69 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 01.083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.359-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24 12 24c6.627 0 12-5.373 12-12 0-6.628-5.373-12-12-12z"/></svg>
+          </button>
+          <button onClick={() => { window.location.href = `mailto:?subject=${encodeURIComponent('Check out this crawfish boil calculator')}&body=${encodeURIComponent(text + ' ' + url)}`; }} className="footer-share-btn" title="Email">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg>
+          </button>
+        </div>
+      </div>
       <div className="footer-affiliate">As an Amazon Associate I earn from qualifying purchases.</div>
       <div className="footer-bottom">
         <span className="footer-brand">CrawfishBoilCalculator.com</span>
@@ -932,9 +1008,43 @@ const LazySafety = lazy(() => import("./pages/Safety.jsx"));
 const LazyTips = lazy(() => import("./pages/Tips.jsx"));
 
 /* ── APP ── */
+const VALID_PAGES = ['calculator', 'plan', 'recipes', 'equipment', 'safety', 'tips'];
+function getPageFromHash() {
+  const hash = window.location.hash.slice(1);
+  return VALID_PAGES.includes(hash) ? hash : 'calculator';
+}
+
 export default function App() {
-  const [page, setPage] = useState("calculator");
-  const changePage = useCallback((p) => { setPage(p); window.scrollTo(0, 0); }, []);
+  const [page, setPage] = useState(getPageFromHash);
+  const [installPrompt, setInstallPrompt] = useState(null);
+
+  const changePage = useCallback((p) => {
+    setPage(p);
+    window.location.hash = p === 'calculator' ? '' : p;
+    window.scrollTo(0, 0);
+  }, []);
+
+  // Listen for hash changes (back/forward)
+  useEffect(() => {
+    const handler = () => setPage(getPageFromHash());
+    window.addEventListener('hashchange', handler);
+    return () => window.removeEventListener('hashchange', handler);
+  }, []);
+
+  // Capture PWA install prompt
+  useEffect(() => {
+    const handler = (e) => { e.preventDefault(); setInstallPrompt(e); };
+    window.addEventListener('beforeinstallprompt', handler);
+    return () => window.removeEventListener('beforeinstallprompt', handler);
+  }, []);
+
+  const handleInstall = async () => {
+    if (!installPrompt) return;
+    installPrompt.prompt();
+    await installPrompt.userChoice;
+    setInstallPrompt(null);
+  };
+
   return (
     <div className="app">
       <Nav active={page} setActive={changePage} />
@@ -946,6 +1056,13 @@ export default function App() {
         {page === "safety" && <LazySafety />}
         {page === "tips" && <LazyTips />}
       </Suspense>
+      {installPrompt && (
+        <div className="install-banner">
+          <span>Install for offline shopping lists</span>
+          <button className="btn-primary btn-sm" onClick={handleInstall}>Install</button>
+          <button className="install-dismiss" onClick={() => setInstallPrompt(null)}>&times;</button>
+        </div>
+      )}
       <Footer />
     </div>
   );

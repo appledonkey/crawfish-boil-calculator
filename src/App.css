@@ -173,6 +173,11 @@ input[type="number"]{-moz-appearance:textfield}
 
 /* FOOTER */
 .footer{border-top:1px solid var(--border);margin-top:16px;padding:0}
+.footer-share{text-align:center;padding:16px 16px 0}
+.footer-share-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.footer-share-icons{display:flex;justify-content:center;gap:10px;margin-top:8px}
+.footer-share-btn{background:var(--surface);border:1px solid var(--border);border-radius:50%;width:36px;height:36px;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:border-color .15s,color .15s;-webkit-tap-highlight-color:transparent}
+.footer-share-btn:hover{border-color:var(--accent);color:var(--accent)}
 .footer-affiliate{font-size:10px;color:var(--text3);text-align:center;padding:12px 16px 0;line-height:1.4}
 .footer-bottom{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px 16px}
 .footer-brand{font-size:14px;font-weight:700;color:var(--text3)}
@@ -261,6 +266,31 @@ input[type="number"]{-moz-appearance:textfield}
 
 /* RECIPES FILTER PILLS */
 .pills--mb{margin-bottom:14px}
+
+/* SHARED PLAN BANNER */
+.shared-banner{background:rgba(245,158,11,0.06);border:1px solid var(--border-accent);border-radius:var(--r);padding:16px;margin-bottom:14px;text-align:center}
+.shared-banner-text{margin-bottom:12px}
+.shared-banner-text strong{display:block;font-size:15px;color:var(--text);margin-bottom:4px}
+.shared-banner-text span{font-size:13px;color:var(--text2)}
+.shared-banner-actions{display:flex;gap:8px;justify-content:center}
+
+/* SOCIAL SHARE IN MODAL */
+.sl-social{padding:0 20px 12px;text-align:center}
+.sl-social-label{font-size:10px;color:var(--text3);text-transform:uppercase;letter-spacing:.5px;font-weight:600}
+.sl-social-icons{display:flex;justify-content:center;gap:10px;margin-top:6px}
+.sl-social-btn{background:var(--surface);border:1px solid var(--border);border-radius:50%;width:36px;height:36px;cursor:pointer;color:var(--text2);display:flex;align-items:center;justify-content:center;transition:border-color .15s,color .15s;-webkit-tap-highlight-color:transparent}
+.sl-social-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+/* RECIPE PRODUCT SUGGESTIONS */
+.recipe-products{margin-top:14px;padding-top:14px;border-top:1px solid var(--border)}
+.recipe-products-label{font-size:10px;font-weight:600;color:var(--text3);text-transform:uppercase;letter-spacing:.8px;margin-bottom:8px}
+.recipe-products-list{display:flex;flex-wrap:wrap;gap:6px}
+.recipe-product-link{display:inline-block;font-size:12px;color:var(--accent);text-decoration:none;padding:5px 12px;border:1px solid rgba(245,158,11,0.2);border-radius:100px;transition:background .15s,border-color .15s}
+.recipe-product-link:hover{background:rgba(245,158,11,0.08);border-color:var(--accent)}
+
+/* INSTALL BANNER */
+.install-banner{display:flex;align-items:center;justify-content:center;gap:12px;padding:12px 16px;background:var(--surface);border-top:1px solid var(--border);font-size:13px;color:var(--text2)}
+.install-dismiss{background:none;border:none;color:var(--text3);font-size:20px;cursor:pointer;padding:0 4px;line-height:1}
 
 /* ═══ DESKTOP 600px+ ═══ */
 @media(min-width:600px){

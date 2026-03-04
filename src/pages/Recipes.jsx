@@ -1,6 +1,9 @@
 import { useState } from "react";
 import { RECIPES } from "../data.js";
 
+const AFFILIATE_TAG = "crawfishboilc-20";
+const amazonLink = (query) => `https://www.amazon.com/s?k=${encodeURIComponent(query)}&tag=${AFFILIATE_TAG}`;
+
 export default function Recipes() {
   const [openId, setOpenId] = useState(null);
   const [filter, setFilter] = useState("all");
@@ -33,6 +36,18 @@ export default function Recipes() {
                 <span className="pro-tip-tag">Pro tip</span>
                 <span className="pro-tip-txt">{r.tip}</span>
               </div>
+              {r.products && r.products.length > 0 && (
+                <div className="recipe-products">
+                  <div className="recipe-products-label">What you'll need</div>
+                  <div className="recipe-products-list">
+                    {r.products.map((p, i) => (
+                      <a key={i} href={amazonLink(p.query)} target="_blank" rel="noopener noreferrer" className="recipe-product-link">
+                        {p.name} &rarr;
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
           )}
         </div>
